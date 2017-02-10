@@ -1,5 +1,7 @@
 # DjAdyen
 
+[![Build Status](https://travis-ci.org/maykinmedia/djadyen.svg?branch=master)](https://travis-ci.org/maykinmedia/djadyen)
+
 This module is used to connect your django application to the payment provider Adyen.
 Before working with this module please also read the documentation on Adyen.
 
