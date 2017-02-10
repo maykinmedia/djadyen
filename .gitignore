@@ -20,3 +20,7 @@ htmlcov/
 .coverage
 
 \.cache/v/cache/lastfailed
+build
+dist
+djadyen.egg-info
+.pypirc

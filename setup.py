@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='django-adyen',
+    name='djadyen',
     version='0.1.0',
     license='MIT',
 
@@ -25,7 +25,7 @@ setup(
 
     # metadata
     description='A Django package to intergrade Adyen in your project.',
-    url='https://bitbucket.org/maykinmedia/django-adyen/overview',
+    url='https://github.com/maykinmedia/djadyen',
     author='Maykin Media, Jorik Kraaikamp',
     author_email='jorik.kraaikamp@maykinmedia.nl',
     classifiers=[
