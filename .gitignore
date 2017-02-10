@@ -1,0 +1,22 @@
+# Python
+*.py[c|o]
+__pycache__
+
+# Emacs
+*~
+
+# Virtual env
+/env
+
+# Log files
+*.log
+/log/*.log.*
+
+.vscode/
+django_adyen.egg-info/
+.tox/
+.eggs/
+htmlcov/
+.coverage
+
+\.cache/v/cache/lastfailed

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+{% block content %}
+<section>
+    <h1>{% trans "Redirecting to payment provider" %}</h1>
+</section>
+
+<section style="display: none;">
+    <form id="redirect-form" action="{{ adyen_url }}" method="post" autocomplete="off" novalidate>
+        {% if add_csrf %}
+            {% csrf_token %}
+        {% endif %}
+
+        {{ form }}
+        <button type="submit">{% trans 'next_step' %}</button>
+    </form>
+</section>
+
+<script>
+var form = document.querySelector('#redirect-form');
+form.submit();
+</script>
+{% endblock %}
