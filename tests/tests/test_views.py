@@ -92,7 +92,7 @@ class MyRedirectViewTests(WebTest):
 
 class My2RedirectViewTests(WebTest):
     def setUp(self):
-        self.order = OrderFactory()
+        self.order = OrderFactory(email='')
         self.url = reverse('redirect2', kwargs={'reference': self.order.reference})
 
     def test_redirection_page(self):
@@ -104,8 +104,6 @@ class My2RedirectViewTests(WebTest):
         self.assertEqual(response.status_code, 302)
 
     def test_redirection_page_no_email(self):
-        self.order.email = ''
-        self.order.save()
         response = self.app.get(self.url)
         self.assertEqual(response.status_code, 200)
 
