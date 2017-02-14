@@ -27,7 +27,7 @@ class My2AdyenRequestView(AdyenRedirectView):
 
     def get_form_kwargs(self):
         order = self.get_object()
-        params = self.get_signed_order_params(order)
+        params = self.get_default_params(shipBeforeDate=timezone.now(), merchantReturnData='returnData')
 
         kwargs = super(My2AdyenRequestView, self).get_form_kwargs()
         kwargs.update({'initial': params})
