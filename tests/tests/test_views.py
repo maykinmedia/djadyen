@@ -103,6 +103,16 @@ class My2RedirectViewTests(WebTest):
         response = form.submit()
         self.assertEqual(response.status_code, 302)
 
+    def test_redirection_page_no_email(self):
+        self.order.email = ''
+        self.order.save()
+        response = self.app.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        form = response.forms['redirect-form']
+        response = form.submit()
+        self.assertEqual(response.status_code, 302)
+
 
 class ConfirmationView(AdyenSigMixin, WebTest):
     def setUp(self):
