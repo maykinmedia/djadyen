@@ -80,9 +80,10 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
         params = self.get_default_params(
             merchantReference=order.reference,
             paymentAmount=order.get_price_in_cents(),
-            shopperEmail=order.email,
             resURL='{}{}'.format(settings.ADYEN_HOST_URL, self.get_next_url())
         )
+        if order.email:
+            params['shopperEmail'] = order.email
         if order.payment_option:
             params['brandCode'] = order.payment_option.adyen_name
         if order.issuer:
