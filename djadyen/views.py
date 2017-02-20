@@ -76,7 +76,7 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
         'merchantAccount': settings.ADYEN_MERCHANT_ACCOUNT,
     }
 
-    def get_signed_order_params(self, order):
+    def get_signed_order_params(self, order, **kwargs):
         params = self.get_default_params(
             merchantReference=order.reference,
             paymentAmount=order.get_price_in_cents(),
@@ -88,6 +88,8 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
             params['brandCode'] = order.payment_option.adyen_name
         if order.issuer:
             params['issuerId'] = order.issuer.adyen_id
+
+        params.update(**kwargs)
 
         return self.sign_params(params)
 
