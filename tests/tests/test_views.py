@@ -123,8 +123,7 @@ class ConfirmationView(AdyenSigMixin, WebTest):
             'reason': 'test',
             'shopperLocale': 'test',
             'skinCode': 'test',
-            'merchantReference': self.order.reference,
-            'pspReference': 'reference'
+            'merchantReference': self.order.reference
         }
 
     def test_empty_get(self):
@@ -183,6 +182,13 @@ class ConfirmationView(AdyenSigMixin, WebTest):
 
     def test_post(self):
         self.params['authResult'] = 'AUTHORISED'
+        params = self.sign_params(self.params)
+        response = self.app.post(self.url, params=params)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.text, '\n    Success!\n\n')
+
+    def test_psp_reference(self):
+        self.params['pspReference'] = 'reference'
         params = self.sign_params(self.params)
         response = self.app.post(self.url, params=params)
         self.assertEqual(response.status_code, 200)

@@ -24,3 +24,6 @@ build
 dist
 djadyen.egg-info
 .pypirc
+coverage\.xml
+
+junit\.xml

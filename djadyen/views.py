@@ -182,16 +182,16 @@ class AdyenResponseMixin(AdyenSigMixin):
 
         params = {
             'authResult': self.auth_result,
-            'pspReference': self.psp_reference,
             'merchantReference': self.merchant_reference,
             'skinCode': self.skin_code,
             'paymentMethod': self.payment_method,
             'shopperLocale': self.shopper_locale,
         }
 
+        if self.psp_reference:
+            params['pspReference'] = self.psp_reference
         if self.merchant_return_data:
             params['merchantReturnData'] = self.merchant_return_data
-
         if self.reason:
             params['reason'] = self.reason
 
