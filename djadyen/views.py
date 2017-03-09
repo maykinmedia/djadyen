@@ -124,9 +124,22 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+
+        if self.can_skip_payment():
+            return skip_payment()
+
         response = super(AdyenRedirectView, self).get(request, *args, **kwargs)
         self.perform_action()
         return response
+
+    def can_skip_payment(self):
+        """
+        A function to determain if we should skip the payment redirect
+        """
+        return False
+
+    def skip_payment(self):
+        raise NotImplementedError("You can't skip payments yet")
 
     def post(self, request, *args, **kwargs):
         """
