@@ -1,9 +1,10 @@
 from django.core.urlresolvers import reverse
 
-from djadyen import settings
-from djadyen.views import AdyenSigMixin
 from django_webtest import WebTest
 from webtest import AppError
+
+from djadyen import settings
+from djadyen.views import AdyenSigMixin
 
 from .factories import IssuerFactory, OrderFactory, PaymentOptionsFactory
 
@@ -110,6 +111,18 @@ class My2RedirectViewTests(WebTest):
         form = response.forms['redirect-form']
         response = form.submit()
         self.assertEqual(response.status_code, 302)
+
+
+class My3RedirectViewTests(WebTest):
+    def setUp(self):
+        self.order = OrderFactory(email='')
+        self.url = reverse('redirect3', kwargs={'reference': self.order.reference})
+
+    def test_redirection_page(self):
+        self.order.email = ''
+        self.order.save()
+        with self.assertRaises(NotImplementedError):
+            response = self.app.get(self.url)
 
 
 class ConfirmationView(AdyenSigMixin, WebTest):

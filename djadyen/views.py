@@ -126,7 +126,7 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
         self.object = self.get_object()
 
         if self.can_skip_payment():
-            return skip_payment()
+            return self.skip_payment()
 
         response = super(AdyenRedirectView, self).get(request, *args, **kwargs)
         self.perform_action()
@@ -217,11 +217,20 @@ class AdyenResponseMixin(AdyenSigMixin):
                 raise Http404
 
         self.handle_default()
-        logger.info('Order ref: %s | Received Adyen auth result: %s', self.merchant_reference, self.auth_result)
+        logger.info(
+            'Order ref: %s | Received Adyen auth result: %s',
+            self.merchant_reference,
+            self.auth_result
+        )
 
         if sig['merchantSig'] != self.merchant_sig:
             logger.debug('Order ref: %s | MerchangeSig not correct', self.merchant_reference)
-            logger.debug('Order ref: %s | Our Msig: %s | Adyen Msig: %s', self.merchant_reference, sig['merchantSig'], self.merchant_sig)
+            logger.debug(
+                'Order ref: %s | Our Msig: %s | Adyen Msig: %s',
+                self.merchant_reference,
+                sig['merchantSig'],
+                self.merchant_sig
+            )
             return self.handle_error()
 
         if self.auth_result == 'ERROR':
