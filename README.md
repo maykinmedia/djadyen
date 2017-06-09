@@ -3,6 +3,10 @@
 [![Build Status](https://travis-ci.org/maykinmedia/djadyen.svg?branch=master)](https://travis-ci.org/maykinmedia/djadyen)
 [![codecov](https://codecov.io/gh/maykinmedia/djadyen/branch/master/graph/badge.svg)](https://codecov.io/gh/maykinmedia/djadyen)
 [![Lintly](https://lintly.com/gh/maykinmedia/djadyen/badge.svg)](https://lintly.com/gh/maykinmedia/djadyen/)
+[![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/0.1.7)
+[![PyPI](https://img.shields.io/pypi/v/nine.svg)]([![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/0.1.7))
+[![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)]([![PyPI](https://img.shields.io/pypi/v/nine.svg)]([![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/0.1.7)))
+[![PyPI](https://img.shields.io/pypi/l/Django.svg)]([![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)]([![PyPI](https://img.shields.io/pypi/v/nine.svg)]([![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/0.1.7))))
 
 This module is used to connect your django application to the payment provider Adyen.
 Before working with this module please also read the [documentation on Adyen](https://docs.adyen.com/developers/hpp-manual).
