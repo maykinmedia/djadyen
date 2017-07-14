@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/maykinmedia/djadyen.svg?branch=master)](https://travis-ci.org/maykinmedia/djadyen)
 [![codecov](https://codecov.io/gh/maykinmedia/djadyen/branch/master/graph/badge.svg)](https://codecov.io/gh/maykinmedia/djadyen)
 [![Lintly](https://lintly.com/gh/maykinmedia/djadyen/badge.svg)](https://lintly.com/gh/maykinmedia/djadyen/)
+[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/maykinmedia/djadyen)
 [![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/0.1.7)
 [![PyPI version](https://badge.fury.io/py/djadyen.svg)](https://badge.fury.io/py/djadyen)
 
