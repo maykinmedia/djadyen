@@ -153,10 +153,14 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
         params = {
             "authResult": settings.ADYEN_NEXT_STATUS,
             "pspReference": "Local redirect",
-            "merchantReference": order.reference
+            "merchantReference": order.reference,
+            "skinCode": settings.ADYEN_SKIN_CODE,
+            "paymentMethod": "ideal",
+            "shopperLocale": "NL",
         }
 
-        return HttpResponseRedirect("{}?{}".format(self.get_next_url(), urlencode(params)))
+        signed_params = self.sign_params(params)
+        return HttpResponseRedirect("{}?{}".format(self.get_next_url(), urlencode(signed_params)))
 
     def perform_action(self):
         pass
