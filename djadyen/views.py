@@ -206,7 +206,7 @@ class AdyenResponseMixin(AdyenSigMixin):
         self.handle_default()
         logger.info('Order ref: %s | Received Adyen auth result: %s', self.merchant_reference, self.auth_result)
 
-        if sig['merchantSig'] != self.merchant_sig:
+        if sig['merchantSig'] != self.merchant_sig and settings.ADYEN_ENABLED:
             logger.debug('Order ref: %s | MerchangeSig not correct', self.merchant_reference)
             logger.debug('Order ref: %s | Our Msig: %s | Adyen Msig: %s', self.merchant_reference, sig['merchantSig'], self.merchant_sig)
             return self.handle_error()

@@ -24,3 +24,8 @@ build
 dist
 djadyen.egg-info
 .pypirc
+coverage\.xml
+
+junit\.xml
+
+\.pytest_cache/v/cache/

@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from djadyen import settings
 from djadyen.choices import Status
@@ -18,16 +18,15 @@ class AdyenOrderTests(TestCase):
             order = OrderFactory()
             self.assertEqual(order.__str__(), '{}'.format(order.reference))
 
+    @override_settings(ADYEN_REFETCH_OLD_STATUS=True)
     def test_refetch_old_status(self):
         with self.assertNumQueries(3):
-            settings.ADYEN_REFETCH_OLD_STATUS = True
             order = OrderFactory()
             self.assertEqual(order.__str__(), '{}'.format(order.reference))
 
             order.status = Status.Authorised
             order.save()
             self.assertEqual(order.__str__(), '{}'.format(order.reference))
-            settings.ADYEN_REFETCH_OLD_STATUS = False
 
     def test_can_not_overwrite_authorised_status(self):
         with self.assertNumQueries(2):
