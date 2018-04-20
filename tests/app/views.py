@@ -1,10 +1,10 @@
+from django.urls import reverse
 from django.views.generic import TemplateView
 
 from djadyen.choices import Status
 from djadyen.views import AdyenRedirectView, AdyenResponseMixin
 
 from .models import Order
-from django.urls import reverse
 
 
 class MyAdyenRequestView(AdyenRedirectView):

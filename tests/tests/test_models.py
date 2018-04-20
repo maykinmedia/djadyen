@@ -3,7 +3,9 @@ from django.test import TestCase, override_settings
 from djadyen import settings
 from djadyen.choices import Status
 
-from .factories import NotificationFactory, PaymentOptionsFactory, IssuerFactory, OrderFactory
+from .factories import (
+    IssuerFactory, NotificationFactory, OrderFactory, PaymentOptionsFactory
+)
 
 
 class AdyenNofiticationTests(TestCase):

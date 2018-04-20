@@ -6,8 +6,8 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 from djadyen import settings
-from .choices import Status
 
+from .choices import Status
 
 logger = logging.getLogger(__name__)
 

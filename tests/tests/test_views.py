@@ -1,5 +1,6 @@
 import django
 from django.test import override_settings
+from django.urls import reverse
 
 from django_webtest import WebTest
 from webtest import AppError
@@ -8,7 +9,6 @@ from djadyen import settings
 from djadyen.views import AdyenSigMixin
 
 from .factories import IssuerFactory, OrderFactory, PaymentOptionsFactory
-from django.urls import reverse
 
 
 class MyRedirectViewTests(WebTest):
