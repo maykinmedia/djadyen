@@ -1,7 +1,7 @@
 from djadyen.models import AdyenNotification
 from django_webtest import WebTest
 
-from ..compat import reverse
+from django.urls import reverse
 
 
 class RedirectViewTests(WebTest):

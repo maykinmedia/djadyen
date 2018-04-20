@@ -7,7 +7,7 @@ from django_webtest import WebTest
 from webtest import AppError
 
 from .factories import IssuerFactory, OrderFactory, PaymentOptionsFactory
-from ..compat import reverse
+from django.urls import reverse
 
 
 class MyRedirectViewTests(WebTest):

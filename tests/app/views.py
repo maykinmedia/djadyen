@@ -5,7 +5,7 @@ from djadyen.choices import Status
 from djadyen.views import AdyenRedirectView, AdyenResponseMixin
 
 from .models import Order
-from ..compat import reverse
+from django.urls import reverse
 
 
 class MyAdyenRequestView(AdyenRedirectView):
