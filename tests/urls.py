@@ -1,8 +1,12 @@
-from django.conf.urls import include, url
+try:
+    from django.urls import path, include
+except:
+    from django.conf.urls import url as path, include
+
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^app/', include('tests.app.urls')),
-    url(r'^adyen/notifications/', include('djadyen.notifications.urls', namespace='adyen-notifications')),
+    path(r'^admin/', admin.site.urls),
+    path(r'^app/', include('tests.app.urls')),
+    path(r'^adyen/notifications/', include('djadyen.notifications.urls')),
 ]

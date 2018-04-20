@@ -16,11 +16,6 @@ after_success:
   - coveralls
   - codecov
 env:
-  - TOXENV=py27-django18
-  - TOXENV=py34-django18
-  - TOXENV=py35-django18
-  - TOXENV=py36-django18
-
   - TOXENV=py27-django19
   - TOXENV=py34-django19
   - TOXENV=py35-django19

@@ -1,4 +1,3 @@
-from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 from django.utils import timezone
 
@@ -6,6 +5,7 @@ from djadyen.choices import Status
 from djadyen.views import AdyenRedirectView, AdyenResponseMixin
 
 from .models import Order
+from ..compat import reverse
 
 
 class MyAdyenRequestView(AdyenRedirectView):
