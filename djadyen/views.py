@@ -227,7 +227,7 @@ class AdyenResponseMixin(AdyenSigMixin):
             self.auth_result
         )
 
-        if sig['merchantSig'] != self.merchant_sig:
+        if sig['merchantSig'] != self.merchant_sig and settings.ADYEN_ENABLED:
             logger.debug('Order ref: %s | MerchangeSig not correct', self.merchant_reference)
             logger.debug(
                 'Order ref: %s | Our Msig: %s | Adyen Msig: %s',

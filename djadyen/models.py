@@ -6,8 +6,8 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 from djadyen import settings
-from .choices import Status
 
+from .choices import Status
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class AdyenPaymentOption(models.Model):
 
 @python_2_unicode_compatible
 class AdyenIssuer(models.Model):
-    payment_option = models.ForeignKey(AdyenPaymentOption)
+    payment_option = models.ForeignKey(AdyenPaymentOption, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, default="")
     adyen_id = models.CharField(max_length=200, default="")
 
@@ -53,8 +53,8 @@ class AdyenOrder(models.Model):
     psp_reference = models.CharField(max_length=200, default="", blank=True)
     email = models.EmailField()
 
-    payment_option = models.ForeignKey(AdyenPaymentOption, blank=True, null=True)
-    issuer = models.ForeignKey(AdyenIssuer, null=True, blank=True)
+    payment_option = models.ForeignKey(AdyenPaymentOption, blank=True, null=True, on_delete=models.SET_NULL)
+    issuer = models.ForeignKey(AdyenIssuer, null=True, blank=True, on_delete=models.SET_NULL)
 
     __old_status = None
 

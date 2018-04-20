@@ -1,4 +1,5 @@
-from django.core.urlresolvers import reverse
+from django.test import override_settings
+from django.urls import reverse
 
 from django_webtest import WebTest
 from webtest import AppError
@@ -44,18 +45,17 @@ class MyRedirectViewTests(WebTest):
         response = form.submit()
         self.assertEqual(response.status_code, 302)
 
+    @override_settings(ADYEN_ENABLED=True)
     def test_redirection_page_adyen_enabled(self):
-        settings.ADYEN_ENABLED = True
         response = self.app.get(self.url)
         self.assertEqual(response.status_code, 200)
 
         form = response.forms['redirect-form']
         with self.assertRaises(AppError):
             response = form.submit()
-        settings.ADYEN_ENABLED = False
 
+    @override_settings(ADYEN_ENABLED=True)
     def test_redirection_page_with_brand_code_adyen_enabled(self):
-        settings.ADYEN_ENABLED = True
         self.order.payment_option = PaymentOptionsFactory()
         self.order.save()
         response = self.app.get(self.url)
@@ -64,10 +64,9 @@ class MyRedirectViewTests(WebTest):
         form = response.forms['redirect-form']
         with self.assertRaises(AppError):
             response = form.submit()
-        settings.ADYEN_ENABLED = False
 
+    @override_settings(ADYEN_ENABLED=True)
     def test_redirection_page_with_issuer_adyen_enabled(self):
-        settings.ADYEN_ENABLED = True
         payment_option = PaymentOptionsFactory()
         self.order.payment_option = payment_option
         self.order.issuer = IssuerFactory(payment_option=payment_option)
@@ -78,17 +77,15 @@ class MyRedirectViewTests(WebTest):
         form = response.forms['redirect-form']
         with self.assertRaises(AppError):
             response = form.submit()
-        settings.ADYEN_ENABLED = False
 
+    @override_settings(ADYEN_ENABLED=True)
     def test_redirection_page_post_with_adyen_enabled(self):
         response = self.app.get(self.url)
         self.assertEqual(response.status_code, 200)
 
         form = response.forms['redirect-form']
-        settings.ADYEN_ENABLED = True
         with self.assertRaises(AppError):
             response = form.submit()
-        settings.ADYEN_ENABLED = False
 
 
 class My2RedirectViewTests(WebTest):

@@ -1,6 +1,7 @@
 import factory
 
 from djadyen.models import AdyenIssuer, AdyenNotification, AdyenPaymentOption
+
 from ..app.models import Order
 
 

@@ -3,6 +3,7 @@ from datetime import datetime
 from django.core.management.base import BaseCommand
 
 import requests
+
 from djadyen import settings
 
 from ...models import AdyenIssuer, AdyenPaymentOption
