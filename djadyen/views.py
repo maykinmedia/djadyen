@@ -124,9 +124,22 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+
+        if self.can_skip_payment():
+            return self.skip_payment()
+
         response = super(AdyenRedirectView, self).get(request, *args, **kwargs)
         self.perform_action()
         return response
+
+    def can_skip_payment(self):
+        """
+        A function to determain if we should skip the payment redirect
+        """
+        return False
+
+    def skip_payment(self):
+        raise NotImplementedError("You can't skip payments yet")
 
     def post(self, request, *args, **kwargs):
         """
@@ -140,10 +153,14 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
         params = {
             "authResult": settings.ADYEN_NEXT_STATUS,
             "pspReference": "Local redirect",
-            "merchantReference": order.reference
+            "merchantReference": order.reference,
+            "skinCode": settings.ADYEN_SKIN_CODE,
+            "paymentMethod": "ideal",
+            "shopperLocale": "NL",
         }
 
-        return HttpResponseRedirect("{}?{}".format(self.get_next_url(), urlencode(params)))
+        signed_params = self.sign_params(params)
+        return HttpResponseRedirect("{}?{}".format(self.get_next_url(), urlencode(signed_params)))
 
     def perform_action(self):
         pass
@@ -182,16 +199,16 @@ class AdyenResponseMixin(AdyenSigMixin):
 
         params = {
             'authResult': self.auth_result,
-            'pspReference': self.psp_reference,
             'merchantReference': self.merchant_reference,
             'skinCode': self.skin_code,
             'paymentMethod': self.payment_method,
             'shopperLocale': self.shopper_locale,
         }
 
+        if self.psp_reference:
+            params['pspReference'] = self.psp_reference
         if self.merchant_return_data:
             params['merchantReturnData'] = self.merchant_return_data
-
         if self.reason:
             params['reason'] = self.reason
 
@@ -204,11 +221,20 @@ class AdyenResponseMixin(AdyenSigMixin):
                 raise Http404
 
         self.handle_default()
-        logger.info('Order ref: %s | Received Adyen auth result: %s', self.merchant_reference, self.auth_result)
+        logger.info(
+            'Order ref: %s | Received Adyen auth result: %s',
+            self.merchant_reference,
+            self.auth_result
+        )
 
         if sig['merchantSig'] != self.merchant_sig and settings.ADYEN_ENABLED:
             logger.debug('Order ref: %s | MerchangeSig not correct', self.merchant_reference)
-            logger.debug('Order ref: %s | Our Msig: %s | Adyen Msig: %s', self.merchant_reference, sig['merchantSig'], self.merchant_sig)
+            logger.debug(
+                'Order ref: %s | Our Msig: %s | Adyen Msig: %s',
+                self.merchant_reference,
+                sig['merchantSig'],
+                self.merchant_sig
+            )
             return self.handle_error()
 
         if self.auth_result == 'ERROR':

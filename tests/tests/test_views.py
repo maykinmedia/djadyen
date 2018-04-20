@@ -1,10 +1,11 @@
 import django
 from django.test import override_settings
 
-from djadyen import settings
-from djadyen.views import AdyenSigMixin
 from django_webtest import WebTest
 from webtest import AppError
+
+from djadyen import settings
+from djadyen.views import AdyenSigMixin
 
 from .factories import IssuerFactory, OrderFactory, PaymentOptionsFactory
 from django.urls import reverse
@@ -110,6 +111,18 @@ class My2RedirectViewTests(WebTest):
         self.assertEqual(response.status_code, 302)
 
 
+class My3RedirectViewTests(WebTest):
+    def setUp(self):
+        self.order = OrderFactory(email='')
+        self.url = reverse('redirect3', kwargs={'reference': self.order.reference})
+
+    def test_redirection_page(self):
+        self.order.email = ''
+        self.order.save()
+        with self.assertRaises(NotImplementedError):
+            response = self.app.get(self.url)
+
+
 class ConfirmationView(AdyenSigMixin, WebTest):
     def setUp(self):
         self.order = OrderFactory()
@@ -121,8 +134,7 @@ class ConfirmationView(AdyenSigMixin, WebTest):
             'reason': 'test',
             'shopperLocale': 'test',
             'skinCode': 'test',
-            'merchantReference': self.order.reference,
-            'pspReference': 'reference'
+            'merchantReference': self.order.reference
         }
 
     def test_empty_get(self):
@@ -181,6 +193,13 @@ class ConfirmationView(AdyenSigMixin, WebTest):
 
     def test_post(self):
         self.params['authResult'] = 'AUTHORISED'
+        params = self.sign_params(self.params)
+        response = self.app.post(self.url, params=params)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.text, '\n    Success!\n\n')
+
+    def test_psp_reference(self):
+        self.params['pspReference'] = 'reference'
         params = self.sign_params(self.params)
         response = self.app.post(self.url, params=params)
         self.assertEqual(response.status_code, 200)

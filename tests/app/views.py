@@ -1,5 +1,4 @@
 from django.views.generic import TemplateView
-from django.utils import timezone
 
 from djadyen.choices import Status
 from djadyen.views import AdyenRedirectView, AdyenResponseMixin
@@ -19,7 +18,7 @@ class MyAdyenRequestView(AdyenRedirectView):
         kwargs.update({'initial': params})
         return kwargs
 
-    def get_next_url(self): # This is to populate the resURL
+    def get_next_url(self):  # This is to populate the resURL
         return reverse('confirm')
 
 
@@ -27,12 +26,27 @@ class My2AdyenRequestView(AdyenRedirectView):
     model = Order
 
     def get_form_kwargs(self):
-        order = self.get_object()
-        params = self.get_default_params(shipBeforeDate=timezone.now(), merchantReturnData='returnData')
+        params = self.get_default_params(
+            shipBeforeDate=timezone.now(), merchantReturnData='returnData')
 
         kwargs = super(My2AdyenRequestView, self).get_form_kwargs()
         kwargs.update({'initial': params})
         return kwargs
+
+
+class My3AdyenRequestView(AdyenRedirectView):
+    model = Order
+
+    def get_form_kwargs(self):
+        params = self.get_default_params(
+            shipBeforeDate=timezone.now(), merchantReturnData='returnData')
+
+        kwargs = super(My3AdyenRequestView, self).get_form_kwargs()
+        kwargs.update({'initial': params})
+        return kwargs
+
+    def can_skip_payment(self):
+        return True
 
 
 class ConfirmationView(AdyenResponseMixin, TemplateView):
