@@ -5,6 +5,10 @@ from setuptools import find_packages, setup
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
+basedir = os.path.normpath(
+    os.path.abspath(os.path.dirname(__file__))
+)
+
 with open(os.path.join(basedir, 'docs', 'index.rst')) as readme:
     README = readme.read()
 
