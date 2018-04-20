@@ -9,7 +9,7 @@ basedir = os.path.normpath(
     os.path.abspath(os.path.dirname(__file__))
 )
 
-with open(os.path.join(basedir, 'docs', 'index.rst')) as readme:
+with open(os.path.join(basedir, 'README.md')) as readme:
     README = readme.read()
 
 setup(
