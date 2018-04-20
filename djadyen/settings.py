@@ -4,12 +4,6 @@ from django.conf import settings
 
 
 class _Settings(object):
-    def __init__(self):
-        self.ADYEN_HOST_URL
-        self.ADYEN_MERCHANT_ACCOUNT
-        self.ADYEN_MERCHANT_SECRET
-        self.ADYEN_SKIN_CODE
-
     @property
     def ADYEN_HOST_URL(self):
         return getattr(settings, 'ADYEN_HOST_URL')
