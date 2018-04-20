@@ -5,9 +5,12 @@ from setuptools import find_packages, setup
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
+with open(os.path.join(basedir, 'docs', 'index.rst')) as readme:
+    README = readme.read()
+
 setup(
     name='djadyen',
-    version='0.1.5',
+    version='1.0.0',
     license='BSD',
 
     # packaging
@@ -25,6 +28,7 @@ setup(
 
     # metadata
     description='A Django package to intergrade Adyen in your project.',
+    long_description=README,
     url='https://github.com/maykinmedia/djadyen',
     author='Maykin Media, Jorik Kraaikamp',
     author_email='jorik.kraaikamp@maykinmedia.nl',
