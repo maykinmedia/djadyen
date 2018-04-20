@@ -1,4 +1,3 @@
-import django
 from django.test import override_settings
 from django.urls import reverse
 

@@ -1,5 +1,6 @@
 from django.urls import reverse
 from django.views.generic import TemplateView
+from django.utils import timezone
 
 from djadyen.choices import Status
 from djadyen.views import AdyenRedirectView, AdyenResponseMixin
