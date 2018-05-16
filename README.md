@@ -1,7 +1,8 @@
 # DjAdyen
 
 [![PyPI version](https://badge.fury.io/py/djadyen.svg)](https://badge.fury.io/py/djadyen)
-[![PyPI python versions](https://img.shields.io/pypi/pyversions/Django.svg)]([![PyPI](https://img.shields.io/pypi/v/nine.svg)]([![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/)))
+[![PyPI python versions](https://img.shields.io/pypi/pyversions/Django.svg)]([![PyPI](https://img.shields.io/pypi/v/nine.svg)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmaykinmedia%2Fdjadyen.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmaykinmedia%2Fdjadyen?ref=badge_shield)
+]([![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/)))
 [![PyPI Licence](https://img.shields.io/pypi/l/Django.svg)]([![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)]([![PyPI](https://img.shields.io/pypi/v/nine.svg)]([![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/))))
 
 [![Build Status](https://travis-ci.org/maykinmedia/djadyen.svg?branch=master)](https://travis-ci.org/maykinmedia/djadyen)
@@ -209,3 +210,7 @@ Setup the standard notifications in Adyen. These will comunicate about the payme
 This is **very important** because the notifications will be needed when a payment is redirected with a pending payment.
 
 The notifications will be stored in the database. You need to write the handling of the notifications yourself.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmaykinmedia%2Fdjadyen.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmaykinmedia%2Fdjadyen?ref=badge_large)
