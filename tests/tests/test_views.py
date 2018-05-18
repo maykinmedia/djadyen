@@ -136,6 +136,11 @@ class ConfirmationView(AdyenSigMixin, WebTest):
             'merchantReference': self.order.reference
         }
 
+    def _get_csrf_token(self):
+        url = reverse('redirect', kwargs={'reference': self.order.reference})
+        response = self.app.get(url)
+        return response.forms[0]['csrfmiddlewaretoken'].value
+
     def test_empty_get(self):
         with self.assertRaises(AppError):
             self.app.get(self.url)
@@ -193,6 +198,7 @@ class ConfirmationView(AdyenSigMixin, WebTest):
     def test_post(self):
         self.params['authResult'] = 'AUTHORISED'
         params = self.sign_params(self.params)
+        params['csrfmiddlewaretoken'] = self._get_csrf_token()
         response = self.app.post(self.url, params=params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.text, '\n    Success!\n\n')
@@ -200,6 +206,7 @@ class ConfirmationView(AdyenSigMixin, WebTest):
     def test_psp_reference(self):
         self.params['pspReference'] = 'reference'
         params = self.sign_params(self.params)
+        params['csrfmiddlewaretoken'] = self._get_csrf_token()
         response = self.app.post(self.url, params=params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.text, '\n    Success!\n\n')
