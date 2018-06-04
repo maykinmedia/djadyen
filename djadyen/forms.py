@@ -19,15 +19,11 @@ class PaymentForm(forms.Form):
 
         initial = kwargs.get('initial')
 
-        if initial.get('shopperEmail'):
-            self.fields['shopperEmail'] = forms.CharField()
-        if initial.get('shipBeforeDate'):
-            self.fields['shipBeforeDate'] = forms.CharField()
-        if initial.get('merchantReturnData'):
-            self.fields['merchantReturnData'] = forms.CharField()
-        if initial.get('resURL'):
-            self.fields['resURL'] = forms.CharField()
-        if initial.get('brandCode'):
-            self.fields['brandCode'] = forms.CharField()
-        if initial.get('issuerId'):
-            self.fields['issuerId'] = forms.CharField()
+        fixed_fields = [
+            'skinCode', 'currencyCode', 'merchantAccount', 'sessionValidity', 'merchantReference',
+            'paymentAmount', 'merchantSig'
+        ]
+
+        for key, value in initial.items():
+            if key not in fixed_fields:
+                self.fields[key] = forms.CharField(initial=value)
