@@ -68,6 +68,12 @@ class AdyenOrder(models.Model):
         super(AdyenOrder, self).__init__(*args, **kwargs)
         self.__old_status = self.status
 
+    def get_price_in_cents(self):
+        """
+        :return int Return the price in cents for this order.
+        """
+        raise NotImplementedError
+
     def save(self, can_change=False, *args, **kwargs):
         if not self.reference:
             self.reference = uuid4()
