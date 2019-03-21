@@ -235,7 +235,6 @@ class AdyenResponseMixin(AdyenSigMixin):
         if self.order.status != Status.Created:
             raise Http404
 
-        self.handle_default()
         logger.info(
             'Order ref: %s | Received Adyen auth result: %s',
             self.merchant_reference,
@@ -251,6 +250,8 @@ class AdyenResponseMixin(AdyenSigMixin):
                 self.merchant_sig
             )
             return self.handle_error()
+
+        self.handle_default()
 
         if self.auth_result == 'ERROR':
             return self.handle_error()
