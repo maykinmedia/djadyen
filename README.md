@@ -10,7 +10,8 @@
 [![Lintly](https://lintly.com/gh/maykinmedia/djadyen/badge.svg)](https://lintly.com/gh/maykinmedia/djadyen/)
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/maykinmedia/djadyen)
 
-This module is used to connect your django application to the payment provider Adyen.
+This module is used to connect your django application to the payment provider Adyen using the classic "Adyen Hosted Payment Pages (HPP)" API, using the "Multi-page payment flow". Adyen also
+has a newer API, for more information see [Online payments API](https://docs.adyen.com/developers/checkout).
 Before working with this module please also read the [documentation on Adyen](https://docs.adyen.com/developers/hpp-manual).
 
 This is only tested on a postgres database.
