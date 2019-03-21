@@ -7,10 +7,10 @@ import requests
 from djadyen import settings
 
 from ...models import AdyenIssuer, AdyenPaymentOption
-from ...views import AdyenRequestMixin
+from ...views import sign_params
 
 
-class Command(AdyenRequestMixin, BaseCommand):
+class Command(BaseCommand):
     help = "Sync the payment methods from adyen."
 
     def handle(self, *args, **options):
@@ -23,7 +23,7 @@ class Command(AdyenRequestMixin, BaseCommand):
             'countryCode': 'NL',
             'sessionValidity': datetime.now().isoformat(),
         }
-        params = self.sign_params(params)
+        params = sign_params(params)
         response = requests.post('{}hpp/directory.shtml'.format(settings.ADYEN_URL), params=params)
 
         payment_methods = response.json()['paymentMethods']
