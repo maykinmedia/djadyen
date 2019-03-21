@@ -65,6 +65,17 @@ class AdyenRequestMixin(AdyenSigMixin):
 
 
 class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
+    """
+    A view which initiates the Adyen payment by redirecting the user to Adyen.
+
+    This view renders a form with the form-data which Adyen accepts, which points
+    to an URL which Adyen accepts.
+
+    For testing purposes you can set 'ADYEN_ENABLED' to False, which instead of
+    posting the data to Adyen, posts the data to this view, which then processes
+    it in similar fashion as Adyen.
+    """
+
     template_name = 'adyen/form.html'
     form_class = PaymentForm
     slug_field = 'reference'
