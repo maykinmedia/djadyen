@@ -13,6 +13,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from djadyen import settings
 
+from .choices import Status
 from .forms import PaymentForm
 
 try:
@@ -225,6 +226,13 @@ class AdyenResponseMixin(AdyenSigMixin):
         try:
             self.order = get_object_or_404(self.model, reference=self.merchant_reference)
         except Exception:
+            raise Http404
+
+        #
+        # This is a very important step, otherwise payments can be processed twice. By re-using
+        # the URL.
+        #
+        if self.order.status != Status.Created:
             raise Http404
 
         self.handle_default()
