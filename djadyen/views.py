@@ -173,15 +173,12 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
 
 
 class AdyenResponseMixin(AdyenSigMixin):
-    auto_fetch = True
-
     def post(self, request, *args, **kwargs):
         request.GET = request.POST
         return self.get(request, *args, **kwargs)
 
     def done(self):
-        if self.auto_fetch:
-            self.order.save()
+        self.order.save()
 
         return self.render_to_response(self.get_context_data())
 
@@ -214,11 +211,10 @@ class AdyenResponseMixin(AdyenSigMixin):
 
         sig = self.sign_params(params)
 
-        if self.auto_fetch:
-            try:
-                self.order = get_object_or_404(self.model, reference=self.merchant_reference)
-            except Exception:
-                raise Http404
+        try:
+            self.order = get_object_or_404(self.model, reference=self.merchant_reference)
+        except Exception:
+            raise Http404
 
         self.handle_default()
         logger.info(
