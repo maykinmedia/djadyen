@@ -177,7 +177,7 @@ class AdyenRedirectView(AdyenRequestMixin, SingleObjectMixin, FormView):
         pass
 
     def get_next_url(self):
-        pass
+        raise NotImplementedError
 
     def get_current_url(self):
         return "."
