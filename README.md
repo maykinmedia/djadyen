@@ -213,5 +213,9 @@ This is **very important** because the notifications will be needed when a payme
 The notifications will be stored in the database. You need to write the handling of the notifications yourself.
 
 
+### Changes
+- AdyenResponseMixin.auto_fetch has been deprecated.
+
+
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmaykinmedia%2Fdjadyen.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmaykinmedia%2Fdjadyen?ref=badge_large)
