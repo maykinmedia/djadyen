@@ -7,7 +7,7 @@ import requests
 from djadyen import settings
 
 from ...models import AdyenIssuer, AdyenPaymentOption
-from ...views import sign_params
+from ...hpp import sign_params
 
 
 class Command(BaseCommand):
