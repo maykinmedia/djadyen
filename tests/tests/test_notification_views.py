@@ -1,3 +1,5 @@
+
+import json
 from django.urls import reverse
 
 from django_webtest import WebTest
@@ -5,36 +7,57 @@ from django_webtest import WebTest
 from djadyen.models import AdyenNotification
 
 
-class RedirectViewTests(WebTest):
+class NotificationViewTests(WebTest):
     def setUp(self):
         self.url = reverse('adyen-notifications:notification')
 
-    def test_post_notification_empty(self):
-        response = self.app.post(self.url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.text, '[accepted]')
+        self.post_data = {
+            'additionalData.hmacSignature': 'sJPOWBVc8nZRBX8/6xW8hsqyo381D8nsDkVThu++9LU=',
+            'merchantAccountCode': 'MaykinMediaNL',
+            'live': 'false',
+            'originalReference': '',
+            'paymentMethod': 'ideal',
+            'value': '350',
+            'pspReference': '8515535308218301',
+            'operations': 'REFUND',
+            'eventDate': '2019-03-25T16:20:23.71Z',
+            'success': 'true',
+            'currency': 'EUR',
+            'merchantReference': '2b947321-527c-4b69-9cca-1f278cb4b23b',
+            'eventCode': 'AUTHORISATION',
+        }
+
+    def test_post_notification_empty_hmac(self):
+        """
+        An empty hmac signature is always a nice edge case.
+        """
+        params = {
+            'additionalData.hmacSignature': '',
+        }
+        response = self.app.post(self.url, params=params, status=403)
+
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(AdyenNotification.objects.count(), 0)
 
-    def test_post_notification(self):
-        params = {
-            'eventDate': '2018-01-01T01:02:01.111Z',
-            'reason': '58747:1111:6/2018',
-            'additionalData.cardSummary': ' 1111',
-            'originalReference': '',
-            'merchantReference': 'YourMerchantReference1',
-            'additionalData.expiryDate': '8/2018',
-            'currency': 'EUR',
-            'pspReference': '8888777766665555',
-            'additionalData.authCode': '58747',
-            'merchantAccountCode': 'TestMerchant',
-            'eventCode': 'AUTHORISATION',
-            'value': '500',
-            'operations': 'CANCEL,CAPTURE,REFUND',
-            'success': 'true',
-            'paymentMethod': 'visa',
-            'live': 'false',
-        }
-        response = self.app.post(self.url, params=params)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.text, '[accepted]')
-        self.assertEqual(AdyenNotification.objects.count(), 1)
+    def test_post_notification_no_hmac(self):
+        """
+        Make sure that a notification without a HMAC set, does not work.
+        """
+        del self.post_data['additionalData.hmacSignature']
+        response = self.app.post(self.url, params=self.post_data, status=403)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(AdyenNotification.objects.count(), 0)
+
+    def test_hmac_verification_invalid_hmac(self):
+        self.post_data['additionalData.hmacSignature'] += 'x'
+        response = self.app.post(self.url, self.post_data, status=403)
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(AdyenNotification.objects.exists())
+
+    def test_hmac_verification(self):
+        self.app.post(self.url, params=self.post_data)
+        self.assertTrue(AdyenNotification.objects.exists())
+
+        notification = AdyenNotification.objects.get()
+        expected_json = json.dumps(self.post_data)
+        self.assertEqual(notification.notification, expected_json)

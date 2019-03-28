@@ -8,5 +8,5 @@ from django.contrib import admin
 urlpatterns = [
     path(r'^admin/', admin.site.urls),
     path(r'^app/', include('tests.app.urls')),
-    path(r'^adyen/notifications/', include('djadyen.notifications.urls')),
+    path(r'^adyen/notifications/', include('djadyen.notifications.urls', namespace='adyen-notifications')),
 ]
