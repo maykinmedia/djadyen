@@ -21,6 +21,11 @@ def escape_val(val):
 
 
 def sign_params(params):
+    """
+    Description of how the HMAC can be calculated can be found here
+
+    https://docs.adyen.com/developers/classic-integration/hosted-payment-pages/hmac-signature-calculation
+    """
     hmac_key = binascii.a2b_hex(settings.ADYEN_MERCHANT_SECRET)
 
     params = OrderedDict(sorted(params.items(), key=lambda t: t[0]))
