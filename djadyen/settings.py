@@ -44,6 +44,14 @@ class _Settings(object):
     def ADYEN_URL(self):
         return getattr(settings, 'ADYEN_URL', 'https://test.adyen.com/')
 
+    @property
+    def ADYEN_ORDER_MODELS(self):
+        return getattr(settings, 'ADYEN_ORDER_MODELS', [])
+
+    @property
+    def ADYEN_NOTIFICATION_SECRET(self):
+        return getattr(settings, 'ADYEN_NOTIFICATION_SECRET', '')
+
     def __getattr__(self, name):
         return globals()[name]
 
