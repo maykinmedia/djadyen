@@ -15,11 +15,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         order_models = [apps.get_model(model) for model in settings.ADYEN_ORDER_MODELS]
 
-        #
-        # N.B. In our implementations there use to be a limit at how far back in the past we
-        # would go to process notifications. I'm not sure why it existed, so i've removed it.
-        #
-
         # Process notifications which have been sent by Adyen.
         for notification in AdyenNotification.objects.filter(is_processed=False):
             notification_data = notification.get_notification_data()
