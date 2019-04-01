@@ -59,5 +59,4 @@ class NotificationViewTests(WebTest):
         self.assertTrue(AdyenNotification.objects.exists())
 
         notification = AdyenNotification.objects.get()
-        expected_json = json.dumps(self.post_data)
-        self.assertEqual(notification.notification, expected_json)
+        self.assertEqual(json.loads(notification.notification), self.post_data)
