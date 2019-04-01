@@ -103,7 +103,7 @@ class SyncPaymentMethods(TestCase):
 
 class ProcessNotifications(TestCase):
     def setUp(self):
-        super().setUp()
+        super(ProcessNotifications, self).setUp()
 
         reference = str(uuid4())
 
