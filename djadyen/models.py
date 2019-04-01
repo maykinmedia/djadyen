@@ -94,12 +94,22 @@ class AdyenOrder(models.Model):
         self.__old_status = self.status
 
     def process_notification(self, notification):
+        #
+        # TODO: The status state machine should be looked at and simplified.
+        #       Even though I've kept it separate I think it would be best if we had
+        #       one path to mark the state as 'Authorised', 'Error' etc. Now
+        #       we have a couple of them.
+        #
+
         if notification.is_authorised():
             self.process_authorized_notification(notification)
             notification.is_processed = True
             notification.processed_at = timezone.now()
             notification.save()
         elif notification.is_error():
+            self.status = Status.Error
+            self.save()
+
             notification.is_processed = True
             notification.processed_at = timezone.now()
             notification.save()
