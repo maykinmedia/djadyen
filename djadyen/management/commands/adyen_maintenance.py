@@ -21,7 +21,15 @@ class Command(BaseCommand):
             reference = notification_data.get('merchantReference')
 
             for order_model in order_models:
-                orders = order_model.objects.filter(reference=reference)
+                #
+                # TOOD: Ugh, okay so we process only 'Pending' orders, this might
+                # or might not be correct, I don't understand the adyen state machine
+                # well enough.
+                #
+                # The reason this is done to avoid that an order, which is already processed
+                # in the return URL, to be processed again by a notification.
+                #
+                orders = order_model.objects.filter(reference=reference, status=Status.Pending)
 
                 for order in orders:
                     order.process_notification(notification)
