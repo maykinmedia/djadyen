@@ -27,25 +27,39 @@ class AdyenNotification(models.Model):
     def get_notification_data(self):
         return json.loads(self.notification)
 
-    def is_authorised(self):
+    def has_status(self, status):
+        data = self.get_notification_data()
+        event_code = data.get('eventCode')
+        merchant_account_code = data.get('merchantAccountCode')
+        return (
+            event_code == status and
+            merchant_account_code == settings.ADYEN_MERCHANT_ACCOUNT
+        )
+
+    def is_authorised(self, require_success=True):
         data = self.get_notification_data()
         success = data.get('success') == 'true'
-        event_code = data.get('eventCode')
-        merchant_account_code = data.get('merchantAccountCode')
+        has_status = self.has_status('AUTHORISATION')
 
-        return (
-            success and event_code == 'AUTHORISATION' and
-            merchant_account_code == settings.ADYEN_MERCHANT_ACCOUNT
-        )
+        if not require_success:
+            return has_status
+
+        return has_status and success
 
     def is_error(self):
-        data = self.get_notification_data()
-        event_code = data.get('eventCode')
-        merchant_account_code = data.get('merchantAccountCode')
-        return (
-            event_code == 'ERROR' and
-            merchant_account_code == settings.ADYEN_MERCHANT_ACCOUNT
-        )
+        return self.has_status('ERROR')
+
+    def is_cancelled(self):
+        return self.has_status('CANCEL')
+
+    def is_refused(self):
+        return self.has_status('REFUSED')
+
+    def mark_processed(self, commit=True):
+        self.is_processed = True
+        self.processed_at = timezone.now()
+        if commit:
+            self.save()
 
 
 @python_2_unicode_compatible
@@ -94,30 +108,30 @@ class AdyenOrder(models.Model):
         self.__old_status = self.status
 
     def process_notification(self, notification):
-        #
-        # TODO: The status state machine should be looked at and simplified.
-        #       Even though I've kept it separate I think it would be best if we had
-        #       one path to mark the state as 'Authorised', 'Error' etc. Now
-        #       we have a couple of them.
-        #
-
         if notification.is_authorised():
-            self.process_authorized_notification(notification)
-            notification.is_processed = True
-            notification.processed_at = timezone.now()
-            notification.save()
+            self.status = Status.Authorised
+            self.save()
+
+            notification.mark_processed()
         elif notification.is_error():
             self.status = Status.Error
             self.save()
 
-            notification.is_processed = True
-            notification.processed_at = timezone.now()
-            notification.save()
+            notification.mark_processed()
+        elif notification.is_cancelled():
+            self.status = Status.Cancel
+            self.save()
+
+            notification.mark_processed()
+        elif notification.is_refused():
+            self.status = Status.Refused
+            self.save()
+
+            notification.mark_processed()
+
+        logger.error("Can't process notification with pk %d", notification.pk)
 
         # Ignore anything else for now.
-
-    def process_authorized_notification(self, notification):
-        raise NotImplementedError
 
     def get_price_in_cents(self):
         """
