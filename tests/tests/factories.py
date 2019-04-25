@@ -1,5 +1,6 @@
 import factory
 
+from djadyen.choices import Status
 from djadyen.models import AdyenIssuer, AdyenNotification, AdyenPaymentOption
 
 from ..app.models import Order
@@ -29,6 +30,7 @@ class IssuerFactory(factory.DjangoModelFactory):
 
 
 class OrderFactory(factory.DjangoModelFactory):
+    status = Status.Created
     email = factory.Faker('email')
 
     class Meta:

@@ -5,7 +5,7 @@ from django_webtest import WebTest
 from webtest import AppError
 
 from djadyen import settings
-from djadyen.views import AdyenSigMixin
+from djadyen.hpp import sign_params
 
 from .factories import IssuerFactory, OrderFactory, PaymentOptionsFactory
 
@@ -122,7 +122,7 @@ class My3RedirectViewTests(WebTest):
             response = self.app.get(self.url)
 
 
-class ConfirmationView(AdyenSigMixin, WebTest):
+class ConfirmationView(WebTest):
     def setUp(self):
         self.order = OrderFactory()
         self.url = reverse('confirm')
@@ -155,49 +155,49 @@ class ConfirmationView(AdyenSigMixin, WebTest):
 
     def test_error_response(self):
         self.params['authResult'] = 'ERROR'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         response = self.app.get(self.url, params=params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.text, '\n    Success!\n\n')
 
     def test_cancelled_response(self):
         self.params['authResult'] = 'CANCELLED'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         response = self.app.get(self.url, params=params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.text, '\n    Success!\n\n')
 
     def test_refused_response(self):
         self.params['authResult'] = 'REFUSED'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         response = self.app.get(self.url, params=params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.text, '\n    Success!\n\n')
 
     def test_pending_response(self):
         self.params['authResult'] = 'PENDING'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         response = self.app.get(self.url, params=params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.text, '\n    Success!\n\n')
 
     def test_authorised_response(self):
         self.params['authResult'] = 'AUTHORISED'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         response = self.app.get(self.url, params=params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.text, '\n    Success!\n\n')
 
     def test_other_response(self):
         self.params['authResult'] = 'OTHER'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         response = self.app.get(self.url, params=params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.text, '\n    Success!\n\n')
 
     def test_post(self):
         self.params['authResult'] = 'AUTHORISED'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         params['csrfmiddlewaretoken'] = self._get_csrf_token()
         response = self.app.post(self.url, params=params)
         self.assertEqual(response.status_code, 200)
@@ -205,14 +205,14 @@ class ConfirmationView(AdyenSigMixin, WebTest):
 
     def test_psp_reference(self):
         self.params['pspReference'] = 'reference'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         params['csrfmiddlewaretoken'] = self._get_csrf_token()
         response = self.app.post(self.url, params=params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.text, '\n    Success!\n\n')
 
 
-class Confirmation2View(AdyenSigMixin, WebTest):
+class Confirmation2View(WebTest):
     def setUp(self):
         self.order = OrderFactory()
         self.url = reverse('confirm2')
@@ -227,10 +227,6 @@ class Confirmation2View(AdyenSigMixin, WebTest):
             'pspReference': 'reference'
         }
 
-    def test_empty_get(self):
-        with self.assertRaises(NotImplementedError):
-            self.app.get(self.url)
-
     def test_wrong_signature_response(self):
         params = {
             'merchantReference': self.order.reference
@@ -240,44 +236,36 @@ class Confirmation2View(AdyenSigMixin, WebTest):
 
     def test_error_response(self):
         self.params['authResult'] = 'ERROR'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         with self.assertRaises(NotImplementedError):
             self.app.get(self.url, params=params)
 
     def test_cancelled_response(self):
         self.params['authResult'] = 'CANCELLED'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         with self.assertRaises(NotImplementedError):
             self.app.get(self.url, params=params)
 
     def test_refused_response(self):
         self.params['authResult'] = 'REFUSED'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         with self.assertRaises(NotImplementedError):
             self.app.get(self.url, params=params)
 
     def test_pending_response(self):
         self.params['authResult'] = 'PENDING'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         with self.assertRaises(NotImplementedError):
             self.app.get(self.url, params=params)
 
     def test_authorised_response(self):
         self.params['authResult'] = 'AUTHORISED'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         with self.assertRaises(NotImplementedError):
             self.app.get(self.url, params=params)
 
     def test_other_response(self):
         self.params['authResult'] = 'OTHER'
-        params = self.sign_params(self.params)
+        params = sign_params(self.params)
         with self.assertRaises(NotImplementedError):
             self.app.get(self.url, params=params)
-
-
-class Confirmation3View(AdyenSigMixin, WebTest):
-    def setUp(self):
-        self.url = reverse('confirm3')
-
-    def test_empty_get(self):
-        self.app.get(self.url)

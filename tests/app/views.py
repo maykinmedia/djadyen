@@ -1,9 +1,9 @@
-from django.utils import timezone
 from django.urls import reverse
-from django.views.generic import TemplateView
 from django.utils import timezone
+from django.views.generic import TemplateView
 
 from djadyen.choices import Status
+from djadyen.hpp import HPPPaymenRequest
 from djadyen.views import AdyenRedirectView, AdyenResponseMixin
 
 from .models import Order
@@ -12,14 +12,6 @@ from .models import Order
 class MyAdyenRequestView(AdyenRedirectView):
     model = Order
 
-    def get_form_kwargs(self):
-        order = self.get_object()
-        params = self.get_signed_order_params(order)
-
-        kwargs = super(MyAdyenRequestView, self).get_form_kwargs()
-        kwargs.update({'initial': params})
-        return kwargs
-
     def get_next_url(self):  # This is to populate the resURL
         return reverse('confirm')
 
@@ -27,25 +19,24 @@ class MyAdyenRequestView(AdyenRedirectView):
 class My2AdyenRequestView(AdyenRedirectView):
     model = Order
 
-    def get_form_kwargs(self):
-        params = self.get_default_params(
-            shipBeforeDate=timezone.now(), merchantReturnData='returnData')
+    def get_payment_request(self, obj):
+        payment_request = HPPPaymenRequest.from_object(obj, self.get_next_url())
+        payment_request.ship_before_date = timezone.now()
+        payment_request.merchant_return_data = 'returnData'
+        return payment_request
 
-        kwargs = super(My2AdyenRequestView, self).get_form_kwargs()
-        kwargs.update({'initial': params})
-        return kwargs
+    def get_next_url(self):
+        return ''
 
 
 class My3AdyenRequestView(AdyenRedirectView):
     model = Order
 
-    def get_form_kwargs(self):
-        params = self.get_default_params(
-            shipBeforeDate=timezone.now(), merchantReturnData='returnData')
-
-        kwargs = super(My3AdyenRequestView, self).get_form_kwargs()
-        kwargs.update({'initial': params})
-        return kwargs
+    def get_payment_request(self, obj):
+        payment_request = HPPPaymenRequest.from_object(obj, self.get_next_url())
+        payment_request.ship_before_date = timezone.now()
+        payment_request.merchant_return_data = 'returnData'
+        return payment_request
 
     def can_skip_payment(self):
         return True
@@ -76,30 +67,10 @@ class ConfirmationView(AdyenResponseMixin, TemplateView):
         return self.done()
 
     def handle_default(self):
-        if self.psp_reference:
-            self.order.psp_reference = self.psp_reference
+        if self.payment_response.psp_reference:
+            self.order.psp_reference = self.payment_response.psp_reference
 
 
 class Confirmation2View(AdyenResponseMixin, TemplateView):
     template_name = 'app/confirmation.html'
-    auto_fetch = False
-
-
-class Confirmation3View(AdyenResponseMixin, TemplateView):
-    template_name = 'app/confirmation.html'
-    auto_fetch = False
-
-    def handle_authorised(self):
-        return self.done()
-
-    def handle_pending(self):
-        return self.done()
-
-    def handle_refused(self):
-        return self.done()
-
-    def handle_error(self):
-        return self.done()
-
-    def handle_canceled(self):
-        return self.done()
+    model = Order
