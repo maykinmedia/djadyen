@@ -118,7 +118,26 @@ class ProcessNotifications(TestCase):
             notification=json.dumps(data),
             is_processed=False
         )
-        self.order1 = OrderFactory.create(reference=reference)
+        self.order1 = OrderFactory.create(
+            status=Status.Pending,
+            reference=reference
+        )
+
+    @freeze_time('2019-01-01 12:00')
+    def test_process_notifications_already_processed(self):
+        """
+        Make sure that an order, which status has already been
+        set as 'Authorised' is not processed again.
+        """
+        self.order1.status = Status.Authorised
+        self.order1.save()
+
+        self.assertFalse(self.order1.paid)
+
+        call_command('adyen_maintenance')
+
+        self.order1.refresh_from_db()
+        self.assertFalse(self.order1.paid)
 
     @freeze_time('2019-01-01 12:00')
     def test_process_notifications(self):
