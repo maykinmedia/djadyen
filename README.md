@@ -72,6 +72,7 @@ You'll need to create a crontab entry to call the following management command o
 - `ADYEN_REFETCH_OLD_STATUS` *(default=False) This is so you will always have the latest saved status. This will cause an extra db query!*
 - `ADYEN_SESSION_MINUTES` *(default=10) This is how long an Adyen session is valid.*
 - `ADYEN_URL` *(default='https://test.adyen.com/') This needs to be changed for the live env. This is a more secure default then entering the live env. The live env is 'https://live.adyen.com/'*
+- `ADYEN_HANDLE_NOTIFICATION_MINUTES_AGO` *(default=15) This defaults to 15 minutes. You can change the value to make this shorter or longer depending on the need.*
 
 ### Order object
 There is an abstract order in this package. This will save you some time on creating an order for adyen.

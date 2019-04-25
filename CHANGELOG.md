@@ -1,3 +1,8 @@
+# 1.1.1
+
+- Fixed the processing of created orders by notifications.
+- Fixed that notifications older than `ADYEN_HANDLE_NOTIFICATION_MINUTES_AGO` minutes will be processed.
+
 # 1.1.0
 
 - Removed the auto-fetch option.
@@ -12,4 +17,4 @@
 
 # 1.0.0
 
-- Created an initial release that supports Django 1.11, Django 2.0 and python 3.4+
+- Created an initial release that supports Django 1.11, Django 2.0 and python 3.4+.
