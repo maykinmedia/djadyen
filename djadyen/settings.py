@@ -52,6 +52,11 @@ class _Settings(object):
     def ADYEN_NOTIFICATION_SECRET(self):
         return getattr(settings, 'ADYEN_NOTIFICATION_SECRET', '')
 
+    @property
+    def ADYEN_HANDLE_NOTIFICATION_MINUTES_AGO(self):
+        # The default is 15 minutes
+        return getattr(settings, 'ADYEN_HANDLE_NOTIFICATION_MINUTES_AGO', 15)
+
     def __getattr__(self, name):
         return globals()[name]
 
