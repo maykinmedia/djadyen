@@ -14,7 +14,7 @@ with open(os.path.join(basedir, 'README.md')) as readme:
 
 setup(
     name='djadyen',
-    version='1.1.1',
+    version='1.1.2',
     license='BSD',
 
     # packaging

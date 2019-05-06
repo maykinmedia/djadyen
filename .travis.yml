@@ -1,25 +1,36 @@
 language: python
-python:
-  - "3.6"
+python: 3.6
 
 services:
-  - postgresql
+- postgresql
 
 addons:
-  postgresql: "9.4"
+  postgresql: '9.4'
 
 install:
-  - pip install codecov coveralls tox
-script:
-  - tox --
-after_success:
-  - coveralls
-  - codecov
-env:
-  - TOXENV=py34-django111
-  - TOXENV=py35-django111
-  - TOXENV=py36-django111
+- pip install codecov coveralls tox
 
-  - TOXENV=py34-django20
-  - TOXENV=py35-django20
-  - TOXENV=py36-django20
+script:
+- tox --
+
+after_success:
+- coveralls
+- codecov
+
+env:
+- TOXENV=py34-django111
+- TOXENV=py35-django111
+- TOXENV=py36-django111
+- TOXENV=py34-django20
+- TOXENV=py35-django20
+- TOXENV=py36-django20
+
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: jostcrow
+  password:
+    secure: Ic6albYsDhiC4qHoAFxrcXJ0LU/UuO8r6GlHCKeuh7draH1jZhBJXiG7CuEBIxws5h7LfAZj5IQmr2ZP/2eHsiB9LELHPmTzYjJkBDopw21RaYpash+B+DpduyW/xcwhiMFvVX3BXW+jiCBy/yY6W/MwMR/CX31r4w9o9nZHosddES9ZD+YmEh5b0GpBtAwvu/LVwcUr0zsMke+qkO7SDcPd6rFaZB3wDyOSdKM0x6plmfc51QqaIVtvXK+ceqGr4Dw7XIxyG/cGuR5x8PBjGp1+TB9hCPL5Ug5oEU3oS9vA0pi9i3vJjUzt/obglA4ohSW2m4smjLyVUh2BP+XQex66m9oTfWeWZIMiR6fKD+1x8o/IJb971DF03wFmiFEw9AwzsMEIaXiBxuVmMCuQBZD7oCrBRvjl2GXok4tBxff2FMpwbEs8ujjSZgkaiy88m7ddlJfeRcZUQna5Mhh2FBmz9JeebGIeFyjdrltcymQMEDUTypwb918GnK98B+Z622NTm7EfpW3KTyprirbNxjUIq9jg98g2kg/rM0ZRtnCZLz9nL1bxE4srzSXLt0EMQXSuTGsY35ZuAC9sGSWsqgStaTIYPt8Ro1LRUkkWoXqZZG3L/hRfP4hIOBDgmJMv822q5YBfiS3gRX690Dblk8SA7Xk8yXTgEPrBe8q6r50=
+  on:
+    tags: true
+    repo: maykinmedia/djadyen
