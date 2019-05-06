@@ -49,3 +49,7 @@ class Command(BaseCommand):
             ):
                 obj.status = Status.Error
                 obj.save()
+
+        # Close 5 day old notifications
+        for notification in AdyenNotification.objects.filter(is_processed=False, created_at__lte=five_days_ago):
+            notification.mark_processed()
