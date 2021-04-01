@@ -4,7 +4,6 @@ from uuid import uuid4
 
 from django.db import models
 from django.utils import timezone
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 from djadyen import settings
@@ -14,7 +13,6 @@ from .choices import Status
 logger = logging.getLogger(__name__)
 
 
-@python_2_unicode_compatible
 class AdyenNotification(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     notification = models.TextField()
@@ -62,7 +60,6 @@ class AdyenNotification(models.Model):
             self.save()
 
 
-@python_2_unicode_compatible
 class AdyenPaymentOption(models.Model):
     name = models.CharField(max_length=200, default="")
     adyen_name = models.CharField(max_length=200, default="")
@@ -74,7 +71,6 @@ class AdyenPaymentOption(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
 class AdyenIssuer(models.Model):
     payment_option = models.ForeignKey(AdyenPaymentOption, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, default="")
@@ -84,7 +80,6 @@ class AdyenIssuer(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
 class AdyenOrder(models.Model):
     status = models.CharField(max_length=200, choices=Status.choices, default=Status.Created)
     created_on = models.DateTimeField(auto_now_add=True)

@@ -14,12 +14,12 @@ with open(os.path.join(basedir, 'README.md')) as readme:
 
 setup(
     name='djadyen',
-    version='1.1.2',
+    version='1.2.0',
     license='BSD',
 
     # packaging
     install_requires=[
-        'Django>=1.8',
+        'Django>=2.2',
         'django-choices',
         'requests',
     ],
