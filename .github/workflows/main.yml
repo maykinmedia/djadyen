@@ -9,6 +9,9 @@ jobs:
     tests:
         name: Run the Django test suite
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                python-version: ["3.7", "3.8", "3.9", "3.10"]
         services:
             postgres:
                 image: postgis/postgis:10-2.5
@@ -20,14 +23,17 @@ jobs:
                 options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         steps:
             - uses: actions/checkout@v2
-            - uses: actions/setup-python@v2
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v2
               with:
-                  python-version: "3.9"
+                  python-version: ${{ matrix.python-version }}
 
-            - run: |
+            - name: Install dependencies
+              run: |
                   pip install tox codecov
 
-            - run: |
+            - name: Run tox
+              run: |
                   tox
 
             - uses: codecov/codecov-action@v1
