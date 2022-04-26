@@ -27,7 +27,7 @@ jobs:
             - run: |
                   pip install isort
             - run: |
-                  isort --diff djadyen
+                  isort --check --diff djadyen
 
     black:
         name: Check code formatting with black
