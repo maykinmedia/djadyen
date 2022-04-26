@@ -21,7 +21,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-python@v2
-                with:
+                - with:
                     python-version: "3.9"
 
             - run: |
@@ -31,5 +31,5 @@ jobs:
                 tox
 
             - uses: codecov/codecov-action@v1
-                with:
+                - with:
                     token: ${{ secrets.CODECOV_TOKEN }}
