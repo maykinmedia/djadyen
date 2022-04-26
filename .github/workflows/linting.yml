@@ -19,36 +19,35 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-        - name: Install libxml
+            - name: Install libxml
             run: |
                 sudo apt-get update
                 sudo apt-get install -y libxml2-dev libxmlsec1-dev libxmlsec1-openssl
-        - uses: actions/checkout@v2
-        - uses: actions/setup-python@v2
-            with:
-            python-version: '3.9'
-        - uses: isort/isort-action@v0.1.0
-            with:
-            requirementsFiles: requirements/dev.txt
-            sortPaths: "src"
-            configuration: '--check-only --diff'
+            - uses: actions/checkout@v2
+            - uses: actions/setup-python@v2
+                with:
+                python-version: '3.9'
+            - uses: isort/isort-action@v0.1.0
+                with:
+                    sortPaths: "src"
+                    configuration: '--check-only --diff'
 
     black:
         name: Check code formatting with black
         runs-on: ubuntu-latest
 
         steps:
-        - name: Install libxml
+            - name: Install libxml
             run: |
                 sudo apt-get update
                 sudo apt-get install -y libxml2-dev libxmlsec1-dev libxmlsec1-openssl
-        - uses: actions/checkout@v2
-        - uses: actions/setup-python@v2
-            with:
-            python-version: '3.7'
-        - name: Install dependencies
-            run: |
-                pip install -r requirements/dev.txt
-        - name: Run black
-            run: |
-                black --check --diff src
+            - uses: actions/checkout@v2
+            - uses: actions/setup-python@v2
+                with:
+                python-version: '3.7'
+            - name: Install dependencies
+                run: |
+                    pip install black
+            - name: Run black
+                run: |
+                    black --check --diff src
