@@ -14,7 +14,7 @@ with open(os.path.join(basedir, 'README.md')) as readme:
 
 setup(
     name='djadyen',
-    version='1.1.2',
+    version='2.0.0',
     license='BSD',
 
     # packaging
@@ -22,6 +22,7 @@ setup(
         'Django>=1.8',
         'django-choices',
         'requests',
+        'Adyen>=6.0.0<7.0.0',
     ],
     include_package_data=True,
     packages=find_packages(exclude=["tests"]),

@@ -1,0 +1,28 @@
+{
+    "name": "djadyen",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./djadyen/static/djadyen/djadyen.js",
+    "browserslist": "> 0.05%",
+    "type": "module",
+    "scripts": {
+        "build": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js",
+        "watch": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/maykinmedia/djadyen.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/maykinmedia/djadyen/issues"
+    },
+    "homepage": "https://github.com/maykinmedia/djadyen#readme",
+    "dependencies": {
+        "@adyen/adyen-web": "^5.13.1"
+    },
+    "devDependencies": {
+        "esbuild": "^0.14.36"
+    }
+}

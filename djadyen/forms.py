@@ -4,9 +4,9 @@ from djadyen import settings
 
 
 class PaymentForm(forms.Form):
-    skinCode = forms.CharField(initial=settings.ADYEN_SKIN_CODE)
-    currencyCode = forms.CharField(initial=settings.ADYEN_CURRENCYCODE)
-    merchantAccount = forms.CharField(initial=settings.ADYEN_MERCHANT_ACCOUNT)
+    # skinCode = forms.CharField(initial=settings.ADYEN_SKIN_CODE)
+    # currencyCode = forms.CharField(initial=settings.ADYEN_CURRENCYCODE)
+    # merchantAccount = forms.CharField(initial=settings.ADYEN_MERCHANT_ACCOUNT)
 
     sessionValidity = forms.CharField()
     merchantReference = forms.CharField()

@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% load i18n adyen_tags %}
+
+
+{% block content %}
+{% adyen_payment_component order=object %}
+{% endblock %}

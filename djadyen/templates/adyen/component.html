@@ -1,0 +1,13 @@
+{% load static %}
+<script src="{% static 'djadyen/djadyen.js' %}"></script>
+<link rel="stylesheet" href="{% static 'djadyen/djadyen.css' %}"></link>
+
+<div
+    id="djadyen-config"
+    data-session-id="{{ session_id }}"
+    data-session-data="{{ session_data }}"
+    data-client-key="{{ client_key }}"
+    data-environment="{{ environment }}"
+    data-payment-type="{% firstof payment_type 'dropin' %}"
+></div>
+<div id="djadyen-container"></div>
