@@ -7,7 +7,9 @@
     "type": "module",
     "scripts": {
         "build": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js",
-        "watch": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js --watch"
+        "watch": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js --watch",
+        "lint": "prettier src/ -c",
+        "format": "prettier src/ -w"
     },
     "repository": {
         "type": "git",
@@ -23,6 +25,7 @@
         "@adyen/adyen-web": "^5.13.1"
     },
     "devDependencies": {
-        "esbuild": "^0.14.36"
+        "esbuild": "^0.14.36",
+        "prettier": "^2.6.2"
     }
 }
