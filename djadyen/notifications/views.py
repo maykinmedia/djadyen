@@ -26,15 +26,17 @@ class NotificationView(View):
 
         TODO: Validate SSL/TLS client-certificate validation.
         """
-        logger.debug(_('New notification'))
+        logger.debug(_("New notification"))
 
         # After we verify that the notification originates from Adyen,
         # we store it in our database.
 
         hmac_value = create_hmac(request.POST)
 
-        if ('additionalData.hmacSignature' not in request.POST or
-                hmac_value != request.POST['additionalData.hmacSignature']):
+        if (
+            "additionalData.hmacSignature" not in request.POST
+            or hmac_value != request.POST["additionalData.hmacSignature"]
+        ):
             return HttpResponseForbidden()
 
         # TODO Validate request.POST. External data should really be always
@@ -43,6 +45,6 @@ class NotificationView(View):
         json_params = json.dumps(request.POST)
 
         notification = AdyenNotification.objects.create(notification=json_params)
-        logger.debug(_('Notification saved | id: %s'), notification.id)
+        logger.debug(_("Notification saved | id: %s"), notification.id)
 
-        return HttpResponse('[accepted]')
+        return HttpResponse("[accepted]")

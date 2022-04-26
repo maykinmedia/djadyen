@@ -10,42 +10,71 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AdyenIssuer',
+            name="AdyenIssuer",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(default='', max_length=200)),
-                ('adyen_id', models.CharField(default='', max_length=200)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(default="", max_length=200)),
+                ("adyen_id", models.CharField(default="", max_length=200)),
             ],
         ),
         migrations.CreateModel(
-            name='AdyenNotification',
+            name="AdyenNotification",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('notification', models.TextField()),
-                ('is_processed', models.BooleanField(default=False)),
-                ('processed_at', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("notification", models.TextField()),
+                ("is_processed", models.BooleanField(default=False)),
+                ("processed_at", models.DateTimeField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='AdyenPaymentOption',
+            name="AdyenPaymentOption",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(default='', max_length=200)),
-                ('adyen_name', models.CharField(default='', max_length=200)),
-                ('guid', models.CharField(default='', max_length=36, verbose_name='GUID')),
-                ('image', models.ImageField(null=True, upload_to='')),
-                ('is_active', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(default="", max_length=200)),
+                ("adyen_name", models.CharField(default="", max_length=200)),
+                (
+                    "guid",
+                    models.CharField(default="", max_length=36, verbose_name="GUID"),
+                ),
+                ("image", models.ImageField(null=True, upload_to="")),
+                ("is_active", models.BooleanField(default=False)),
             ],
         ),
         migrations.AddField(
-            model_name='adyenissuer',
-            name='payment_option',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='djadyen.AdyenPaymentOption'),
+            model_name="adyenissuer",
+            name="payment_option",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="djadyen.AdyenPaymentOption",
+            ),
         ),
     ]

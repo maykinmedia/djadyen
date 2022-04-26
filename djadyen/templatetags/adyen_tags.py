@@ -1,7 +1,8 @@
 from django import template
-from djadyen import settings
 
 import Adyen
+
+from djadyen import settings
 
 register = template.Library()
 
@@ -20,7 +21,10 @@ def adyen_payment_component(order):
 
     # Setting request data.
     request = {
-        "amount": {"value": order.get_price_in_cents(), "currency": settings.DJADYEN_CURRENCYCODE},
+        "amount": {
+            "value": order.get_price_in_cents(),
+            "currency": settings.DJADYEN_CURRENCYCODE,
+        },
         "reference": order.reference,
         "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
         "returnUrl": order.get_return_url(),
@@ -29,13 +33,14 @@ def adyen_payment_component(order):
     # Starting the checkout.
     result = ady.checkout.sessions(request)
 
-
     if result.status_code == 201:
         return {
             "client_key": settings.DJADYEN_CLIENT_KEY,
             "session_id": result.message.get("id"),
             "session_data": result.message.get("sessionData"),
             "environment": "test",
-            "payment_type": order.payment_option.adyen_name if order.payment_option else ""
+            "payment_type": order.payment_option.adyen_name
+            if order.payment_option
+            else "",
         }
     return {}

@@ -17,11 +17,16 @@ class PaymentForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(PaymentForm, self).__init__(*args, **kwargs)
 
-        initial = kwargs.get('initial')
+        initial = kwargs.get("initial")
 
         fixed_fields = [
-            'skinCode', 'currencyCode', 'merchantAccount', 'sessionValidity', 'merchantReference',
-            'paymentAmount', 'merchantSig'
+            "skinCode",
+            "currencyCode",
+            "merchantAccount",
+            "sessionValidity",
+            "merchantReference",
+            "paymentAmount",
+            "merchantSig",
         ]
 
         for key, value in initial.items():

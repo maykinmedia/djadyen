@@ -10,8 +10,8 @@ from djadyen import settings
 
 from .choices import Status
 
+logger = logging.getLogger("adyen")
 
-logger = logging.getLogger('adyen')
 
 class AdyenPaymentView(DetailView):
     """
@@ -19,14 +19,14 @@ class AdyenPaymentView(DetailView):
     It will automatically draw the wanted widget.
     """
 
-    template_name = 'adyen/pay.html'
-    slug_field = 'reference'
-    slug_url_kwarg = 'reference'
+    template_name = "adyen/pay.html"
+    slug_field = "reference"
+    slug_url_kwarg = "reference"
 
 
 class AdyenResponseMixin(DetailView):
-    slug_field = 'reference'
-    slug_url_kwarg = 'reference'
+    slug_field = "reference"
+    slug_url_kwarg = "reference"
 
     def post(self, request, *args, **kwargs):
         request.GET = request.POST
@@ -51,11 +51,9 @@ class AdyenResponseMixin(DetailView):
         ady.payment.client.xapikey = settings.DJADYEN_SERVER_KEY
         ady.payment.client.app_name = settings.DJADYEN_APPNAME
 
-        response = ady.checkout.payments_details({
-            "details": {
-                "redirectResult": redirect_result
-            }
-        })
+        response = ady.checkout.payments_details(
+            {"details": {"redirectResult": redirect_result}}
+        )
         auth_result = response.message.get("resultCode")
         self.order.psp_reference = response.psp
 
@@ -67,24 +65,25 @@ class AdyenResponseMixin(DetailView):
             raise Http404
 
         logger.info(
-            'Order ref: %s | Received Adyen auth result: %s',
-            self.order.reference, auth_result
+            "Order ref: %s | Received Adyen auth result: %s",
+            self.order.reference,
+            auth_result,
         )
 
         self.handle_default()
-        if auth_result == 'Error':
+        if auth_result == "Error":
             return self.handle_error()
 
-        if auth_result == 'Cancelled':
+        if auth_result == "Cancelled":
             return self.handle_canceled()
 
-        if auth_result == 'Refused':
+        if auth_result == "Refused":
             return self.handle_refused()
 
-        if auth_result in ['Pending', 'PresentToShopper', 'Received']:
+        if auth_result in ["Pending", "PresentToShopper", "Received"]:
             return self.handle_pending()
 
-        if auth_result == 'Authorised':
+        if auth_result == "Authorised":
             return self.handle_authorised()
 
         logger.error("Please implement the following authResult: %s", auth_result)

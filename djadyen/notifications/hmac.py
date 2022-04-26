@@ -9,7 +9,7 @@ from djadyen import settings
 
 def escape_val(val):
     try:
-        return val.replace('\\', '\\\\').replace(':', '\\:')
+        return val.replace("\\", "\\\\").replace(":", "\\:")
     except AttributeError:
         return str(val)
 
@@ -23,21 +23,17 @@ def create_hmac(data):
     hmac_key = binascii.a2b_hex(settings.ADYEN_NOTIFICATION_SECRET)
 
     sign_fields = [
-        'pspReference',
-        'originalReference',
-        'merchantAccountCode',
-        'merchantReference',
-        'value',
-        'currency',
-        'eventCode',
-        'success'
+        "pspReference",
+        "originalReference",
+        "merchantAccountCode",
+        "merchantReference",
+        "value",
+        "currency",
+        "eventCode",
+        "success",
     ]
 
-    msg_params = OrderedDict(
-        [(key, data.get(key, '')) for key in sign_fields]
-    )
-    hmac_input = ':'.join([escape_val(value) for key, value in msg_params.items()])
-    hmac_value = hmac.new(hmac_key, hmac_input.encode('utf-8'), hashlib.sha256)
-    return (
-        base64.b64encode(hmac_value.digest()).decode("utf-8")
-    )
+    msg_params = OrderedDict([(key, data.get(key, "")) for key in sign_fields])
+    hmac_input = ":".join([escape_val(value) for key, value in msg_params.items()])
+    hmac_value = hmac.new(hmac_key, hmac_input.encode("utf-8"), hashlib.sha256)
+    return base64.b64encode(hmac_value.digest()).decode("utf-8")
