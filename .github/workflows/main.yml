@@ -98,7 +98,7 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  pip install django=${{ matrix.django-version }} codecov django_webtest factory-boy psycopg2 pytest pytest-cov pytest-django pytest-pep8 pytest-pylint pytest-pythonpath pytest-runner requests-mock freezegun
+                  pip install django==${{ matrix.django-version }} codecov django_webtest factory-boy psycopg2 pytest pytest-cov pytest-django pytest-pep8 pytest-pylint pytest-pythonpath pytest-runner requests-mock freezegun
 
             - name: Run tests
               run: |
