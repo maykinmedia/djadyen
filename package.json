@@ -8,8 +8,8 @@
     "scripts": {
         "build": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js",
         "watch": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js --watch",
-        "lint": "prettier src/ -c",
-        "format": "prettier src/ -w"
+        "lint": "prettier javascript/ -c",
+        "format": "prettier javascript/ -w"
     },
     "repository": {
         "type": "git",
