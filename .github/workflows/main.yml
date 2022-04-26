@@ -19,25 +19,17 @@ jobs:
                 # needed because the postgres container does not provide a healthcheck
                 options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         steps:
-            uses: actions/checkout@v2
-            uses: actions/setup-python@v2
-            with:
-                python-version: "3.9"
+            - uses: actions/checkout@v2
+            - uses: actions/setup-python@v2
+                with:
+                    python-version: "3.9"
 
-            name: Install dependencies
-            run: |
+            - run: |
                 pip install tox codecov
 
-            name: Run tests
-            run: |
+            - run: |
                 tox
-            env:
-                DJANGO_SETTINGS_MODULE: tests.settings
-                SECRET_KEY: dummy
-                DB_USER: postgres
-                DB_PASSWORD: ""
 
-            name: Publish coverage report
-            uses: codecov/codecov-action@v1
-            with:
-                token: ${{ secrets.CODECOV_TOKEN }}
+            - uses: codecov/codecov-action@v1
+                with:
+                    token: ${{ secrets.CODECOV_TOKEN }}
