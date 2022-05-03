@@ -1,5 +1,4 @@
 import logging
-from urllib.parse import urlencode
 
 from django.http import Http404
 from django.views.generic.detail import DetailView

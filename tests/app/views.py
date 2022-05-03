@@ -10,7 +10,7 @@ from .models import Order
 
 
 class ConfirmationView(AdyenResponseMixin, TemplateView):
-    template_name = 'app/confirmation.html'
+    template_name = "app/confirmation.html"
     model = Order
 
     def handle_authorised(self):

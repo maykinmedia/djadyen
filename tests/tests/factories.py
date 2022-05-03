@@ -12,9 +12,9 @@ class NotificationFactory(factory.django.DjangoModelFactory):
 
 
 class PaymentOptionsFactory(factory.django.DjangoModelFactory):
-    name = factory.Faker('name')
-    adyen_name = 'ideal'
-    guid = 'ee112bdd-b03b-422f-8af2-085c64dd8698'
+    name = factory.Faker("name")
+    adyen_name = "ideal"
+    guid = "ee112bdd-b03b-422f-8af2-085c64dd8698"
 
     class Meta:
         model = AdyenPaymentOption
@@ -22,7 +22,7 @@ class PaymentOptionsFactory(factory.django.DjangoModelFactory):
 
 class IssuerFactory(factory.django.DjangoModelFactory):
     payment_option = factory.SubFactory(PaymentOptionsFactory)
-    name = factory.Faker('name')
+    name = factory.Faker("name")
     adyen_id = 1155
 
     class Meta:
@@ -31,7 +31,7 @@ class IssuerFactory(factory.django.DjangoModelFactory):
 
 class OrderFactory(factory.django.DjangoModelFactory):
     status = Status.Created
-    email = factory.Faker('email')
+    email = factory.Faker("email")
 
     class Meta:
         model = Order
