@@ -3,7 +3,7 @@ import factory
 from djadyen.choices import Status
 from djadyen.models import AdyenIssuer, AdyenNotification, AdyenPaymentOption
 
-from ..app.models import Order
+from testapp.models import Order
 
 
 class NotificationFactory(factory.django.DjangoModelFactory):

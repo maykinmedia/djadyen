@@ -1,6 +1,5 @@
 from django.test import TestCase, override_settings
 
-from djadyen import settings
 from djadyen.choices import Status
 
 from .factories import (

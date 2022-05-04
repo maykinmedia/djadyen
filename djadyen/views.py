@@ -57,8 +57,8 @@ class AdyenResponseMixin(DetailView):
         self.order.psp_reference = response.psp
 
         #
-        # This is a very important step, otherwise payments can be processed twice. By re-using
-        # the URL.
+        # This is a very important step, otherwise payments can be processed twice.
+        # By re-using the URL.
         #
         if self.order.status != Status.Created:
             raise Http404

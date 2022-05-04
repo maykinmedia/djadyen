@@ -1,10 +1,7 @@
-from django.urls import reverse
-from django.utils import timezone
 from django.views.generic import TemplateView
 
 from djadyen.choices import Status
-from djadyen.hpp import HPPPaymenRequest
-from djadyen.views import AdyenRedirectView, AdyenResponseMixin
+from djadyen.views import AdyenResponseMixin
 
 from .models import Order
 

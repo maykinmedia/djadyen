@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 from uuid import uuid4
 
 from django.core.management import call_command
@@ -119,7 +119,7 @@ class ProcessNotifications(TestCase):
             "success": "true",
             "eventCode": "AUTHORISATION",
             "merchantReference": reference,
-            "merchantAccountCode": settings.ADYEN_MERCHANT_ACCOUNT,
+            "merchantAccountCode": settings.DJADYEN_MERCHANT_ACCOUNT,
         }
 
         with freeze_time("2019-01-01 11:44"):
@@ -228,7 +228,7 @@ class CleanupPending(TestCase):
             "success": "true",
             "eventCode": "AUTHORISATION",
             "merchantReference": "unknown",
-            "merchantAccountCode": settings.ADYEN_MERCHANT_ACCOUNT,
+            "merchantAccountCode": settings.DJADYEN_MERCHANT_ACCOUNT,
         }
 
         with freeze_time("2019-01-01 11:44"):

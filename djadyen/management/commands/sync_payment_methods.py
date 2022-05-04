@@ -15,10 +15,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         params = {
-            "merchantAccount": settings.ADYEN_MERCHANT_ACCOUNT,
-            "skinCode": settings.ADYEN_SKIN_CODE,
+            "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
+            "skinCode": settings.DJADYEN_SKIN_CODE,
             "merchantReference": "payment_options",
-            "currencyCode": settings.ADYEN_CURRENCYCODE,
+            "currencyCode": settings.DJADYEN_CURRENCYCODE,
             "paymentAmount": 199,
             "countryCode": "NL",
             "sessionValidity": datetime.now().isoformat(),

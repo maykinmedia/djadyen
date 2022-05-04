@@ -14,9 +14,10 @@ class Command(BaseCommand):
     help = "Process the adyen notifications that are not processed yet."
 
     def handle(self, *args, **options):
-        # Add a timeout to not process all the notifications after the view is already processed.
+        # Add a timeout to not process all the notifications
+        # after the view is already processed.
         time_ago = timezone.now() - timedelta(
-            minutes=settings.ADYEN_HANDLE_NOTIFICATION_MINUTES_AGO
+            minutes=settings.DJADYEN_HANDLE_NOTIFICATION_MINUTES_AGO
         )
 
         order_models = [apps.get_model(model) for model in settings.ADYEN_ORDER_MODELS]
@@ -34,8 +35,8 @@ class Command(BaseCommand):
                 # or might not be correct, I don't understand the adyen state machine
                 # well enough.
                 #
-                # The reason this is done to avoid that an order, which is already processed
-                # in the return URL, to be processed again by a notification.
+                # The reason this is done to avoid that an order, which is already
+                # processed in the return URL, to be processed again by a notification
                 #
                 orders = order_model.objects.filter(reference=reference).filter(
                     Q(status=Status.Pending) | Q(status=Status.Created)

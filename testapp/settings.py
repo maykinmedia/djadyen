@@ -9,7 +9,7 @@ SITE_ID = 1
 
 INSTALLED_APPS = [
     "djadyen",
-    "tests.app",
+    "testapp",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -28,7 +28,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "tests.urls"
+ROOT_URLCONF = "testapp.urls"
 
 DEBUG = True
 SECRET_KEY = "this-is-really-not-a-secret"
@@ -66,6 +66,14 @@ TEMPLATES = [
     },
 ]
 
+# New settings
+DJADYEN_SERVER_KEY = "test_server_key"
+DJADYEN_CLIENT_KEY = "test_client_key"
+DJADYEN_APPNAME = "Djadyen testapp"
+DJADYEN_MERCHANT_ACCOUNT = "Djadyen merchant account"
+DJADYEN_SKIN_CODE = "test"
+
+# Old settings
 ADYEN_HOST_URL = "http://localhost:8000"
 ADYEN_MERCHANT_SECRET = (
     "300D38999F4D3830FADC54CAABEAC05C3E69F5DF0E3D4EF34882EAE1226F6CAF"

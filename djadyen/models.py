@@ -31,7 +31,7 @@ class AdyenNotification(models.Model):
         merchant_account_code = data.get("merchantAccountCode")
         return (
             event_code == status
-            and merchant_account_code == settings.ADYEN_MERCHANT_ACCOUNT
+            and merchant_account_code == settings.DJADYEN_MERCHANT_ACCOUNT
         )
 
     def is_authorised(self, require_success=True):
@@ -158,7 +158,8 @@ class AdyenOrder(models.Model):
             if self.__old_status == Status.Authorised:
                 logger.warning(
                     _(
-                        "Order ref: %s | Tried to change the status from 'Authorised' to '%s'. "
+                        "Order ref: %s | Tried to change the "
+                        + "status from 'Authorised' to '%s'."
                     ),
                     self.reference,
                     self.status,
