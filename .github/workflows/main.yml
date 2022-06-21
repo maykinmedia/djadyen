@@ -100,12 +100,12 @@ jobs:
 
             - name: Run tests
               run: |
-                export TOXENV=py${PYTHON_VERSION/./}-django${DJANGO/./}
-                tox
-                codecov -e TOXENV,DJANGO --file reports/coverage-${TOXENV}.xml
-                env:
-                PYTHON_VERSION: ${{ matrix.python }}
-                DJANGO: ${{ matrix.django }}
+                  export TOXENV=py${PYTHON_VERSION/./}-django${DJANGO/./}
+                  tox
+                  codecov -e TOXENV,DJANGO --file reports/coverage-${TOXENV}.xml
+                  env:
+                      PYTHON_VERSION: ${{ matrix.python }}
+                      DJANGO: ${{ matrix.django }}
 
             - name: Publish coverage report
               uses: codecov/codecov-action@v1
@@ -118,17 +118,17 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
 
         steps:
-        - uses: actions/checkout@v2
-        - uses: actions/setup-python@v2
-          with:
-          python-version: '3.9'
+            - uses: actions/checkout@v2
+            - uses: actions/setup-python@v2
+              with:
+                  python-version: "3.9"
 
-        - name: Build sdist and wheel
-          run: |
-            pip install pip setuptools wheel --upgrade
-            python setup.py sdist bdist_wheel
-        - name: Publish a Python distribution to PyPI
-          uses: pypa/gh-action-pypi-publish@v1.4.1
-          with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
+            - name: Build sdist and wheel
+              run: |
+                  pip install pip setuptools wheel --upgrade
+                  python setup.py sdist bdist_wheel
+            - name: Publish a Python distribution to PyPI
+              uses: pypa/gh-action-pypi-publish@v1.4.1
+              with:
+                  user: __token__
+                  password: ${{ secrets.PYPI_TOKEN }}
