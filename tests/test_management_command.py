@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 from uuid import uuid4
 
@@ -8,91 +9,44 @@ from django.test.testcases import TestCase
 import requests_mock
 from freezegun import freeze_time
 
-from djadyen import settings
 from djadyen.choices import Status
 from djadyen.models import AdyenIssuer, AdyenPaymentOption
 
 from .factories import NotificationFactory, OrderFactory
+from .utils import TestFileMixin
 
 
-def json_response(request, context):
-    return json.dumps(
-        {
-            "paymentMethods": [
-                {"brandCode": "mc", "name": "MasterCard"},
-                {"brandCode": "visa", "name": "VISA"},
-                {
-                    "brandCode": "ideal",
-                    "issuers": [
-                        {"issuerId": "1121", "name": "Test Issuer"},
-                        {"issuerId": "1154", "name": "Test Issuer 5"},
-                        {"issuerId": "1153", "name": "Test Issuer 4"},
-                        {"issuerId": "1152", "name": "Test Issuer 3"},
-                        {"issuerId": "1151", "name": "Test Issuer 2"},
-                        {"issuerId": "1162", "name": "Test Issuer Cancelled"},
-                        {"issuerId": "1161", "name": "Test Issuer Pending"},
-                        {"issuerId": "1160", "name": "Test Issuer Refused"},
-                        {"issuerId": "1159", "name": "Test Issuer 10"},
-                        {"issuerId": "1158", "name": "Test Issuer 9"},
-                        {"issuerId": "1157", "name": "Test Issuer 8"},
-                        {"issuerId": "1156", "name": "Test Issuer 7"},
-                        {"issuerId": "1155", "name": "Test Issuer 6"},
-                    ],
-                    "name": "iDEAL",
-                },
-            ]
-        },
-        ensure_ascii=False,
-    ).encode("gbk")
-
-
-class SyncPaymentMethods(TestCase):
-    def test_on_empty_database(self):
-        self.assertEqual(AdyenPaymentOption.objects.count(), 0)
-        self.assertEqual(AdyenIssuer.objects.count(), 0)
-
-        with self.assertRaises(ValueError):
-            call_command("sync_payment_methods")
-
-        # self.assertEqual(AdyenPaymentOption.objects.count(), 3)
-        # self.assertEqual(AdyenIssuer.objects.count(), 13)
-
-    def test_on_existing_database(self):
-        self.assertEqual(AdyenPaymentOption.objects.count(), 0)
-        self.assertEqual(AdyenIssuer.objects.count(), 0)
-
-        with self.assertRaises(ValueError):
-            call_command("sync_payment_methods")
-
-        # self.assertEqual(AdyenPaymentOption.objects.count(), 3)
-        # self.assertEqual(AdyenIssuer.objects.count(), 13)
-
-        # call_command('sync_payment_methods')
-
-        # self.assertEqual(AdyenPaymentOption.objects.count(), 3)
-        # self.assertEqual(AdyenIssuer.objects.count(), 13)
-
+class SyncPaymentMethods(TestFileMixin, TestCase):
     @requests_mock.mock()
     def test_on_empty_database_mock(self, mock):
         mock.post(
-            "https://test.adyen.com/hpp/directory.shtml",
+            "https://checkout-test.adyen.com/v69/paymentMethods",
             [
-                {"content": json_response, "status_code": 200},
+                {
+                    "content": self._get_test_file("payment_methods.json").read(),
+                    "status_code": 200,
+                },
             ],
         )
 
         call_command("sync_payment_methods")
 
-        self.assertEqual(AdyenPaymentOption.objects.count(), 3)
-        self.assertEqual(AdyenIssuer.objects.count(), 13)
+        self.assertEqual(AdyenPaymentOption.objects.count(), 14)
+        self.assertEqual(AdyenIssuer.objects.count(), 47)
 
     @requests_mock.mock()
     def test_on_existing_database_mock(self, mock):
         mock.post(
-            "https://test.adyen.com/hpp/directory.shtml",
+            "https://checkout-test.adyen.com/v69/paymentMethods",
             [
-                {"content": json_response, "status_code": 200},
-                {"content": json_response, "status_code": 200},
+                {
+                    "content": self._get_test_file("payment_methods.json").read(),
+                    "status_code": 200,
+                },
+                {
+                    "content": self._get_test_file("payment_methods.json").read(),
+                    "status_code": 200,
+                },
             ],
         )
         self.assertEqual(AdyenPaymentOption.objects.count(), 0)
@@ -100,31 +54,25 @@ class SyncPaymentMethods(TestCase):
 
         call_command("sync_payment_methods")
 
-        self.assertEqual(AdyenPaymentOption.objects.count(), 3)
-        self.assertEqual(AdyenIssuer.objects.count(), 13)
+        self.assertEqual(AdyenPaymentOption.objects.count(), 14)
+        self.assertEqual(AdyenIssuer.objects.count(), 47)
 
         call_command("sync_payment_methods")
 
-        self.assertEqual(AdyenPaymentOption.objects.count(), 3)
-        self.assertEqual(AdyenIssuer.objects.count(), 13)
+        self.assertEqual(AdyenPaymentOption.objects.count(), 14)
+        self.assertEqual(AdyenIssuer.objects.count(), 47)
 
 
-class ProcessNotifications(TestCase):
+class ProcessNotifications(TestFileMixin, TestCase):
     def setUp(self):
-        super(ProcessNotifications, self).setUp()
+        super().setUp()
 
-        reference = str(uuid4())
-
-        self.data = {
-            "success": "true",
-            "eventCode": "AUTHORISATION",
-            "merchantReference": reference,
-            "merchantAccountCode": settings.DJADYEN_MERCHANT_ACCOUNT,
-        }
+        reference = "93ca495f-3b85-4df7-aeb0-052194014c2e"
 
         with freeze_time("2019-01-01 11:44"):
             self.notification1 = NotificationFactory.create(
-                notification=json.dumps(self.data), is_processed=False
+                notification=self._get_json_data("notification_data_success.json"),
+                is_processed=False,
             )
         self.order1 = OrderFactory.create(status=Status.Pending, reference=reference)
 
@@ -158,11 +106,12 @@ class ProcessNotifications(TestCase):
         self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
 
     @freeze_time("2019-01-01 12:00")
-    def test_process_notifications_is_error(self):
+    def test_process_notifications_unsuccessful(self):
         self.assertFalse(self.order1.paid)
 
-        self.data.update(eventCode="ERROR")
-        self.notification1.notification = json.dumps(self.data)
+        self.notification1.notification = self._get_json_data(
+            "notification_data_unsuccessful.json"
+        )
         self.notification1.save()
 
         call_command("adyen_maintenance")
@@ -174,42 +123,60 @@ class ProcessNotifications(TestCase):
         self.assertTrue(self.notification1.is_processed)
         self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
 
-    @freeze_time("2019-01-01 12:00")
-    def test_process_notifications_is_cancelled(self):
-        self.assertFalse(self.order1.paid)
+    # No longer used
+    # @freeze_time("2019-01-01 12:00")
+    # def test_process_notifications_is_error(self):
+    #     self.assertFalse(self.order1.paid)
 
-        self.data.update(eventCode="CANCEL")
-        self.notification1.notification = json.dumps(self.data)
-        self.notification1.save()
+    #     self.data.update(eventCode="ERROR")
+    #     self.notification1.notification = json.dumps(self.data)
+    #     self.notification1.save()
 
-        call_command("adyen_maintenance")
+    #     call_command("adyen_maintenance")
 
-        self.order1.refresh_from_db()
-        self.assertFalse(self.order1.paid)
+    #     self.order1.refresh_from_db()
+    #     self.assertFalse(self.order1.paid)
 
-        self.notification1.refresh_from_db()
-        self.assertTrue(self.notification1.is_processed)
-        self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
+    #     self.notification1.refresh_from_db()
+    #     self.assertTrue(self.notification1.is_processed)
+    #     self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
 
-    @freeze_time("2019-01-01 12:00")
-    def test_process_notifications_is_refused(self):
-        self.assertFalse(self.order1.paid)
+    # @freeze_time("2019-01-01 12:00")
+    # def test_process_notifications_is_cancelled(self):
+    #     self.assertFalse(self.order1.paid)
 
-        self.data.update(eventCode="REFUSED")
-        self.notification1.notification = json.dumps(self.data)
-        self.notification1.save()
+    #     self.data.update(eventCode="CANCEL")
+    #     self.notification1.notification = json.dumps(self.data)
+    #     self.notification1.save()
 
-        call_command("adyen_maintenance")
+    #     call_command("adyen_maintenance")
 
-        self.order1.refresh_from_db()
-        self.assertFalse(self.order1.paid)
+    #     self.order1.refresh_from_db()
+    #     self.assertFalse(self.order1.paid)
 
-        self.notification1.refresh_from_db()
-        self.assertTrue(self.notification1.is_processed)
-        self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
+    #     self.notification1.refresh_from_db()
+    #     self.assertTrue(self.notification1.is_processed)
+    #     self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
+
+    # @freeze_time("2019-01-01 12:00")
+    # def test_process_notifications_is_refused(self):
+    #     self.assertFalse(self.order1.paid)
+
+    #     self.data.update(eventCode="REFUSED")
+    #     self.notification1.notification = json.dumps(self.data)
+    #     self.notification1.save()
+
+    #     call_command("adyen_maintenance")
+
+    #     self.order1.refresh_from_db()
+    #     self.assertFalse(self.order1.paid)
+
+    #     self.notification1.refresh_from_db()
+    #     self.assertTrue(self.notification1.is_processed)
+    #     self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
 
 
-class CleanupPending(TestCase):
+class CleanupPending(TestFileMixin, TestCase):
     def test_cleanup(self):
         # 5 days ago; Should be marked as 'Error'
         with freeze_time("2019-01-5 12:00"):
@@ -224,16 +191,12 @@ class CleanupPending(TestCase):
         with freeze_time("2019-01-3 12:00"):
             self.order4 = OrderFactory.create(status=Status.Authorised)
 
-        data = {
-            "success": "true",
-            "eventCode": "AUTHORISATION",
-            "merchantReference": "unknown",
-            "merchantAccountCode": settings.DJADYEN_MERCHANT_ACCOUNT,
-        }
-
         with freeze_time("2019-01-01 11:44"):
             self.notification1 = NotificationFactory.create(
-                notification=json.dumps(data), is_processed=False
+                notification=self._get_json_data(
+                    "notification_data_reference_unknown.json"
+                ),
+                is_processed=False,
             )
 
         with freeze_time("2019-01-10 12:00"):

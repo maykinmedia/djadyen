@@ -23,13 +23,9 @@ class AdyenPaymentView(DetailView):
     slug_url_kwarg = "reference"
 
 
-class AdyenResponseMixin(DetailView):
+class AdyenResponseView(DetailView):
     slug_field = "reference"
     slug_url_kwarg = "reference"
-
-    def post(self, request, *args, **kwargs):
-        request.GET = request.POST
-        return self.get(request, *args, **kwargs)
 
     def done(self):
         self.order.save()

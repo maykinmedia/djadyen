@@ -1,12 +1,12 @@
 from django.views.generic import TemplateView
 
 from djadyen.choices import Status
-from djadyen.views import AdyenResponseMixin
+from djadyen.views import AdyenResponseView
 
 from .models import Order
 
 
-class ConfirmationView(AdyenResponseMixin, TemplateView):
+class ConfirmationView(AdyenResponseView):
     template_name = "app/confirmation.html"
     model = Order
 
@@ -31,5 +31,4 @@ class ConfirmationView(AdyenResponseMixin, TemplateView):
         return self.done()
 
     def handle_default(self):
-        if self.payment_response.psp_reference:
-            self.order.psp_reference = self.payment_response.psp_reference
+        pass

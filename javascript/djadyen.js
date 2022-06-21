@@ -4,13 +4,15 @@ import "@adyen/adyen-web/dist/adyen.css";
 import "./overwrites.css";
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const dropinConfig = document.querySelector("#djadyen-dropin-config");
     const config = document.querySelector("#djadyen-config");
 
     if (config) {
         const configuration = {
             environment: config.dataset.environment,
             clientKey: config.dataset.clientKey,
+            analytics: {
+                enabled: false,
+            },
             session: {
                 id: config.dataset.sessionId,
                 sessionData: config.dataset.sessionData,
@@ -30,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         const checkout = await AdyenCheckout(configuration);
-        console.log(checkout.paymentMethodsResponse); // => { paymentMethods: [...], storedPaymentMethods: [...] }
+        console.log(checkout.paymentMethodsResponse);
         const component = checkout
             .create(config.dataset.paymentType)
             .mount("#djadyen-container");

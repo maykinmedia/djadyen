@@ -1,0 +1,86 @@
+{
+    "paymentMethods": [
+        {
+            "brands": [
+                "amex",
+                "bcmc",
+                "diners",
+                "discover",
+                "maestro",
+                "mc",
+                "visa"
+            ],
+            "name": "Credit Card",
+            "type": "scheme"
+        },
+        { "name": "SEPA Bank Transfer", "type": "bankTransfer_IBAN" },
+        {
+            "brands": ["bcmc", "maestro", "visa"],
+            "name": "Bancontact card",
+            "type": "bcmc"
+        },
+        { "name": "Online bank transfer.", "type": "directEbanking" },
+        {
+            "issuers": [
+                { "id": "66", "name": "Bank Nowy S.A." },
+                { "id": "92", "name": "Bank Spółdzielczy w Brodnicy" },
+                { "id": "11", "name": "Bank transfer / postal" },
+                { "id": "74", "name": "Banki Spółdzielcze" },
+                { "id": "73", "name": "BLIK" },
+                { "id": "90", "name": "BNP Paribas - płacę z Pl@net" },
+                { "id": "59", "name": "CinkciarzPAY" },
+                { "id": "87", "name": "Credit Agricole PBL" },
+                { "id": "76", "name": "Getin Bank PBL" },
+                { "id": "81", "name": "Idea Cloud" },
+                { "id": "7", "name": "ING Corporate customers" },
+                { "id": "93", "name": "Kasa Stefczyka" },
+                { "id": "44", "name": "Millennium - Płatności Internetowe" },
+                { "id": "10", "name": "Millennium Corporate customers" },
+                { "id": "68", "name": "mRaty" },
+                { "id": "1", "name": "mTransfer" },
+                { "id": "91", "name": "Nest Bank" },
+                { "id": "80", "name": "Noble Pay" },
+                { "id": "45", "name": "Pay with Alior Bank" },
+                { "id": "36", "name": "Pekao24Przelew" },
+                { "id": "70", "name": "Pocztowy24" },
+                { "id": "6", "name": "Przelew24" },
+                { "id": "46", "name": "Płacę z Citi Handlowy" },
+                { "id": "38", "name": "Płacę z ING." },
+                { "id": "2", "name": "Płacę z Inteligo" },
+                { "id": "4", "name": "Płacę z iPKO" },
+                { "id": "75", "name": "Płacę z Plus Bank" },
+                { "id": "51", "name": "Płać z BOŚ" },
+                { "id": "55", "name": "Raty z Alior Bankiem PLN" },
+                { "id": "89", "name": "Santander" },
+                { "disabled": true, "id": "83", "name": "EnveloBank" },
+                { "disabled": true, "id": "50", "name": "Pay Way Toyota Bank" },
+                { "disabled": true, "id": "52", "name": "SkyCash" }
+            ],
+            "name": "Local Polish Payment Methods",
+            "type": "dotpay"
+        },
+        { "name": "Finnish E-Banking", "type": "ebanking_FI" },
+        { "name": "GiroPay", "type": "giropay" },
+        {
+            "issuers": [
+                { "id": "1121", "name": "Test Issuer" },
+                { "id": "1154", "name": "Test Issuer 5" },
+                { "id": "1153", "name": "Test Issuer 4" },
+                { "id": "1152", "name": "Test Issuer 3" },
+                { "id": "1163", "name": "Ideal bridge test issuer" },
+                { "id": "1151", "name": "Test Issuer 2" },
+                { "id": "1162", "name": "Test Issuer Cancelled" },
+                { "id": "1161", "name": "Test Issuer Pending" },
+                { "id": "1160", "name": "Test Issuer Refused" },
+                { "id": "1159", "name": "Test Issuer 10" },
+                { "id": "1158", "name": "Test Issuer 9" },
+                { "id": "1157", "name": "Test Issuer 8" },
+                { "id": "1156", "name": "Test Issuer 7" },
+                { "id": "1155", "name": "Test Issuer 6" }
+            ],
+            "name": "iDEAL",
+            "type": "ideal"
+        },
+        { "name": "SEPA Direct Debit", "type": "sepadirectdebit" }
+    ]
+}

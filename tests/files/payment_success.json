@@ -1,0 +1,6 @@
+{
+    "pspReference": "B9GVP93R8WD2WN82",
+    "resultCode": "Authorised",
+    "amount": { "currency": "EUR", "value": 10000 },
+    "merchantReference": "4082147f-a1f4-4c0a-96c8-2c6a47ea5526"
+}

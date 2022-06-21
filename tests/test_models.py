@@ -24,7 +24,7 @@ class AdyenOrderTests(TestCase):
 
     @override_settings(ADYEN_REFETCH_OLD_STATUS=True)
     def test_refetch_old_status(self):
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(2):
             order = OrderFactory()
             self.assertEqual(order.__str__(), "{}".format(order.reference))
 

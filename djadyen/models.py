@@ -38,6 +38,8 @@ class AdyenNotification(models.Model):
         data = self.get_notification_data()
         success = data.get("success") == "true"
         has_status = self.has_status("AUTHORISATION")
+        print("success", success)
+        print("has_status", has_status)
 
         if not require_success:
             return has_status
@@ -45,7 +47,8 @@ class AdyenNotification(models.Model):
         return has_status and success
 
     def is_error(self):
-        return self.has_status("ERROR")
+        data = self.get_notification_data()
+        return self.has_status("ERROR") or data.get("success") == "false"
 
     def is_cancelled(self):
         return self.has_status("CANCEL")
@@ -119,22 +122,18 @@ class AdyenOrder(models.Model):
         if notification.is_authorised():
             self.status = Status.Authorised
             self.save()
-
-            notification.mark_processed()
-        elif notification.is_error():
-            self.status = Status.Error
-            self.save()
-
             notification.mark_processed()
         elif notification.is_cancelled():
             self.status = Status.Cancel
             self.save()
-
             notification.mark_processed()
         elif notification.is_refused():
             self.status = Status.Refused
             self.save()
-
+            notification.mark_processed()
+        elif notification.is_error():
+            self.status = Status.Error
+            self.save()
             notification.mark_processed()
 
         logger.error("Can't process notification with pk %d", notification.pk)
