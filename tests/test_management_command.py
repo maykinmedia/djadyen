@@ -109,9 +109,7 @@ class ProcessNotifications(TestFileMixin, TestCase):
     def test_process_notifications_unsuccessful(self):
         self.assertFalse(self.order1.paid)
 
-        self.notification1.notification = self._get_json_data(
-            "notification_data_unsuccessful.json"
-        )
+        self.notification1.notification = self._get_json_data("notification_data_unsuccessful.json")
         self.notification1.save()
 
         call_command("adyen_maintenance")
@@ -193,9 +191,7 @@ class CleanupPending(TestFileMixin, TestCase):
 
         with freeze_time("2019-01-01 11:44"):
             self.notification1 = NotificationFactory.create(
-                notification=self._get_json_data(
-                    "notification_data_reference_unknown.json"
-                ),
+                notification=self._get_json_data("notification_data_reference_unknown.json"),
                 is_processed=False,
             )
 

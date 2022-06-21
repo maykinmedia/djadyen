@@ -39,8 +39,6 @@ def adyen_payment_component(order):
             "session_id": result.message.get("id"),
             "session_data": result.message.get("sessionData"),
             "environment": "test",
-            "payment_type": order.payment_option.adyen_name
-            if order.payment_option
-            else "",
+            "payment_type": order.payment_option.adyen_name if order.payment_option else "",
         }
     return {}

@@ -30,9 +30,7 @@ class NotificationView(View):
         notification_items = json_params.get("notificationItems", [])
         for notification_item in notification_items:
             notification = AdyenNotification.objects.create(
-                notification=json.dumps(
-                    notification_item.get("NotificationRequestItem")
-                )
+                notification=json.dumps(notification_item.get("NotificationRequestItem"))
             )
             logger.debug(_("Notification saved | id: %s"), notification.id)
 

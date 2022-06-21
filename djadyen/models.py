@@ -29,10 +29,7 @@ class AdyenNotification(models.Model):
         data = self.get_notification_data()
         event_code = data.get("eventCode")
         merchant_account_code = data.get("merchantAccountCode")
-        return (
-            event_code == status
-            and merchant_account_code == settings.DJADYEN_MERCHANT_ACCOUNT
-        )
+        return event_code == status and merchant_account_code == settings.DJADYEN_MERCHANT_ACCOUNT
 
     def is_authorised(self, require_success=True):
         data = self.get_notification_data()
@@ -84,9 +81,7 @@ class AdyenIssuer(models.Model):
 
 
 class AdyenOrder(models.Model):
-    status = models.CharField(
-        max_length=200, choices=Status.choices, default=Status.Created
-    )
+    status = models.CharField(max_length=200, choices=Status.choices, default=Status.Created)
     created_on = models.DateTimeField(auto_now_add=True)
     reference = models.CharField(max_length=200, default="", blank=True)
     psp_reference = models.CharField(max_length=200, default="", blank=True)
@@ -95,9 +90,7 @@ class AdyenOrder(models.Model):
     payment_option = models.ForeignKey(
         AdyenPaymentOption, blank=True, null=True, on_delete=models.SET_NULL
     )
-    issuer = models.ForeignKey(
-        AdyenIssuer, null=True, blank=True, on_delete=models.SET_NULL
-    )
+    issuer = models.ForeignKey(AdyenIssuer, null=True, blank=True, on_delete=models.SET_NULL)
 
     __old_status = None
 
@@ -156,10 +149,7 @@ class AdyenOrder(models.Model):
         if self.status != self.__old_status:
             if self.__old_status == Status.Authorised:
                 logger.warning(
-                    _(
-                        "Order ref: %s | Tried to change the "
-                        + "status from 'Authorised' to '%s'."
-                    ),
+                    _("Order ref: %s | Tried to change the " + "status from 'Authorised' to '%s'."),
                     self.reference,
                     self.status,
                 )

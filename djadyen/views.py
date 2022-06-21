@@ -46,9 +46,7 @@ class AdyenResponseView(DetailView):
         ady.payment.client.xapikey = settings.DJADYEN_SERVER_KEY
         ady.payment.client.app_name = settings.DJADYEN_APPNAME
 
-        response = ady.checkout.payments_details(
-            {"details": {"redirectResult": redirect_result}}
-        )
+        response = ady.checkout.payments_details({"details": {"redirectResult": redirect_result}})
         auth_result = response.message.get("resultCode")
         self.order.psp_reference = response.psp
 

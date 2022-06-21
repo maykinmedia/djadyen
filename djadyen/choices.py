@@ -8,7 +8,5 @@ class Status(DjangoChoices):
     Cancel = ChoiceItem("cancel", _("Cancel"))  # The payment is canceld by the user.
     Created = ChoiceItem("created", _("Created"))  # The order is created.
     Error = ChoiceItem("error", _("Error"))  # The payment gave an error.
-    Pending = ChoiceItem(
-        "pending", _("Pending")
-    )  # The payment is not completed or rejected.
+    Pending = ChoiceItem("pending", _("Pending"))  # The payment is not completed or rejected.
     Refused = ChoiceItem("refused", _("Refused"))  # The payment could not be done.
