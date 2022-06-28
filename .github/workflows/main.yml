@@ -15,11 +15,11 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - django-version: "1.11.0"
+                    - django-version: "1.11"
                       python-version: "3.5"
-                    - django-version: "1.11.0"
+                    - django-version: "1.11"
                       python-version: "3.6"
-                    - django-version: "1.11.0"
+                    - django-version: "1.11"
                       python-version: "3.7"
                     # # Django 2.0
                     # - django-version: "2.0.0"
