@@ -15,30 +15,8 @@ jobs:
         strategy:
             matrix:
                 include:
-                    # - django-version: "1.11"
-                    #   python-version: "3.5"
-                    # - django-version: "1.11"
-                    #   python-version: "3.6"
-                    - django-version: "1.11"
-                      python-version: "3.7"
-                    # # Django 2.2
-                    # - django-version: "2.2"
-                    #   python-version: "3.5"
-                    # - django-version: "2.2"
-                    #   python-version: "3.6"
-                    # - django-version: "2.2"
-                    #   python-version: "3.7"
-                    # - django-version: "2.2"
-                    #   python-version: "3.8"
                     - django-version: "2.2"
                       python-version: "3.9"
-                    # # Django 3.2
-                    # - django-version: "3.2"
-                    #   python-version: "3.6"
-                    # - django-version: "3.2"
-                    #   python-version: "3.7"
-                    # - django-version: "3.2"
-                    #   python-version: "3.8"
                     - django-version: "3.2"
                       python-version: "3.9"
                     - django-version: "3.2"
