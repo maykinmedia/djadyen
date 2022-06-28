@@ -97,7 +97,7 @@ jobs:
                   export TOXENV=py${PYTHON_VERSION/./}-django${DJANGO/./}
                   tox
                   codecov -e TOXENV,DJANGO --file reports/coverage-${TOXENV}.xml
-              env:
+              env: |
                   PYTHON_VERSION: ${{ matrix.python }}
                   DJANGO: ${{ matrix.django }}
 
