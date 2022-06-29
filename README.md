@@ -110,7 +110,7 @@ class PaymentView(AdyenPaymentView):
     template_name = "my_adyen/pay.html"  # Optional
 ```
 
-### AdyenResponseMixin
+### AdyenResponseView
 
 Adyen also creates a response. This will help you with catching the response. This view will check if
 the response from Adyen is valid. It will also provide some usefull functions so you don't have to overwrite anything.
@@ -120,11 +120,11 @@ It will also set the order in the self object for easy access. In the done funct
 and the template will be rendered.
 
 ```python
-from djadyen.views import AdyenResponseMixin
+from djadyen.views import AdyenResponseView
 from djadyen.choices import Status
 
 
-class ConfirmationView(AdyenResponseMixin, TemplateView):
+class ConfirmationView(AdyenResponseView, TemplateView):
     template_name = 'my_project/confirmation.html'
     model = Order
 
