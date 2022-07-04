@@ -1,0 +1,20 @@
+{
+    "eventCode": "AUTHORISATION",
+    "merchantAccountCode": "Djadyen_merchant_account",
+    "reason": "validation 101 Invalid card number",
+    "amount": {
+        "currency": "EUR",
+        "value": 2500
+    },
+    "success": "false",
+    "paymentMethod": "unknowncard",
+    "additionalData": {
+        "expiryDate": "03/2030",
+        "cardBin": "411111",
+        "cardSummary": "1112",
+        "checkoutSessionId": "861631540104159H"
+    },
+    "merchantReference": "93ca495f-3b85-4df7-aeb0-052194014c2e",
+    "pspReference": "KHQC5N7G84BLNK43",
+    "eventDate": "2021-09-13T14:14:05+02:00"
+}

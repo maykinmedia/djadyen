@@ -14,24 +14,28 @@ class Command(BaseCommand):
     help = "Process the adyen notifications that are not processed yet."
 
     def handle(self, *args, **options):
-        # Add a timeout to not process all the notifications after the view is already processed.
-        time_ago = timezone.now() - timedelta(minutes=settings.ADYEN_HANDLE_NOTIFICATION_MINUTES_AGO)
+        # Add a timeout to not process all the notifications
+        # after the view is already processed.
+        time_ago = timezone.now() - timedelta(
+            minutes=settings.DJADYEN_HANDLE_NOTIFICATION_MINUTES_AGO
+        )
 
-        order_models = [apps.get_model(model) for model in settings.ADYEN_ORDER_MODELS]
+        order_models = [apps.get_model(model) for model in settings.DJADYEN_ORDER_MODELS]
 
         # Process notifications which have been sent by Adyen.
-        for notification in AdyenNotification.objects.filter(is_processed=False, created_at__lte=time_ago):
+        for notification in AdyenNotification.objects.filter(
+            is_processed=False, created_at__lte=time_ago
+        ):
             notification_data = notification.get_notification_data()
-            reference = notification_data.get('merchantReference')
-
+            reference = notification_data.get("merchantReference")
             for order_model in order_models:
                 #
                 # TOOD: Ugh, okay so we process only 'Pending' orders, this might
                 # or might not be correct, I don't understand the adyen state machine
                 # well enough.
                 #
-                # The reason this is done to avoid that an order, which is already processed
-                # in the return URL, to be processed again by a notification.
+                # The reason this is done to avoid that an order, which is already
+                # processed in the return URL, to be processed again by a notification
                 #
                 orders = order_model.objects.filter(reference=reference).filter(
                     Q(status=Status.Pending) | Q(status=Status.Created)
@@ -44,12 +48,13 @@ class Command(BaseCommand):
         five_days_ago = timezone.now() - timedelta(days=5)
         for order_model in order_models:
             for obj in order_model.objects.filter(
-                status=Status.Pending,
-                created_on__lte=five_days_ago
+                status=Status.Pending, created_on__lte=five_days_ago
             ):
                 obj.status = Status.Error
                 obj.save()
 
         # Close 5 day old notifications
-        for notification in AdyenNotification.objects.filter(is_processed=False, created_at__lte=five_days_ago):
+        for notification in AdyenNotification.objects.filter(
+            is_processed=False, created_at__lte=five_days_ago
+        ):
             notification.mark_processed()
