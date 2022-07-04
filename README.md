@@ -46,6 +46,26 @@ urlpatterns = [
 ]
 ```
 
+```python
+# models.py
+from djadyen.models import AdyenOrder
+
+class CustomOrder(AdyenOrder):
+    def get_price_in_cents(self):
+        """
+        :return int Return the price in cents for this order.
+        """
+        raise NotImplementedError
+
+    def get_return_url(self):
+        raise NotImplementedError(
+            "Please override 'get_return_url' on the '{model_name}'".format(
+                model_name=self.\_meta.object_name
+            )
+        )
+
+```
+
 ## Usage
 
 ### Management command

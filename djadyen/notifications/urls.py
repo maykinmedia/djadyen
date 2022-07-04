@@ -1,4 +1,7 @@
-from django.urls import path
+try:
+    from django.urls import path
+except Exception:
+    from django.conf.urls import url as path
 
 from .views import NotificationView
 

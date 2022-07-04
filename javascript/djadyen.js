@@ -31,10 +31,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
         };
 
+        const paymentConfiguration = {};
+        if (config.dataset.issuer) {
+            paymentConfiguration.issuer = config.dataset.issuer;
+        }
+
         const checkout = await AdyenCheckout(configuration);
-        console.log(checkout.paymentMethodsResponse);
         const component = checkout
-            .create(config.dataset.paymentType)
+            .create(config.dataset.paymentType, paymentConfiguration)
             .mount("#djadyen-container");
     } else {
         console.error("No payment type found");

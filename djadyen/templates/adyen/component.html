@@ -9,5 +9,6 @@
     data-client-key="{{ client_key }}"
     data-environment="{{ environment }}"
     data-payment-type="{% firstof payment_type 'dropin' %}"
+    {% if issuer %}data-issuer="{{ issuer }}"{% endif %}
 ></div>
 <div id="djadyen-container"></div>
