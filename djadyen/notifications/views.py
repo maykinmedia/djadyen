@@ -1,14 +1,13 @@
 import json
 import logging
 
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from ..models import AdyenNotification
-from .hmac import create_hmac
 
 logger = logging.getLogger(__name__)
 
@@ -26,23 +25,13 @@ class NotificationView(View):
 
         TODO: Validate SSL/TLS client-certificate validation.
         """
-        logger.debug(_('New notification'))
+        logger.debug(_("New notification(s)"))
+        json_params = json.loads(request.body)
+        notification_items = json_params.get("notificationItems", [])
+        for notification_item in notification_items:
+            notification = AdyenNotification.objects.create(
+                notification=json.dumps(notification_item.get("NotificationRequestItem"))
+            )
+            logger.debug(_("Notification saved | id: %s"), notification.id)
 
-        # After we verify that the notification originates from Adyen,
-        # we store it in our database.
-
-        hmac_value = create_hmac(request.POST)
-
-        if ('additionalData.hmacSignature' not in request.POST or
-                hmac_value != request.POST['additionalData.hmacSignature']):
-            return HttpResponseForbidden()
-
-        # TODO Validate request.POST. External data should really be always
-        # be validated.
-
-        json_params = json.dumps(request.POST)
-
-        notification = AdyenNotification.objects.create(notification=json_params)
-        logger.debug(_('Notification saved | id: %s'), notification.id)
-
-        return HttpResponse('[accepted]')
+        return HttpResponse("[accepted]")

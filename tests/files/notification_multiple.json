@@ -1,0 +1,77 @@
+{
+    "live": "false",
+    "notificationItems": [
+        {
+            "NotificationRequestItem": {
+                "eventCode": "AUTHORISATION",
+                "merchantAccountCode": "Djadyen_merchant_account",
+                "reason": "033899:1111:03/2030",
+                "amount": {
+                    "currency": "EUR",
+                    "value": 2500
+                },
+                "operations": ["CANCEL", "CAPTURE", "REFUND"],
+                "success": "true",
+                "paymentMethod": "mc",
+                "additionalData": {
+                    "expiryDate": "03/2030",
+                    "authCode": "033899",
+                    "cardBin": "411111",
+                    "cardSummary": "1111",
+                    "checkoutSessionId": "CSF46729982237A879"
+                },
+                "merchantReference": "93ca495f-3b85-4df7-aeb0-052194014c2e",
+                "pspReference": "NC6HT9CRT65ZGN82",
+                "eventDate": "2021-09-13T14:10:22+02:00"
+            }
+        },
+        {
+            "NotificationRequestItem": {
+                "eventCode": "AUTHORISATION",
+                "merchantAccountCode": "Djadyen_merchant_account",
+                "reason": "033899:1111:03/2030",
+                "amount": {
+                    "currency": "EUR",
+                    "value": 2500
+                },
+                "operations": ["CANCEL", "CAPTURE", "REFUND"],
+                "success": "true",
+                "paymentMethod": "mc",
+                "additionalData": {
+                    "expiryDate": "03/2030",
+                    "authCode": "033899",
+                    "cardBin": "411111",
+                    "cardSummary": "1111",
+                    "checkoutSessionId": "CSF46729982237A879"
+                },
+                "merchantReference": "93ca495f-3b85-4df7-aeb0-052194014c2e",
+                "pspReference": "NC6HT9CRT65ZGN82",
+                "eventDate": "2021-09-13T14:10:22+02:00"
+            }
+        },
+        {
+            "NotificationRequestItem": {
+                "eventCode": "AUTHORISATION",
+                "merchantAccountCode": "Djadyen_merchant_account",
+                "reason": "033899:1111:03/2030",
+                "amount": {
+                    "currency": "EUR",
+                    "value": 2500
+                },
+                "operations": ["CANCEL", "CAPTURE", "REFUND"],
+                "success": "true",
+                "paymentMethod": "mc",
+                "additionalData": {
+                    "expiryDate": "03/2030",
+                    "authCode": "033899",
+                    "cardBin": "411111",
+                    "cardSummary": "1111",
+                    "checkoutSessionId": "CSF46729982237A879"
+                },
+                "merchantReference": "93ca495f-3b85-4df7-aeb0-052194014c2e",
+                "pspReference": "NC6HT9CRT65ZGN82",
+                "eventDate": "2021-09-13T14:10:22+02:00"
+            }
+        }
+    ]
+}

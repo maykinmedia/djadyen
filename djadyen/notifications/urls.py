@@ -1,8 +1,11 @@
-from django.conf.urls import url
+try:
+    from django.urls import path
+except Exception:
+    from django.conf.urls import url as path
 
 from .views import NotificationView
 
-app_name = 'adyen-notifications'
+app_name = "adyen-notifications"
 urlpatterns = [
-    url(r'^$', NotificationView.as_view(), name="notification"),
+    path("", NotificationView.as_view(), name="notification"),
 ]

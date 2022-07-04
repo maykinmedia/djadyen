@@ -1,9 +1,0 @@
-[run]
-branch = True
-source = src
-
-[report]
-omit = */migrations/*,*/tests/*,tests.py
-exclude_lines =
-    pragma: no cover
-    noqa
