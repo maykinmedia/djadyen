@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
-{% load i18n adyen_tags %}
+{% load static i18n adyen_tags %}
 
 
 {% block content %}
+<script src="{% static 'djadyen/djadyen.js' %}"></script>
+<link rel="stylesheet" href="{% static 'djadyen/djadyen.css' %}"></link>
 {% adyen_payment_component order=object %}
 {% endblock %}

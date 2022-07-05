@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from ..models import AdyenNotification
+from .hmac import get_signature
 
 logger = logging.getLogger(__name__)
 
@@ -18,20 +19,22 @@ class NotificationView(View):
         return super(NotificationView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        """
-        Note that Adyen requires SSL/TLS client-certificate validation
-        but we don't do that. We do validate that the notification originates
-        from Adyen by verifying the HMAC.
-
-        TODO: Validate SSL/TLS client-certificate validation.
-        """
+        """ """
         logger.debug(_("New notification(s)"))
         json_params = json.loads(request.body)
         notification_items = json_params.get("notificationItems", [])
         for notification_item in notification_items:
-            notification = AdyenNotification.objects.create(
-                notification=json.dumps(notification_item.get("NotificationRequestItem"))
-            )
-            logger.debug(_("Notification saved | id: %s"), notification.id)
+            nir = notification_item.get("NotificationRequestItem")
+            signature = nir.get("additionalData", {}).get("hmacSignature")
 
-        return HttpResponse("[accepted]")
+            create_notification = False
+            if signature:
+                compare_signature = get_signature(nir)
+                if signature == compare_signature:
+                    create_notification = True
+
+            if create_notification:
+                notification = AdyenNotification.objects.create(notification=json.dumps(nir))
+                logger.debug(_("Notification saved | id: %s"), notification.id)
+                return HttpResponse("[accepted]")
+            return HttpResponse("[rejected]")

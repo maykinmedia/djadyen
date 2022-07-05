@@ -1,3 +1,7 @@
+# 2.0.1
+
+-   added missing static files
+
 # 2.0.0
 
 -   Switched to Web Drop-in and Web Compoments instead of HPP pages

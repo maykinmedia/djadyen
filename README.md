@@ -84,6 +84,7 @@ There is a command that will call the function `process_notification` to handle 
 -   `DJADYEN_CLIENT_KEY` _This is the client key. This key will be used in the components in the frontend._
 -   `DJADYEN_MERCHANT_ACCOUNT` _This is the merchant accont that is used in Adyen._
 -   `DJADYEN_ORDER_MODELS` _A list of models that are used to store Orders (Inherit from AdyenOrder). The models should be strings in the <app_label>.<model_name> form_
+-   `DJADYEN_NOTIFICATION_KEY` _The key to verify the notifications are from adyen_
 
 ### Optional settings
 

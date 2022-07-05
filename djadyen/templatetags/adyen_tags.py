@@ -25,7 +25,7 @@ def adyen_payment_component(order):
             "value": order.get_price_in_cents(),
             "currency": settings.DJADYEN_CURRENCYCODE,
         },
-        "reference": order.reference,
+        "reference": str(order.reference),
         "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
         "returnUrl": order.get_return_url(),
     }
