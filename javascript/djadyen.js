@@ -18,11 +18,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 sessionData: config.dataset.sessionData,
             },
             showPayButton: true,
-            onPaymentCompleted: (result, component) => {
-                console.info(result, component);
+            onPaymentCompleted: (result) => {
+                window.location = `${config.dataset.redirectUrl}?sessionId=${result.sessionData}`;
             },
             onError: (error, component) => {
-                console.error(
+                console.exception(
                     error.name,
                     error.message,
                     error.stack,

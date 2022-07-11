@@ -38,7 +38,8 @@ def adyen_payment_component(order):
             "client_key": settings.DJADYEN_CLIENT_KEY,
             "session_id": result.message.get("id"),
             "session_data": result.message.get("sessionData"),
-            "environment": "test",
+            "environment": settings.DJADYEN_ENVIRONMENT,
+            "redirect_url": order.get_return_url,
             "payment_type": order.payment_option.adyen_name if order.payment_option else "",
             "issuer": order.issuer.adyen_id if order.issuer else "",
         }
