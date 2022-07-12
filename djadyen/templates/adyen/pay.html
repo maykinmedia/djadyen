@@ -3,7 +3,5 @@
 
 
 {% block content %}
-<script src="{% static 'djadyen/djadyen.js' %}"></script>
-<link rel="stylesheet" href="{% static 'djadyen/djadyen.css' %}"></link>
 {% adyen_payment_component order=object %}
 {% endblock %}

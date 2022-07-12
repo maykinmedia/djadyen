@@ -5,11 +5,13 @@ import "./overwrites.css";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const config = document.querySelector("#djadyen-config");
+    const button = document.querySelector("#button");
 
     if (config) {
         const configuration = {
             environment: config.dataset.environment,
             clientKey: config.dataset.clientKey,
+            locale: config.dataset.language,
             analytics: {
                 enabled: false,
             },
@@ -17,9 +19,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 id: config.dataset.sessionId,
                 sessionData: config.dataset.sessionData,
             },
-            showPayButton: true,
             onPaymentCompleted: (result) => {
-                window.location = `${config.dataset.redirectUrl}?sessionId=${result.sessionData}`;
+                console.log("onPaymentCompleted", "result", result);
+                console.log("onPaymentCompleted", "checkout", checkout);
+                console.log("onPaymentCompleted", "component", component);
+
+                window.location = config.dataset.redirectUrl;
             },
             onError: (error, component) => {
                 console.exception(
@@ -40,7 +45,60 @@ document.addEventListener("DOMContentLoaded", async () => {
         const component = checkout
             .create(config.dataset.paymentType, paymentConfiguration)
             .mount("#djadyen-container");
-    } else {
-        console.error("No payment type found");
+        if (paymentConfiguration.issuer) {
+            setTimeout(() => {
+                component.submit();
+            }, 50);
+        }
+
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            component.submit();
+        });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const config = document.querySelector("#djadyen-status-config");
+
+    if (config) {
+        let newStatus = false;
+
+        const poll = async ({ fn, validate, interval, maxAttempts }) => {
+            let attempts = 0;
+
+            const executePoll = async (resolve, reject) => {
+                const result = await fn();
+                attempts++;
+
+                if (validate(result)) {
+                    return resolve(result);
+                } else if (maxAttempts && attempts === maxAttempts) {
+                    return reject(new Error("Exceeded max attempts"));
+                } else {
+                    setTimeout(executePoll, interval, resolve, reject);
+                }
+            };
+
+            return new Promise(executePoll);
+        };
+
+        const fetchNewStatus = async () => {
+            const response = await fetch(config.dataset.statusUrl);
+            const data = await response.json();
+            return data;
+        };
+
+        poll({
+            fn: fetchNewStatus,
+            validate: (data) => {
+                return !!data.updatedStatus;
+            },
+            interval: 10000,
+        })
+            .then((user) => {
+                window.location.reload();
+            })
+            .catch((err) => console.error(err));
     }
 });

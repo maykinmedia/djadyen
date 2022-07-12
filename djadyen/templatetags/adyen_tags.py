@@ -1,8 +1,10 @@
 from django import template
+from django.utils.translation import get_language
 
 import Adyen
 
 from djadyen import settings
+from djadyen.choices import Status
 
 register = template.Library()
 
@@ -40,7 +42,13 @@ def adyen_payment_component(order):
             "session_data": result.message.get("sessionData"),
             "environment": settings.DJADYEN_ENVIRONMENT,
             "redirect_url": order.get_return_url,
+            "language": get_language(),
             "payment_type": order.payment_option.adyen_name if order.payment_option else "",
             "issuer": order.issuer.adyen_id if order.issuer else "",
         }
     return {}
+
+
+@register.inclusion_tag("adyen/polling.html")
+def adyen_status_polling(order, status_url):
+    return {"status_url": status_url, "pending": order.status in [Status.Created, Status.Pending]}

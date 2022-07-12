@@ -1,0 +1,9 @@
+{% load static %}
+
+{% if pending %}
+<script defer src="{% static 'djadyen/djadyen.js' %}" type="text/javascript"></script>
+<div
+    id="djadyen-status-config"
+    data-status-url="{{ status_url }}"
+></div>
+{% endif %}

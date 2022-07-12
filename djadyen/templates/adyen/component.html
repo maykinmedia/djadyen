@@ -1,4 +1,6 @@
-{% load static %}
+{% load static i18n %}
+<script defer src="{% static 'djadyen/djadyen.js' %}" type="text/javascript"></script>
+<link rel="stylesheet" rel="preload" as="style" href="{% static 'djadyen/djadyen.css' %}"></link>
 <div
     id="djadyen-config"
     data-session-id="{{ session_id }}"
@@ -6,7 +8,11 @@
     data-client-key="{{ client_key }}"
     data-environment="{{ environment }}"
     data-redirect-url="{{ redirect_url }}"
+    data-language="{{ language }}"
     data-payment-type="{% firstof payment_type 'dropin' %}"
     {% if issuer %}data-issuer="{{ issuer }}"{% endif %}
 ></div>
 <div id="djadyen-container"></div>
+<div id="djadyen-actions">
+    <button id="button" class="button button">{% translate "Betaal" %}</button>
+</div>
