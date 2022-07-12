@@ -74,3 +74,4 @@ DJADYEN_CLIENT_KEY = "test_client_key"
 DJADYEN_APPNAME = "Djadyen testapp"
 DJADYEN_MERCHANT_ACCOUNT = "Djadyen_merchant_account"
 DJADYEN_ORDER_MODELS = ["testapp.Order"]
+DJADYEN_NOTIFICATION_KEY = "test notification key"
