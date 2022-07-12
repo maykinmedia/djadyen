@@ -20,7 +20,9 @@ class Command(BaseCommand):
             minutes=settings.DJADYEN_HANDLE_NOTIFICATION_MINUTES_AGO
         )
 
-        order_models = [apps.get_model(model) for model in settings.DJADYEN_ORDER_MODELS]
+        order_models = [
+            apps.get_model(model) for model in settings.DJADYEN_ORDER_MODELS
+        ]
 
         # Process notifications which have been sent by Adyen.
         for notification in AdyenNotification.objects.filter(

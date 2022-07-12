@@ -16,7 +16,8 @@
                     "expiryDate": "03/2030",
                     "cardBin": "411111",
                     "cardSummary": "1112",
-                    "checkoutSessionId": "861631540104159H"
+                    "checkoutSessionId": "861631540104159H",
+                    "hmacSignature": "ckOJpnxKL+2IxkBC6RMGTrC4s1F+dH8f+HZ/WKDPTGM="
                 },
                 "merchantReference": "93ca495f-3b85-4df7-aeb0-052194014c2e",
                 "pspReference": "KHQC5N7G84BLNK43",

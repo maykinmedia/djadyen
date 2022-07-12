@@ -18,7 +18,8 @@
                     "authCode": "033899",
                     "cardBin": "411111",
                     "cardSummary": "1111",
-                    "checkoutSessionId": "CSF46729982237A879"
+                    "checkoutSessionId": "CSF46729982237A879",
+                    "hmacSignature": "8D5itRe9XosFWtyfQdIRP6GgEp41FsrKdwajUDK+ulM="
                 },
                 "merchantReference": "93ca495f-3b85-4df7-aeb0-052194014c2e",
                 "pspReference": "NC6HT9CRT65ZGN82",
@@ -42,7 +43,8 @@
                     "authCode": "033899",
                     "cardBin": "411111",
                     "cardSummary": "1111",
-                    "checkoutSessionId": "CSF46729982237A879"
+                    "checkoutSessionId": "CSF46729982237A879",
+                    "hmacSignature": "8D5itRe9XosFWtyfQdIRP6GgEp41FsrKdwajUDK+ulM="
                 },
                 "merchantReference": "93ca495f-3b85-4df7-aeb0-052194014c2e",
                 "pspReference": "NC6HT9CRT65ZGN82",
@@ -66,7 +68,8 @@
                     "authCode": "033899",
                     "cardBin": "411111",
                     "cardSummary": "1111",
-                    "checkoutSessionId": "CSF46729982237A879"
+                    "checkoutSessionId": "CSF46729982237A879",
+                    "hmacSignature": "8D5itRe9XosFWtyfQdIRP6GgEp41FsrKdwajUDK+ulM="
                 },
                 "merchantReference": "93ca495f-3b85-4df7-aeb0-052194014c2e",
                 "pspReference": "NC6HT9CRT65ZGN82",

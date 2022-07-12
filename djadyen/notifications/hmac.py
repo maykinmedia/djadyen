@@ -19,16 +19,21 @@ def get_signature(params):
 
     logger.debug("Params: %s", params)
 
-    signing_string = "{psp_reference}:{original_reference}:{merchant_account_code}:{merchant_reference}:{value}:{currency}:{event_code}:{success}".format(
-        psp_reference=params.get("pspReference", ""),
-        original_reference=params.get("originalReference", ""),
-        merchant_account_code=params.get("merchantAccountCode", ""),
-        merchant_reference=params.get("merchantReference", ""),
-        value=params.get("amount", {}).get("value", ""),
-        currency=params.get("amount", {}).get("currency", ""),
-        event_code=params.get("eventCode", ""),
-        success=params.get("success", ""),
+    signing_string = "{part1}:{part2}".format(
+        part1="{psp_reference}:{original_reference}:{merchant_account_code}".format(
+            psp_reference=params.get("pspReference", ""),
+            original_reference=params.get("originalReference", ""),
+            merchant_account_code=params.get("merchantAccountCode", ""),
+        ),
+        part2="{merchant_reference}:{value}:{currency}:{event_code}:{success}".format(
+            merchant_reference=params.get("merchantReference", ""),
+            value=params.get("amount", {}).get("value", ""),
+            currency=params.get("amount", {}).get("currency", ""),
+            event_code=params.get("eventCode", ""),
+            success=params.get("success", ""),
+        ),
     )
+    print(signing_string)
     logger.debug("Signing Params: %s", signing_string)
 
     hmac_string = hmac.new(hmac_key, signing_string.encode("utf-8"), hashlib.sha256)

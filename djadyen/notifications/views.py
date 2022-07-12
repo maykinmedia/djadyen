@@ -23,10 +23,10 @@ class NotificationView(View):
         logger.debug(_("New notification(s)"))
         json_params = json.loads(request.body)
         notification_items = json_params.get("notificationItems", [])
+        successfully_created = True
         for notification_item in notification_items:
             nir = notification_item.get("NotificationRequestItem")
             signature = nir.get("additionalData", {}).get("hmacSignature")
-
             create_notification = False
             if signature:
                 compare_signature = get_signature(nir)
@@ -34,7 +34,13 @@ class NotificationView(View):
                     create_notification = True
 
             if create_notification:
-                notification = AdyenNotification.objects.create(notification=json.dumps(nir))
+                notification = AdyenNotification.objects.create(
+                    notification=json.dumps(nir)
+                )
                 logger.debug(_("Notification saved | id: %s"), notification.id)
-                return HttpResponse("[accepted]")
-            return HttpResponse("[rejected]")
+            else:
+                successfully_created = False
+
+        if successfully_created:
+            return HttpResponse("[accepted]")
+        return HttpResponse("[rejected]")

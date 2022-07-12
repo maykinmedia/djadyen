@@ -43,7 +43,9 @@ def adyen_payment_component(order):
             "environment": settings.DJADYEN_ENVIRONMENT,
             "redirect_url": order.get_return_url,
             "language": get_language(),
-            "payment_type": order.payment_option.adyen_name if order.payment_option else "",
+            "payment_type": order.payment_option.adyen_name
+            if order.payment_option
+            else "",
             "issuer": order.issuer.adyen_id if order.issuer else "",
         }
     return {}
@@ -51,4 +53,7 @@ def adyen_payment_component(order):
 
 @register.inclusion_tag("adyen/polling.html")
 def adyen_status_polling(order, status_url):
-    return {"status_url": status_url, "pending": order.status in [Status.Created, Status.Pending]}
+    return {
+        "status_url": status_url,
+        "pending": order.status in [Status.Created, Status.Pending],
+    }

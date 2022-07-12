@@ -109,7 +109,9 @@ class ProcessNotifications(TestFileMixin, TestCase):
     def test_process_notifications_unsuccessful(self):
         self.assertFalse(self.order1.paid)
 
-        self.notification1.notification = self._get_json_data("notification_data_unsuccessful.json")
+        self.notification1.notification = self._get_json_data(
+            "notification_data_unsuccessful.json"
+        )
         self.notification1.save()
 
         call_command("adyen_maintenance")
@@ -120,58 +122,6 @@ class ProcessNotifications(TestFileMixin, TestCase):
         self.notification1.refresh_from_db()
         self.assertTrue(self.notification1.is_processed)
         self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
-
-    # No longer used
-    # @freeze_time("2019-01-01 12:00")
-    # def test_process_notifications_is_error(self):
-    #     self.assertFalse(self.order1.paid)
-
-    #     self.data.update(eventCode="ERROR")
-    #     self.notification1.notification = json.dumps(self.data)
-    #     self.notification1.save()
-
-    #     call_command("adyen_maintenance")
-
-    #     self.order1.refresh_from_db()
-    #     self.assertFalse(self.order1.paid)
-
-    #     self.notification1.refresh_from_db()
-    #     self.assertTrue(self.notification1.is_processed)
-    #     self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
-
-    # @freeze_time("2019-01-01 12:00")
-    # def test_process_notifications_is_cancelled(self):
-    #     self.assertFalse(self.order1.paid)
-
-    #     self.data.update(eventCode="CANCEL")
-    #     self.notification1.notification = json.dumps(self.data)
-    #     self.notification1.save()
-
-    #     call_command("adyen_maintenance")
-
-    #     self.order1.refresh_from_db()
-    #     self.assertFalse(self.order1.paid)
-
-    #     self.notification1.refresh_from_db()
-    #     self.assertTrue(self.notification1.is_processed)
-    #     self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
-
-    # @freeze_time("2019-01-01 12:00")
-    # def test_process_notifications_is_refused(self):
-    #     self.assertFalse(self.order1.paid)
-
-    #     self.data.update(eventCode="REFUSED")
-    #     self.notification1.notification = json.dumps(self.data)
-    #     self.notification1.save()
-
-    #     call_command("adyen_maintenance")
-
-    #     self.order1.refresh_from_db()
-    #     self.assertFalse(self.order1.paid)
-
-    #     self.notification1.refresh_from_db()
-    #     self.assertTrue(self.notification1.is_processed)
-    #     self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
 
 
 class CleanupPending(TestFileMixin, TestCase):
@@ -191,7 +141,9 @@ class CleanupPending(TestFileMixin, TestCase):
 
         with freeze_time("2019-01-01 11:44"):
             self.notification1 = NotificationFactory.create(
-                notification=self._get_json_data("notification_data_reference_unknown.json"),
+                notification=self._get_json_data(
+                    "notification_data_reference_unknown.json"
+                ),
                 is_processed=False,
             )
 
