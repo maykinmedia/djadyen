@@ -5,13 +5,13 @@ import "./overwrites.css";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const config = document.querySelector("#djadyen-config");
-    const button = document.querySelector("#button");
 
     if (config) {
         const configuration = {
             environment: config.dataset.environment,
             clientKey: config.dataset.clientKey,
             locale: config.dataset.language,
+            showPayButton: true,
             analytics: {
                 enabled: false,
             },
@@ -50,11 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 component.submit();
             }, 50);
         }
-
-        button.addEventListener("click", (event) => {
-            event.preventDefault();
-            component.submit();
-        });
     }
 });
 

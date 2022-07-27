@@ -1,3 +1,4 @@
+import logging
 from django import template
 from django.utils.translation import get_language
 
@@ -7,20 +8,26 @@ from djadyen import settings
 from djadyen.choices import Status
 
 register = template.Library()
+logger = logging.getLogger("adyen")
 
 
 @register.inclusion_tag("adyen/component.html")
-def adyen_payment_component(order):
+def adyen_payment_component(
+    language,
+    order,
+    merchant_account=settings.DJADYEN_MERCHANT_ACCOUNT,
+    country_code=settings.DJADYEN_DEFAULT_COUNTRY_CODE,
+):
     """
     Will display a singular payment method.
     """
+    logger.info("Start new payment for {}".format(str(order.reference)))
     ady = Adyen.Adyen()
 
     # Setting global values
     ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
     ady.payment.client.xapikey = settings.DJADYEN_SERVER_KEY
     ady.payment.client.app_name = settings.DJADYEN_APPNAME
-
     # Setting request data.
     request = {
         "amount": {
@@ -28,10 +35,14 @@ def adyen_payment_component(order):
             "currency": settings.DJADYEN_CURRENCYCODE,
         },
         "reference": str(order.reference),
-        "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
+        "merchantAccount": merchant_account,
         "returnUrl": order.get_return_url(),
+        "shopperLocale": language.lower(),
+        "countryCode": country_code.lower()
+        if country_code
+        else settings.DJADYEN_DEFAULT_COUNTRY_CODE,
     }
-
+    logger.info(request)
     # Starting the checkout.
     result = ady.checkout.sessions(request)
 

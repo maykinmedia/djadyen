@@ -10,7 +10,7 @@ from djadyen import settings
 
 from .choices import Status
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("adyen")
 
 
 class AdyenNotification(models.Model):

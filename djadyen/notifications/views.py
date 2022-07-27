@@ -10,7 +10,7 @@ from django.views.generic import View
 from ..models import AdyenNotification
 from .hmac import get_signature
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("adyen")
 
 
 class NotificationView(View):
