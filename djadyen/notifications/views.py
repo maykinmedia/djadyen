@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from ..models import AdyenNotification
-from .hmac import get_signature
+from .signing import get_signature
 
 logger = logging.getLogger("adyen")
 

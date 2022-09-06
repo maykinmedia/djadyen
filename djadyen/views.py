@@ -3,7 +3,10 @@ import logging
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.generic.detail import DetailView
 
-from .choices import Status
+import Adyen
+
+from djadyen import settings
+from djadyen.choices import Status
 
 logger = logging.getLogger("adyen")
 
@@ -31,8 +34,27 @@ class AdyenResponseView(DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+
         if self.object.get_price_in_cents() == 0:
             self.handle_authorised(self.object)
+
+        resultRedirect = request.GET.get("redirectResult")
+        if resultRedirect:
+            ady = Adyen.Adyen()
+            # Setting global values
+            ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
+            ady.payment.client.xapikey = settings.DJADYEN_SERVER_KEY
+            ady.payment.client.app_name = settings.DJADYEN_APPNAME
+            # Setting request data.
+            request = {
+                "details": {
+                    "redirectResult": resultRedirect,
+                },
+            }
+            # Requesting the status.
+            result = ady.checkout.payments_details(request)
+            if result.message.get("resultCode") == "Authorised":
+                self.handle_authorised(self.object)
         return super(AdyenResponseView, self).get(request, *args, **kwargs)
 
     def handle_authorised(self, order):
