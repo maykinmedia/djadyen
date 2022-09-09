@@ -1,14 +1,8 @@
 # DjAdyen
 
 [![PyPI version](https://badge.fury.io/py/djadyen.svg)](https://badge.fury.io/py/djadyen)
-[![PyPI python versions](https://img.shields.io/pypi/pyversions/Django.svg)]([![PyPI](https://img.shields.io/pypi/v/nine.svg)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmaykinmedia%2Fdjadyen.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmaykinmedia%2Fdjadyen?ref=badge_shield)
-](<[![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/)>))
-[![PyPI Licence](https://img.shields.io/pypi/l/Django.svg)](<[![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)]([![PyPI](https://img.shields.io/pypi/v/nine.svg)]([![PyPI](https://img.shields.io/pypi/dm/Django.svg)](https://pypi.python.org/pypi/djadyen/)))>)
-
-[![Build Status](https://travis-ci.org/maykinmedia/djadyen.svg?branch=master)](https://travis-ci.org/maykinmedia/djadyen)
-[![codecov](https://codecov.io/gh/maykinmedia/djadyen/branch/master/graph/badge.svg)](https://codecov.io/gh/maykinmedia/djadyen)
-[![Lintly](https://lintly.com/gh/maykinmedia/djadyen/badge.svg)](https://lintly.com/gh/maykinmedia/djadyen/)
-[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/maykinmedia/djadyen)
+[![Testing](https://github.com/maykinmedia/djadyen/actions/workflows/main.yml/badge.svg)](https://github.com/maykinmedia/djadyen/actions/workflows/main.yml)
+[![Linting](https://github.com/maykinmedia/djadyen/actions/workflows/linting.yml/badge.svg)](https://github.com/maykinmedia/djadyen/actions/workflows/linting.yml)
 
 This module is used to connect your django application to the payment provider Adyen using the ["Web Components"](https://docs.adyen.com/online-payments/web-components) and ["Web Drop-in"](https://docs.adyen.com/online-payments/web-drop-in)
 
@@ -152,26 +146,6 @@ class ConfirmationView(AdyenResponseView, TemplateView):
     def handle_authorised(self):
         self.order.status = Status.Authorised
         return self.done()
-
-    def handle_pending(self):
-        self.order.status = Status.Pending
-        return self.done()
-
-    def handle_refused(self):
-        self.order.status = Status.Refused
-        return self.done()
-
-    def handle_error(self):
-        self.order.status = Status.Error
-        return self.done()
-
-    def handle_canceled(self):
-        self.order.status = Status.Cancel
-        return self.done()
-
-    def handle_default(self):
-        if self.psp_reference:
-            self.order.psp_reference = self.psp_reference
 ```
 
 # Adyen notifications
