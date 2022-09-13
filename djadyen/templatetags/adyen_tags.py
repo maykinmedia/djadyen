@@ -24,10 +24,18 @@ def adyen_payment_component(
     logger.info("Start new payment for {}".format(str(order.reference)))
     ady = Adyen.Adyen()
 
+    if not settings.DJADYEN_ENVIRONMENT:
+        assert False, "Please provide an environment."
+
+    if settings.DJADYEN_ENVIRONMENT == "live" and not settings.DJADYEN_LIVE_URL_PREFIX:
+        assert False, "Please provide the live_url_prefix. https://docs.adyen.com/development-resources/live-endpoints#live-url-prefix"
+
     # Setting global values
     ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
     ady.payment.client.xapikey = settings.DJADYEN_SERVER_KEY
     ady.payment.client.app_name = settings.DJADYEN_APPNAME
+    ady.payment.client.live_endpoint_prefix = settings.DJADYEN_LIVE_URL_PREFIX
+
     # Setting request data.
     request = {
         "amount": {
