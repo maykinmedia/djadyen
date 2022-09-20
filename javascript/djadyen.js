@@ -20,10 +20,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 sessionData: config.dataset.sessionData,
             },
             onPaymentCompleted: (result) => {
-                console.log("onPaymentCompleted", "result", result);
-                console.log("onPaymentCompleted", "checkout", checkout);
-                console.log("onPaymentCompleted", "component", component);
-
                 window.location = config.dataset.redirectUrl;
             },
             onError: (error, component) => {

@@ -50,6 +50,11 @@ def adyen_payment_component(
         if country_code
         else settings.DJADYEN_DEFAULT_COUNTRY_CODE,
     }
+    try:
+        request["shopperEmail"] = order.email
+    except Exception:
+        pass
+
     logger.info(request)
     # Starting the checkout.
     result = ady.checkout.sessions(request)
