@@ -65,7 +65,7 @@ class AdyenResponseView(DetailView):
                 },
             }
             # Requesting the status.
-            result = ady.checkout.payments_details(request)
+            result = ady.checkout.payments_api.payments_details(request)
             result_code = result.message.get("resultCode")
             if result_code == "Authorised":
                 self.handle_authorised(self.object)

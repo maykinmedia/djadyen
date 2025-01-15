@@ -61,7 +61,7 @@ def adyen_payment_component(
 
     logger.info(request)
     # Starting the checkout.
-    result = ady.checkout.sessions(request)
+    result = ady.checkout.payments_api.sessions(request)
 
     if result.status_code == 201:
         return {
