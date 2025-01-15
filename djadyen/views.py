@@ -1,12 +1,13 @@
 import logging
 
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic.detail import DetailView
 
 import Adyen
 
 from djadyen import settings
 from djadyen.choices import Status
+from djadyen.constants import LIVE_URL_PREFIX_ERROR
 
 logger = logging.getLogger("adyen")
 
@@ -45,8 +46,11 @@ class AdyenResponseView(DetailView):
             if not settings.DJADYEN_ENVIRONMENT:
                 assert False, "Please provide an environment."
 
-            if settings.DJADYEN_ENVIRONMENT == "live" and not settings.DJADYEN_LIVE_URL_PREFIX:
-                assert False, "Please provide the live_url_prefix. https://docs.adyen.com/development-resources/live-endpoints#live-url-prefix"
+            if (
+                settings.DJADYEN_ENVIRONMENT == "live"
+                and not settings.DJADYEN_LIVE_URL_PREFIX
+            ):
+                assert False, LIVE_URL_PREFIX_ERROR
 
             # Setting global values
             ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT

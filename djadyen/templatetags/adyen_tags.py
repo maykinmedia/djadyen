@@ -1,4 +1,5 @@
 import logging
+
 from django import template
 from django.utils.translation import get_language
 
@@ -6,6 +7,7 @@ import Adyen
 
 from djadyen import settings
 from djadyen.choices import Status
+from djadyen.constants import LIVE_URL_PREFIX_ERROR
 
 register = template.Library()
 logger = logging.getLogger("adyen")
@@ -28,7 +30,7 @@ def adyen_payment_component(
         assert False, "Please provide an environment."
 
     if settings.DJADYEN_ENVIRONMENT == "live" and not settings.DJADYEN_LIVE_URL_PREFIX:
-        assert False, "Please provide the live_url_prefix. https://docs.adyen.com/development-resources/live-endpoints#live-url-prefix"
+        assert False, LIVE_URL_PREFIX_ERROR
 
     # Setting global values
     ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
@@ -46,9 +48,11 @@ def adyen_payment_component(
         "merchantAccount": merchant_account,
         "returnUrl": order.get_return_url(),
         "shopperLocale": language.lower(),
-        "countryCode": country_code.lower()
-        if country_code
-        else settings.DJADYEN_DEFAULT_COUNTRY_CODE,
+        "countryCode": (
+            country_code.lower()
+            if country_code
+            else settings.DJADYEN_DEFAULT_COUNTRY_CODE
+        ),
     }
     try:
         request["shopperEmail"] = order.email
@@ -67,9 +71,9 @@ def adyen_payment_component(
             "environment": settings.DJADYEN_ENVIRONMENT,
             "redirect_url": order.get_return_url,
             "language": get_language(),
-            "payment_type": order.payment_option.adyen_name
-            if order.payment_option
-            else "",
+            "payment_type": (
+                order.payment_option.adyen_name if order.payment_option else ""
+            ),
             "issuer": order.issuer.adyen_id if order.issuer else "",
         }
     return {}

@@ -4,6 +4,7 @@ import Adyen
 
 from djadyen import settings
 
+from ...constants import LIVE_URL_PREFIX_ERROR
 from ...models import AdyenIssuer, AdyenPaymentOption
 
 
@@ -41,8 +42,11 @@ class Command(BaseCommand):
         if not settings.DJADYEN_ENVIRONMENT:
             assert False, "Please provide an environment."
 
-        if settings.DJADYEN_ENVIRONMENT == "live" and not settings.DJADYEN_LIVE_URL_PREFIX:
-            assert False, "Please provide the live_url_prefix. https://docs.adyen.com/development-resources/live-endpoints#live-url-prefix"
+        if (
+            settings.DJADYEN_ENVIRONMENT == "live"
+            and not settings.DJADYEN_LIVE_URL_PREFIX
+        ):
+            assert False, LIVE_URL_PREFIX_ERROR
 
         # Setting global values
         ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
