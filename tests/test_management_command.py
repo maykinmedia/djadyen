@@ -20,7 +20,7 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
     @requests_mock.mock()
     def test_on_empty_database_mock(self, mock):
         mock.post(
-            "https://checkout-test.adyen.com/v69/paymentMethods",
+            "https://checkout-test.adyen.com/v70/paymentMethods",
             [
                 {
                     "content": self._get_test_file("payment_methods.json").read(),
@@ -37,7 +37,7 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
     @requests_mock.mock()
     def test_on_existing_database_mock(self, mock):
         mock.post(
-            "https://checkout-test.adyen.com/v69/paymentMethods",
+            "https://checkout-test.adyen.com/v70/paymentMethods",
             [
                 {
                     "content": self._get_test_file("payment_methods.json").read(),

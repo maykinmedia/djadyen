@@ -59,7 +59,7 @@ class Command(BaseCommand):
             "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
         }
         # Starting the checkout.
-        result = ady.checkout.payment_methods(request)
+        result = ady.checkout.payments_api.payment_methods(request)
 
         payment_methods = result.message.get("paymentMethods")
         for payment_method in payment_methods:
