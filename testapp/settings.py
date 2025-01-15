@@ -69,6 +69,7 @@ TEMPLATES = [
 ]
 
 # New settings
+DJADYEN_ENVIRONMENT = "test"
 DJADYEN_SERVER_KEY = "test_server_key"
 DJADYEN_CLIENT_KEY = "test_client_key"
 DJADYEN_APPNAME = "Djadyen testapp"
