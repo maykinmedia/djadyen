@@ -1,5 +1,3 @@
-from django.views.generic import TemplateView
-
 from djadyen.choices import Status
 from djadyen.views import AdyenResponseView
 
