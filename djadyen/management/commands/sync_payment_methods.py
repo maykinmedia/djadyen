@@ -4,6 +4,7 @@ import Adyen
 
 from djadyen import settings
 
+from ...constants import LIVE_URL_PREFIX_ERROR
 from ...models import AdyenIssuer, AdyenPaymentOption
 
 
@@ -38,17 +39,27 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         ady = Adyen.Adyen()
 
+        if not settings.DJADYEN_ENVIRONMENT:
+            assert False, "Please provide an environment."
+
+        if (
+            settings.DJADYEN_ENVIRONMENT == "live"
+            and not settings.DJADYEN_LIVE_URL_PREFIX
+        ):
+            assert False, LIVE_URL_PREFIX_ERROR
+
         # Setting global values
         ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
         ady.payment.client.xapikey = settings.DJADYEN_SERVER_KEY
         ady.payment.client.app_name = settings.DJADYEN_APPNAME
+        ady.payment.client.live_endpoint_prefix = settings.DJADYEN_LIVE_URL_PREFIX
 
         # Setting request data.
         request = {
             "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
         }
         # Starting the checkout.
-        result = ady.checkout.payment_methods(request)
+        result = ady.checkout.payments_api.payment_methods(request)
 
         payment_methods = result.message.get("paymentMethods")
         for payment_method in payment_methods:

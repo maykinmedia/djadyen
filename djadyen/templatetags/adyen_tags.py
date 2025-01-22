@@ -1,4 +1,5 @@
 import logging
+
 from django import template
 from django.utils.translation import get_language
 
@@ -6,6 +7,7 @@ import Adyen
 
 from djadyen import settings
 from djadyen.choices import Status
+from djadyen.constants import LIVE_URL_PREFIX_ERROR
 
 register = template.Library()
 logger = logging.getLogger("adyen")
@@ -24,10 +26,18 @@ def adyen_payment_component(
     logger.info("Start new payment for {}".format(str(order.reference)))
     ady = Adyen.Adyen()
 
+    if not settings.DJADYEN_ENVIRONMENT:
+        assert False, "Please provide an environment."
+
+    if settings.DJADYEN_ENVIRONMENT == "live" and not settings.DJADYEN_LIVE_URL_PREFIX:
+        assert False, LIVE_URL_PREFIX_ERROR
+
     # Setting global values
     ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
     ady.payment.client.xapikey = settings.DJADYEN_SERVER_KEY
     ady.payment.client.app_name = settings.DJADYEN_APPNAME
+    ady.payment.client.live_endpoint_prefix = settings.DJADYEN_LIVE_URL_PREFIX
+
     # Setting request data.
     request = {
         "amount": {
@@ -38,13 +48,20 @@ def adyen_payment_component(
         "merchantAccount": merchant_account,
         "returnUrl": order.get_return_url(),
         "shopperLocale": language.lower(),
-        "countryCode": country_code.lower()
-        if country_code
-        else settings.DJADYEN_DEFAULT_COUNTRY_CODE,
+        "countryCode": (
+            country_code.lower()
+            if country_code
+            else settings.DJADYEN_DEFAULT_COUNTRY_CODE
+        ),
     }
+    try:
+        request["shopperEmail"] = order.email
+    except Exception:
+        pass
+
     logger.info(request)
     # Starting the checkout.
-    result = ady.checkout.sessions(request)
+    result = ady.checkout.payments_api.sessions(request)
 
     if result.status_code == 201:
         return {
@@ -54,9 +71,9 @@ def adyen_payment_component(
             "environment": settings.DJADYEN_ENVIRONMENT,
             "redirect_url": order.get_return_url,
             "language": get_language(),
-            "payment_type": order.payment_option.adyen_name
-            if order.payment_option
-            else "",
+            "payment_type": (
+                order.payment_option.adyen_name if order.payment_option else ""
+            ),
             "issuer": order.issuer.adyen_id if order.issuer else "",
         }
     return {}

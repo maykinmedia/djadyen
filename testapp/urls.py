@@ -1,5 +1,5 @@
 try:
-    from django.urls import path, include
+    from django.urls import include, path
 except Exception:
     from django.conf.urls import url as path, include
 

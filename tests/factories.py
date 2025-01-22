@@ -2,7 +2,6 @@ import factory
 
 from djadyen.choices import Status
 from djadyen.models import AdyenIssuer, AdyenNotification, AdyenPaymentOption
-
 from testapp.models import Order
 
 
