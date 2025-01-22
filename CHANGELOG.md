@@ -1,3 +1,8 @@
+
+# 3.0.0
+
+-   Updated the Adyen to 10+.
+
 # 2.0.4
 
 -   Switched to Web Drop-in and Web Compoments instead of HPP pages
