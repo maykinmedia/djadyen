@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% load i18n adyen_tags static %}
+
+{% block content %}
+{% adyen_payment_component language=request.LANGUAGE_CODE order=object country_code="nl" %}
+{% endblock %}

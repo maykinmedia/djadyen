@@ -1,5 +1,5 @@
 from djadyen.choices import Status
-from djadyen.views import AdyenResponseView
+from djadyen.views import AdyenPaymentView, AdyenResponseView
 
 from .models import Order
 
@@ -29,4 +29,12 @@ class ConfirmationView(AdyenResponseView):
         return self.done()
 
     def handle_default(self):
+        pass
+
+
+class PaymentView(AdyenPaymentView):
+    template_name = "app/payment.html"
+    model = Order
+
+    def get_return_url(self, **kwargs):
         pass

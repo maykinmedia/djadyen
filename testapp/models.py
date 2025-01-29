@@ -1,5 +1,7 @@
 from django.db import models
+from django.urls import reverse
 
+from djadyen import settings
 from djadyen.models import AdyenOrder
 
 
@@ -15,3 +17,9 @@ class Order(AdyenOrder):
         if notification.is_authorised():
             self.paid = True
             self.save()
+
+    def get_return_url(self):
+        return "{host}{path}".format(
+            host="https://example.com",
+            path=reverse("confirm", kwargs={"reference": self.reference}),
+        )
