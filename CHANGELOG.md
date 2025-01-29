@@ -1,4 +1,7 @@
 
+# 3.1.0
+-   Adding support for iDeal 2.0
+
 # 3.0.0
 
 -   Updated the Adyen to 10+.
