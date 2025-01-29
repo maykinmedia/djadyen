@@ -1,13 +1,16 @@
 import logging
 
 from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import redirect
 from django.views.generic.detail import DetailView
 
 import Adyen
+from glom import PathAccessError, glom
 
 from djadyen import settings
 from djadyen.choices import Status
 from djadyen.constants import LIVE_URL_PREFIX_ERROR
+from djadyen.utils import setup_adyen_client
 
 logger = logging.getLogger("adyen")
 
@@ -22,8 +25,45 @@ class AdyenPaymentView(DetailView):
     slug_field = "reference"
     slug_url_kwarg = "reference"
 
+    def redirect_ideal_2(self, request):
+        logger.info("Start new payment for {}".format(str(self.object.reference)))
+        ady = setup_adyen_client()
+
+        body = {
+            "amount": {
+                "value": self.object.get_price_in_cents(),
+                "currency": settings.DJADYEN_CURRENCYCODE,
+            },
+            "paymentMethod": {"type": "ideal"},
+            "reference": str(self.object.reference),
+            "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
+            "returnUrl": self.object.get_return_url(),
+            "shopperLocale": request.LANGUAGE_CODE.lower(),
+            "countryCode": (settings.DJADYEN_DEFAULT_COUNTRY_CODE.lower()),
+        }
+
+        try:
+            request["shopperEmail"] = self.object.email
+        except Exception:
+            pass
+
+        result = ady.checkout.payments_api.payments(body)
+        logger.info(request)
+
+        if result.status_code == 200:
+            if redirect_url := glom(
+                result.message, "action.url", skip_exc=PathAccessError
+            ):
+                return redirect(redirect_url)
+
+        return redirect(self.object.get_return_url())
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+
+        # Ideal 2.0 flow, ideal sorts out the bank itself.
+        if self.object.payment_option.adyen_name == "ideal" and not self.object.issuer:
+            return self.redirect_ideal_2(request)
         if self.object.get_price_in_cents() == 0:
             return HttpResponseRedirect(self.object.get_return_url())
         return super(AdyenPaymentView, self).get(request, *args, **kwargs)

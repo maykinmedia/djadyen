@@ -5,13 +5,11 @@ except Exception:
 
 from django.contrib import admin
 
-from djadyen.views import AdyenPaymentView
-
-from .views import ConfirmationView
+from .views import ConfirmationView, PaymentView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("<uuid:reference>/payment/", AdyenPaymentView.as_view(), name="payment"),
+    path("<uuid:reference>/payment/", PaymentView.as_view(), name="payment"),
     path("<uuid:reference>/confirm/", ConfirmationView.as_view(), name="confirm"),
     path(
         "adyen/notifications/",

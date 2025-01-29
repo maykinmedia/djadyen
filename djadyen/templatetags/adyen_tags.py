@@ -3,11 +3,9 @@ import logging
 from django import template
 from django.utils.translation import get_language
 
-import Adyen
-
 from djadyen import settings
 from djadyen.choices import Status
-from djadyen.constants import LIVE_URL_PREFIX_ERROR
+from djadyen.utils import setup_adyen_client
 
 register = template.Library()
 logger = logging.getLogger("adyen")
@@ -24,19 +22,7 @@ def adyen_payment_component(
     Will display a singular payment method.
     """
     logger.info("Start new payment for {}".format(str(order.reference)))
-    ady = Adyen.Adyen()
-
-    if not settings.DJADYEN_ENVIRONMENT:
-        assert False, "Please provide an environment."
-
-    if settings.DJADYEN_ENVIRONMENT == "live" and not settings.DJADYEN_LIVE_URL_PREFIX:
-        assert False, LIVE_URL_PREFIX_ERROR
-
-    # Setting global values
-    ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
-    ady.payment.client.xapikey = settings.DJADYEN_SERVER_KEY
-    ady.payment.client.app_name = settings.DJADYEN_APPNAME
-    ady.payment.client.live_endpoint_prefix = settings.DJADYEN_LIVE_URL_PREFIX
+    ady = setup_adyen_client()
 
     # Setting request data.
     request = {
