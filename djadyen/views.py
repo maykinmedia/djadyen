@@ -61,11 +61,16 @@ class AdyenPaymentView(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        # Ideal 2.0 flow, ideal sorts out the bank itself.
-        if self.object.payment_option.adyen_name == "ideal" and not self.object.issuer:
-            return self.redirect_ideal_2(request)
         if self.object.get_price_in_cents() == 0:
             return HttpResponseRedirect(self.object.get_return_url())
+
+        # Ideal 2.0 flow, ideal sorts out the bank itself.
+        if (
+            self.object.payment_option
+            and self.object.payment_option.adyen_name == "ideal"
+            and not self.object.issuer
+        ):
+            return self.redirect_ideal_2(request)
         return super(AdyenPaymentView, self).get(request, *args, **kwargs)
 
 

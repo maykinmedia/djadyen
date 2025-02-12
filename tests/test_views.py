@@ -61,6 +61,21 @@ class PaymentViewTest(WebTest):
         self.assertEqual(response.location, "https://example.com" + confirm_page)
 
     @requests_mock.Mocker()
+    def test_empty_payment_option(self, m: requests_mock.Mocker):
+        m.register_uri(
+            requests_mock.ANY,
+            requests_mock.ANY,
+            status_code=204,
+        )
+        ideal2 = PaymentOptionsFactory.create(adyen_name="ideal")
+        order = OrderFactory.create(payment_option=None, issuer=None)
+        url = reverse("payment", kwargs={"reference": order.reference})
+        confirm_page = reverse("confirm", kwargs={"reference": order.reference})
+
+        response = self.app.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    @requests_mock.Mocker()
     def test_ideal1_work_flow(self, m: requests_mock.Mocker):
         m.register_uri(
             requests_mock.ANY,
