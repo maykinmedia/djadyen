@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django import template
@@ -5,6 +6,7 @@ from django.utils.translation import get_language
 
 from djadyen import settings
 from djadyen.choices import Status
+from djadyen.conf import get_adyen_styles
 from djadyen.utils import setup_adyen_client
 
 register = template.Library()
@@ -50,7 +52,7 @@ def adyen_payment_component(
     result = ady.checkout.payments_api.sessions(request)
 
     if result.status_code == 201:
-        return {
+        context = {
             "client_key": settings.DJADYEN_CLIENT_KEY,
             "session_id": result.message.get("id"),
             "session_data": result.message.get("sessionData"),
@@ -62,6 +64,15 @@ def adyen_payment_component(
             ),
             "issuer": order.issuer.adyen_id if order.issuer else "",
         }
+
+        # Add custom styles to context as JSON
+        adyen_styles = get_adyen_styles()
+        if adyen_styles:
+            context["adyen_styles_json"] = json.dumps(adyen_styles)
+        else:
+            context["adyen_styles_json"] = None
+
+        return context
     return {}
 
 

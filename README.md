@@ -88,6 +88,58 @@ There is a command that will call the function `process_notification` to handle 
 -   `DJADYEN_REFETCH_OLD_STATUS` _(default=False) This is so you will always have the latest saved status. This will cause an extra db query!_
 -   `DJADYEN_HANDLE_NOTIFICATION_MINUTES_AGO` _(default=15) This defaults to 15 minutes. You can change the value to make this shorter or longer depending on the need._
 
+#### DJADYEN_STYLES
+
+(Optional) Customize the appearance of Adyen payment components.
+
+This setting allows you to configure the styling of Adyen Web Components by providing style definitions that are passed to the payment component configuration. This enables you to customize colors, fonts, and other visual properties of the payment form fields.
+
+**Example:**
+```python
+# settings.py
+DJADYEN_STYLES = {
+    'base': {
+        'color': '#000000',
+        'fontSize': '16px',
+        'fontFamily': 'Arial, sans-serif',
+    },
+    'placeholder': {
+        'color': '#999999',
+    },
+    'error': {
+        'color': '#ff0000',
+    },
+    'validated': {
+        'color': '#00ff00',
+    }
+}
+```
+
+**How it works:**
+
+The styles object is passed to the Adyen payment component configuration, allowing you to customize the appearance of input fields. The configuration supports several style categories:
+
+-   `base`: Default styling for form input fields
+-   `placeholder`: Styling for placeholder text
+-   `error`: Styling for fields in an error state
+-   `validated`: Styling for successfully validated fields
+
+**Available style properties:**
+
+Within each category, you can use properties like:
+-   `color`: Text color
+-   `fontSize`: Font size (e.g., '16px', '1rem')
+-   `fontFamily`: Font family
+-   `fontWeight`: Font weight
+-   `lineHeight`: Line height
+-   And other CSS-like properties supported by Adyen components
+
+For a complete list of available styling options and examples, refer to the [Adyen Card Component Styling Documentation](https://docs.adyen.com/payment-methods/cards/custom-card-integration/#styling).
+
+**Note:** These styles apply specifically to Adyen's secured fields (like card number, CVV, expiry date). For styling the container or other elements, use regular CSS in your stylesheets.
+
+If `DJADYEN_STYLES` is not set, Adyen's default styling will be used.
+
 ### Order object
 
 There is an abstract order in this package. This will save you some time on creating an order for adyen.
