@@ -12,3 +12,11 @@ exclude = '''
   )/
 )
 '''
+
+[tool.bumpversion]
+current_version = "3.2.0"
+files = [
+    {filename = "setup.cfg"},
+    {filename = "package.json"},
+    {filename = "djadyen/__init__.py"},
+]
