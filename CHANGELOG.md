@@ -1,8 +1,14 @@
-# Unreleased
+# 3.3.0
 -   Added support for custom Adyen styles via `DJADYEN_STYLES` Django setting
+-   Removed `django-choices`
+-   Replaces `bumpversion` with `bump-my-version`
+-   Use `README.md` instead of not existing `README.rst` in `setup.cfg`
 
 # 3.2.0
 -   Update adyen-web to support iDeal 2.0
+
+# 3.1.1
+-   Deal with empty payment_option
 
 # 3.1.0
 -   Adding support for iDeal 2.0
