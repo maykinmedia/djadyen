@@ -1,3 +1,6 @@
+# Unreleased
+-   Added support for custom Adyen styles via `DJADYEN_STYLES` Django setting
+
 # 3.2.0
 -   Update adyen-web to support iDeal 2.0
 

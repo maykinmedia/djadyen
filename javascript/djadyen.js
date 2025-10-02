@@ -33,6 +33,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         const paymentConfiguration = {};
+
+        // Add custom styles from Django settings if provided
+        if (config.dataset.styles) {
+            try {
+                paymentConfiguration.styles = JSON.parse(config.dataset.styles);
+            } catch (e) {
+                console.error("Failed to parse DJADYEN_STYLES:", e);
+            }
+        }
+
         if (config.dataset.issuer) {
             paymentConfiguration.issuer = config.dataset.issuer;
         }
