@@ -63,7 +63,7 @@ jobs:
                   pip install pip setuptools wheel --upgrade
                   python setup.py sdist bdist_wheel
             - name: Publish a Python distribution to PyPI
-              uses: pypa/gh-action-pypi-publish@v1.4.1
+              uses: pypa/gh-action-pypi-publish@v1.13.0
               with:
                   user: __token__
                   password: ${{ secrets.PYPI_TOKEN }}
