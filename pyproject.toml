@@ -1,11 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+
 [project]
 name = "djadyen"
-readme = "README.md"
 version = "3.3.0"
+description = "Django adyen payment integration"
+authors = [
+    {name = "Maykin Media", email = "support@maykinmedia.nl"}
+]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["django", "adyen", "payment"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Django",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.2",
+    "Intended Audience :: Developers",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "Adyen>=10.0.0",
+    "django>=3.2",
+    "requests",
+    "glom",
+]
 
-[build-system]
-requires = ["setuptools >= 30.3.0"]  # version supporting setup.cfg]
-build-backend = "setuptools.build_meta"
+[project.urls]
+Homepage = "https://github.com/maykinmedia/djadyen"
+
+[project.optional-dependencies]
+tests = [
+    "pytest",
+    "pytest-django",
+    "tox",
+    "isort",
+    "black",
+    "flake8",
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+release = [
+    "bump-my-version",
+    "twine",
+]
+
+[tool.setuptools.packages.find]
+include = ["djadyen*"]
+namespaces = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+DJANGO_SETTINGS_MODULE = "testapp.settings"
+
 [tool.black]
 line-length = 88
 target-version = ['py39']
@@ -17,6 +76,21 @@ exclude = '''
   )/
 )
 '''
+
+[tool.isort]
+combine_as_imports = true
+default_section = "THIRDPARTY"
+include_trailing_comma = true
+line_length = 88
+multi_line_output = 3
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip = ["env", ".tox", ".history", ".eggs"]
+known_django = ["django"]
+known_first_party = ["djadyen"]
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
 
 [tool.bumpversion]
 current_version = "3.3.0"
