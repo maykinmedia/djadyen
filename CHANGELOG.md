@@ -1,3 +1,8 @@
+# 3.3.1
+- Fix dependencies in `pyproject.toml`
+- Switch `setup.cfg` to `pyproject.toml`
+- Fix master branch not using in CI
+
 # 3.3.0
 -   Added support for custom Adyen styles via `DJADYEN_STYLES` Django setting
 -   Removed `django-choices`

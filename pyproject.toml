@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "djadyen"
-version = "3.3.0"
+version = "3.3.1"
 description = "Django adyen payment integration"
 authors = [
     {name = "Maykin Media", email = "support@maykinmedia.nl"}
@@ -93,9 +93,9 @@ sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLD
 
 
 [tool.bumpversion]
-current_version = "3.3.0"
+current_version = "3.3.1"
 files = [
-    {filename = "setup.cfg"},
+    {filename = "pyproject.toml"},
     {filename = "package.json"},
     {filename = "djadyen/__init__.py"},
 ]
