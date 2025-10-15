@@ -1,3 +1,7 @@
+# unrelease 4.0.0
+-   Upgrade Adyen-web to v6
+-
+
 # 3.3.1
 - Fix dependencies in `pyproject.toml`
 - Switch `setup.cfg` to `pyproject.toml`

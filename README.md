@@ -8,6 +8,12 @@ This module is used to connect your django application to the payment provider A
 
 This is only tested on a postgres database.
 
+## Supported Ayden Payments
+
+- Ideal - adyen name: `ideal`
+- Card - adyen name: `schema`, uses `AdyenIssuer` adyen id for brand e.g. `mc`, `visa`, `amex`
+
+
 ## Installation
 
 Install with pip
