@@ -1,9 +1,5 @@
-try:
-    from django.urls import include, path
-except Exception:
-    from django.conf.urls import url as path, include
-
 from django.contrib import admin
+from django.urls import include, path
 
 from .views import ConfirmationView, PaymentView
 

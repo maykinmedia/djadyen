@@ -1,7 +1,4 @@
-import json
-import os
 from datetime import datetime
-from uuid import uuid4
 
 from django.core.management import call_command
 from django.test.testcases import TestCase

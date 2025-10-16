@@ -1,4 +1,3 @@
-from django.test import RequestFactory
 from django.urls import reverse
 
 import requests_mock
@@ -67,10 +66,9 @@ class PaymentViewTest(WebTest):
             requests_mock.ANY,
             status_code=204,
         )
-        ideal2 = PaymentOptionsFactory.create(adyen_name="ideal")
+
         order = OrderFactory.create(payment_option=None, issuer=None)
         url = reverse("payment", kwargs={"reference": order.reference})
-        confirm_page = reverse("confirm", kwargs={"reference": order.reference})
 
         response = self.app.get(url)
         self.assertEqual(response.status_code, 200)

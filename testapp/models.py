@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse
 
-from djadyen import settings
 from djadyen.models import AdyenOrder
 
 

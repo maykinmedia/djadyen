@@ -1,5 +1,6 @@
 import logging
 
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.views.generic.detail import DetailView
@@ -26,7 +27,7 @@ class AdyenPaymentView(DetailView):
     slug_url_kwarg = "reference"
 
     def redirect_ideal_2(self, request):
-        logger.info("Start new payment for {}".format(str(self.object.reference)))
+        logger.info("Start new payment for  %s", self.object.reference)
         ady = setup_adyen_client()
 
         body = {
@@ -71,7 +72,7 @@ class AdyenPaymentView(DetailView):
             and not self.object.issuer
         ):
             return self.redirect_ideal_2(request)
-        return super(AdyenPaymentView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
 
 class AdyenResponseView(DetailView):
@@ -89,13 +90,13 @@ class AdyenResponseView(DetailView):
             ady = Adyen.Adyen()
 
             if not settings.DJADYEN_ENVIRONMENT:
-                assert False, "Please provide an environment."
+                raise ImproperlyConfigured("Please provide an environment.")
 
             if (
                 settings.DJADYEN_ENVIRONMENT == "live"
                 and not settings.DJADYEN_LIVE_URL_PREFIX
             ):
-                assert False, LIVE_URL_PREFIX_ERROR
+                raise ImproperlyConfigured(LIVE_URL_PREFIX_ERROR)
 
             # Setting global values
             ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
@@ -116,7 +117,7 @@ class AdyenResponseView(DetailView):
                 self.handle_authorised(self.object)
             elif result_code != "Pending":
                 self.handle_error(self.object)
-        return super(AdyenResponseView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def handle_authorised(self, order):
         raise NotImplementedError()

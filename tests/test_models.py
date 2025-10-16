@@ -20,17 +20,17 @@ class AdyenOrderTests(TestCase):
     def test_str(self):
         with self.assertNumQueries(1):
             order = OrderFactory()
-            self.assertEqual(order.__str__(), "{}".format(order.reference))
+            self.assertEqual(order.__str__(), f"{order.reference}")
 
     @override_settings(ADYEN_REFETCH_OLD_STATUS=True)
     def test_refetch_old_status(self):
         with self.assertNumQueries(2):
             order = OrderFactory()
-            self.assertEqual(order.__str__(), "{}".format(order.reference))
+            self.assertEqual(order.__str__(), f"{order.reference}")
 
             order.status = Status.Authorised
             order.save()
-            self.assertEqual(order.__str__(), "{}".format(order.reference))
+            self.assertEqual(order.__str__(), f"{order.reference}")
 
     def test_can_not_overwrite_authorised_status(self):
         with self.assertNumQueries(2):
