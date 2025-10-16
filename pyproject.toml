@@ -45,6 +45,11 @@ Homepage = "https://github.com/maykinmedia/djadyen"
 tests = [
     "pytest",
     "pytest-django",
+    "pytest-cov",
+    "django-webtest",
+    "requests-mock",
+    "factory-boy",
+    "freezegun",
     "tox",
     "ruff",
 ]
