@@ -7,8 +7,9 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from djadyen import settings
+from djadyen.constants import ADYEN_WEB_COMPONENTS_SUPPORT
 
-from .choices import Status
+from .choices import AdyenComponentSupport, Status
 
 logger = logging.getLogger("adyen")
 
@@ -70,6 +71,11 @@ class AdyenPaymentOption(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_adyen_component_support(self):
+        if self.adyen_name in ADYEN_WEB_COMPONENTS_SUPPORT:
+            return ADYEN_WEB_COMPONENTS_SUPPORT[self.adyen_name]
+        return AdyenComponentSupport.Unknown
 
 
 class AdyenIssuer(models.Model):

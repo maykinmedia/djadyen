@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
+from djadyen.choices import AdyenComponentSupport
 from djadyen.models import AdyenIssuer, AdyenNotification, AdyenPaymentOption
 
 
@@ -17,7 +18,13 @@ class AdyenIssuerInline(admin.TabularInline):
 
 @admin.register(AdyenPaymentOption)
 class PaymentOptionAdmin(admin.ModelAdmin):
-    list_display = ("name", "adyen_name", "is_active", "show_issuers")
+    list_display = (
+        "name",
+        "adyen_name",
+        "is_active",
+        "show_issuers",
+        "component_support",
+    )
     list_filter = ("is_active",)
     inlines = [AdyenIssuerInline]
     search_fields = ("name", "adyen_name")
@@ -28,6 +35,12 @@ class PaymentOptionAdmin(admin.ModelAdmin):
         if issuers:
             return ", ".join([issuer.adyen_id for issuer in issuers])
         return None
+
+    @admin.display(description=_("Supports Adyen Web"), boolean=True)
+    def component_support(self, obj):
+        if obj.get_adyen_component_support() == AdyenComponentSupport.Unknown:
+            return None
+        return obj.get_adyen_component_support() == AdyenComponentSupport.Supported
 
 
 @admin.register(AdyenIssuer)
