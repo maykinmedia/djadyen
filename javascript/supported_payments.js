@@ -6,10 +6,8 @@ export const PaymentComponents = {
     scheme: [Card, getBrandConfiguration],
     ideal: [
         Redirect,
-        () => {
-            {
-                type: "ideal";
-            }
-        },
+        () => ({
+            type: "ideal",
+        }),
     ],
 };

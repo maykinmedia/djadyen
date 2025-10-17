@@ -1,10 +1,10 @@
 function getCommonPaymentConfiguration(dataset) {
-    const commonPaymentConfiguration = {};
+    let commonPaymentConfiguration = {};
 
     // Add custom styles from Django settings if provided
     if (dataset.styles) {
         try {
-            paymentConfiguration.styles = JSON.parse(dataset.styles);
+            commonPaymentConfiguration.styles = JSON.parse(dataset.styles);
         } catch (e) {
             console.error("Failed to parse DJADYEN_STYLES:", e);
         }
@@ -19,7 +19,7 @@ function getCommonPaymentConfiguration(dataset) {
  * @returns paymentConfiguration
  */
 export function getIssuerConfiguration(dataset) {
-    const paymentConfiguration = getCommonPaymentConfiguration(dataset);
+    let paymentConfiguration = getCommonPaymentConfiguration(dataset);
 
     if (dataset.issuer) {
         paymentConfiguration.issuer = dataset.issuer;
@@ -34,10 +34,16 @@ export function getIssuerConfiguration(dataset) {
  * @returns paymentConfiguration
  */
 export function getBrandConfiguration(dataset) {
-    const paymentConfiguration = getCommonPaymentConfiguration(dataset);
+    let paymentConfiguration = getCommonPaymentConfiguration(dataset);
     if (dataset.issuers) {
-        let issuers = JSON.parse(dataset.issuers);
-        paymentConfiguration.brands = issuers.map(({ adyen_id }) => adyen_id);
+        try {
+            let issuers = JSON.parse(dataset.issuers);
+            paymentConfiguration.brands = issuers.map(
+                ({ adyen_id }) => adyen_id
+            );
+        } catch (e) {
+            console.error("Failed to parse issuers:", e);
+        }
     }
 
     return paymentConfiguration;
