@@ -10,8 +10,13 @@ This is only tested on a postgres database.
 
 ## Supported Ayden Payments
 
-- Ideal - adyen name: `ideal`
-- Card - adyen name: `schema`, uses `AdyenIssuer` adyen id for brand e.g. `mc`, `visa`, `amex`
+- **Alipay** - adyen name: `alipay`
+- **Bancontact** card - adyen name: `bcmc`
+- **(Debit/Credit) Card** - adyen name: `schema`, uses `AdyenIssuer` adyen id for brand e.g. `mc`, `visa`, `amex`
+- **Finnish E-Banking** - adyen name: `ebanking_FI`
+- **iDEAL** - adyen name: `ideal`
+- **SEPA Bank Transfer** - adyen name: `bankTransfer_IBAN`
+- **SEPA Direct Debit** - adyen name: `sepadirectdebit`
 
 
 ## Installation

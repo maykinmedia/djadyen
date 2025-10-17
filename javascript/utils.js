@@ -48,3 +48,12 @@ export function getBrandConfiguration(dataset) {
 
     return paymentConfiguration;
 }
+
+/**
+ * Returns Redirect configuraiton
+ * @param {*} dataset
+ * @returns
+ */
+export function getRedirectConfiguration(dataset) {
+    return { type: dataset.paymentType };
+}

@@ -20,6 +20,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
     list_display = ("name", "adyen_name", "is_active", "show_issuers")
     list_filter = ("is_active",)
     inlines = [AdyenIssuerInline]
+    search_fields = ("name", "adyen_name")
 
     @admin.display(description=_("Issuers/Brands"), empty_value="---")
     def show_issuers(self, obj):
