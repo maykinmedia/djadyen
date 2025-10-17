@@ -103,17 +103,44 @@ class AdyenOrder(models.Model):
         abstract = True
 
     def __str__(self):
-        return "{}".format(self.reference)
+        return f"{self.reference}"
 
     def __init__(self, *args, **kwargs):
-        super(AdyenOrder, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__old_status = self.status
+
+    def save(self, can_change=False, *args, **kwargs):
+        if not self.reference:
+            self.reference = uuid4()
+
+        if settings.DJADYEN_REFETCH_OLD_STATUS and self.id:
+            self.__old_status = self._meta.model.objects.get(pk=self.id).status
+
+        if self.status != self.__old_status:
+            if self.__old_status == Status.Authorised:
+                logger.warning(
+                    _(
+                        "Order ref: %s | Tried to change the "
+                        + "status from 'Authorised' to '%s'."
+                    ),
+                    self.reference,
+                    self.status,
+                )
+                self.status = self.__old_status
+            else:
+                logger.warning(
+                    _("Order ref: %s | Changed the status from '%s' to '%s'"),
+                    self.reference,
+                    self.__old_status,
+                    self.status,
+                )
+                self.__old_status = self.status
+
+        return super().save(*args, **kwargs)
 
     def get_return_url(self):
         raise NotImplementedError(
-            "Please override 'get_return_url' on the '{model_name}'".format(
-                model_name=self._meta.object_name
-            )
+            f"Please override 'get_return_url' on the '{self._meta.object_name}'"
         )
 
     def process_notification(self, notification):
@@ -143,32 +170,3 @@ class AdyenOrder(models.Model):
         :return int Return the price in cents for this order.
         """
         raise NotImplementedError
-
-    def save(self, can_change=False, *args, **kwargs):
-        if not self.reference:
-            self.reference = uuid4()
-
-        if settings.DJADYEN_REFETCH_OLD_STATUS and self.id:
-            self.__old_status = self._meta.model.objects.get(pk=self.id).status
-
-        if self.status != self.__old_status:
-            if self.__old_status == Status.Authorised:
-                logger.warning(
-                    _(
-                        "Order ref: %s | Tried to change the "
-                        + "status from 'Authorised' to '%s'."
-                    ),
-                    self.reference,
-                    self.status,
-                )
-                self.status = self.__old_status
-            else:
-                logger.warning(
-                    _("Order ref: %s | Changed the status from '%s' to '%s'"),
-                    self.reference,
-                    self.__old_status,
-                    self.status,
-                )
-                self.__old_status = self.status
-
-        return super(AdyenOrder, self).save(*args, **kwargs)

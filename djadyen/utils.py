@@ -1,5 +1,7 @@
 import logging
 
+from django.core.exceptions import ImproperlyConfigured
+
 import Adyen
 
 from djadyen import settings
@@ -12,10 +14,10 @@ def setup_adyen_client():
     ady = Adyen.Adyen()
 
     if not settings.DJADYEN_ENVIRONMENT:
-        assert False, "Please provide an environment."
+        raise ImproperlyConfigured("Please provide an environment.")
 
     if settings.DJADYEN_ENVIRONMENT == "live" and not settings.DJADYEN_LIVE_URL_PREFIX:
-        assert False, LIVE_URL_PREFIX_ERROR
+        raise ImproperlyConfigured(LIVE_URL_PREFIX_ERROR)
 
     # Setting global values
     ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT

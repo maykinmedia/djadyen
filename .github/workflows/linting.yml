@@ -17,34 +17,17 @@ jobs:
             - uses: bahmutov/npm-install@v1
 
             - run: npm run lint
-    isort:
-        name: Check import sorting
+    ruff:
+        name: Lint codebase with ruff (black, isort and flake8 alternative)
         runs-on: ubuntu-latest
         steps:
-            - run: |
-                  sudo apt-get update
-                  sudo apt-get install -y libxml2-dev libxmlsec1-dev libxmlsec1-openssl
-            - uses: actions/checkout@v2
-            - uses: actions/setup-python@v2
-              with:
-                  python-version: "3.9"
-            - run: |
-                  pip install isort
-            - run: |
-                  isort --check --diff djadyen
-
-    black:
-        name: Check code formatting with black
-        runs-on: ubuntu-latest
-        steps:
-            - run: |
-                  sudo apt-get update
-                  sudo apt-get install -y libxml2-dev libxmlsec1-dev libxmlsec1-openssl
-            - uses: actions/checkout@v2
-            - uses: actions/setup-python@v2
-              with:
-                  python-version: "3.9"
-            - run: |
-                  pip install black
-            - run: |
-                  black --check --diff djadyen
+            -   uses: actions/checkout@v4
+            -   uses: actions/setup-python@v5
+                with:
+                    python-version: '3.12'
+            -   name: Install dependencies
+                run: pip install tox
+            -   run: tox
+                env:
+                    TOXENV: ruff
+                    FORCE_COLOR: '1'

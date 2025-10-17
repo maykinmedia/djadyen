@@ -45,10 +45,13 @@ Homepage = "https://github.com/maykinmedia/djadyen"
 tests = [
     "pytest",
     "pytest-django",
+    "pytest-cov",
+    "django-webtest",
+    "requests-mock",
+    "factory-boy",
+    "freezegun",
     "tox",
-    "isort",
-    "black",
-    "flake8",
+    "ruff",
 ]
 docs = [
     "sphinx",
@@ -67,32 +70,32 @@ namespaces = true
 testpaths = ["tests"]
 DJANGO_SETTINGS_MODULE = "testapp.settings"
 
-[tool.black]
-line-length = 88
-target-version = ['py39']
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-    | .+/migrations
-  )/
-)
-'''
+[tool.ruff.lint]
+extend-select = [
+    "UP",  # pyupgrade
+    "DJ",  # django
+    "LOG", # logging
+    "G",
+    "I",   # isort
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "PERF",# perflint
+    "B",   # flake8-bugbear
+]
 
-[tool.isort]
-combine_as_imports = true
-default_section = "THIRDPARTY"
-include_trailing_comma = true
-line_length = 88
-multi_line_output = 3
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
-skip = ["env", ".tox", ".history", ".eggs"]
-known_django = ["django"]
-known_first_party = ["djadyen"]
-sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+[tool.ruff.lint.isort]
+combine-as-imports = true
+section-order = [
+    "future",
+    "standard-library",
+    "django",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
 
+[tool.ruff.lint.isort.sections]
+"django" = ["django"]
 
 [tool.bumpversion]
 current_version = "3.3.1"

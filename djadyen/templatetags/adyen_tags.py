@@ -23,7 +23,7 @@ def adyen_payment_component(
     """
     Will display a singular payment method.
     """
-    logger.info("Start new payment for {}".format(str(order.reference)))
+    logger.info("Start new payment for %s", order.reference)
     ady = setup_adyen_client()
 
     # Setting request data.

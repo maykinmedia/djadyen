@@ -14,45 +14,33 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                include:
-                    - django-version: "3.2"
-                      python-version: "3.9"
-                    - django-version: "3.2"
-                      python-version: "3.10"
-                    - django-version: "3.2"
-                      python-version: "3.11"
-                    - django-version: "4.2"
-                      python-version: "3.10"
-                    - django-version: "4.2"
-                      python-version: "3.11"
-                    - django-version: "4.2"
-                      python-version: "3.12"
-                    - django-version: "5.2"
-                      python-version: "3.11"
-                    - django-version: "5.2"
-                      python-version: "3.12"
+                python: [ '3.9', '3.10', '3.11', '3.12' ]
+                django: [ '3.2', '4.2', '5.2' ]
+                exclude:
+                    -   python: '3.9'
+                        django: '5.2'
 
-        name: Run the test suite (Python ${{ matrix.python-version }}, Django ${{ matrix.django-version }})
+        name: Run the test suite (Python ${{ matrix.python }}, Django ${{ matrix.django }})
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-python@v2
               with:
-                  python-version: ${{ matrix.python-version }}
+                  python-version: ${{ matrix.python }}
 
             - name: Install dependencies
               run: pip install tox tox-gh-actions codecov
 
             - name: Run tests
               run: |
-                  export TOXENV=py${PYTHON_VERSION/./}-django${DJANGO/./}
                   tox
-                  codecov -e TOXENV,DJANGO --file reports/coverage-${TOXENV}.xml
               env:
-                  PYTHON_VERSION: ${{ matrix.python-version }}
-                  DJANGO: ${{ matrix.django-version }}
+                  PYTHON_VERSION: ${{ matrix.python }}
+                  DJANGO: ${{ matrix.django}}
 
             - name: Publish coverage report
-              uses: codecov/codecov-action@v1
+              uses: codecov/codecov-action@v4
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
 
     publish:
         name: Publish package to PyPI
