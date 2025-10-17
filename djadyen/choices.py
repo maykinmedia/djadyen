@@ -9,3 +9,13 @@ class Status(TextChoices):
     Error = "error", _("Error")
     Pending = "pending", _("Pending")
     Refused = "refused", _("Refused")
+
+
+class AdyenComponentSupport(TextChoices):
+    """
+    Adyen-web component support options
+    """
+
+    Supported = "supported", _("Supported")
+    Unsupported = "unsupported", _("Unsupported")
+    Unknown = "unknown", _("Unknown")

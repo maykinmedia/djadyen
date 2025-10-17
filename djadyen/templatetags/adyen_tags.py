@@ -62,6 +62,17 @@ def adyen_payment_component(
             "payment_type": (
                 order.payment_option.adyen_name if order.payment_option else ""
             ),
+            "issuers": (
+                json.dumps(
+                    list(
+                        order.payment_option.adyenissuer_set.all().values(
+                            "name", "adyen_id"
+                        )
+                    )
+                )
+                if order.payment_option
+                else []
+            ),
             "issuer": order.issuer.adyen_id if order.issuer else "",
         }
 

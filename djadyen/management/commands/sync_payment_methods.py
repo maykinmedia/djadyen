@@ -7,7 +7,8 @@ from ...utils import setup_adyen_client
 
 
 def create_payment_method(type, name, issuers):
-    payment_qs = AdyenPaymentOption.objects.filter(adyen_name=type)
+    payment_qs = AdyenPaymentOption.objects.filter(adyen_name=type, name=name)
+
     if not payment_qs.exists():
         payment = AdyenPaymentOption.objects.create(
             name=name,
@@ -17,7 +18,9 @@ def create_payment_method(type, name, issuers):
         payment = payment_qs.first()
 
     for issuer in issuers:
-        issuer_qs = AdyenIssuer.objects.filter(adyen_id=issuer["id"])
+        issuer_qs = AdyenIssuer.objects.filter(
+            payment_option=payment, adyen_id=issuer["id"]
+        )
         if issuer_qs.exists():
             issuer_obj = issuer_qs.first()
             issuer_obj.name = issuer.get("name")
@@ -48,10 +51,9 @@ class Command(BaseCommand):
         for payment_method in payment_methods:
             name = payment_method.get("name")
             type = payment_method.get("type")
-            brands = payment_method.get("brands")
             issuers = payment_method.get("issuers", [])
+            brands = payment_method.get("brands")
+
             if brands:
-                for brand in brands:
-                    create_payment_method(brand, name, issuers)
-            else:
-                create_payment_method(type, name, issuers)
+                issuers = [{"id": brand, "name": brand} for brand in brands]
+            create_payment_method(type, name, issuers)
