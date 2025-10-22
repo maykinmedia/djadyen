@@ -59,6 +59,12 @@ class AdyenPaymentView(DetailView):
 
         return redirect(self.object.get_return_url())
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # needs to use adyen web supported language codes e.g. en-US, nl-NL
+        context["adyen_language"] = self.request.LANGUAGE_CODE
+        return context
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 

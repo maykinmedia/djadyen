@@ -1,6 +1,8 @@
-import AdyenCheckout from "@adyen/adyen-web";
+import { AdyenCheckout } from "@adyen/adyen-web";
 
-import "@adyen/adyen-web/dist/adyen.css";
+import { PaymentComponents } from "./supported_payments";
+
+import "@adyen/adyen-web/styles/adyen.css";
 import "./overwrites.css";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -23,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 window.location = config.dataset.redirectUrl;
             },
             onError: (error, component) => {
-                console.exception(
+                console.error(
                     error.name,
                     error.message,
                     error.stack,
@@ -32,25 +34,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
         };
 
-        const paymentConfiguration = {};
-
-        // Add custom styles from Django settings if provided
-        if (config.dataset.styles) {
-            try {
-                paymentConfiguration.styles = JSON.parse(config.dataset.styles);
-            } catch (e) {
-                console.error("Failed to parse DJADYEN_STYLES:", e);
-            }
-        }
-
-        if (config.dataset.issuer) {
-            paymentConfiguration.issuer = config.dataset.issuer;
-        }
+        const [Component, getPaymentConfiguration] =
+            PaymentComponents[config.dataset.paymentType];
+        const paymentConfiguration = getPaymentConfiguration(config.dataset);
 
         const checkout = await AdyenCheckout(configuration);
-        const component = checkout
-            .create(config.dataset.paymentType, paymentConfiguration)
-            .mount("#djadyen-container");
+        const component = new Component(checkout, paymentConfiguration).mount(
+            "#djadyen-container"
+        );
         if (paymentConfiguration.issuer) {
             setTimeout(() => {
                 component.submit();

@@ -8,6 +8,17 @@ This module is used to connect your django application to the payment provider A
 
 This is only tested on a postgres database.
 
+## Supported Ayden Payments
+
+- **Alipay** - adyen name: `alipay`
+- **Bancontact** card - adyen name: `bcmc`
+- **(Debit/Credit) Card** - adyen name: `schema`, uses `AdyenIssuer` adyen id for brand e.g. `mc`, `visa`, `amex`
+- **Finnish E-Banking** - adyen name: `ebanking_FI`
+- **iDEAL** - adyen name: `ideal`
+- **SEPA Bank Transfer** - adyen name: `bankTransfer_IBAN`
+- **SEPA Direct Debit** - adyen name: `sepadirectdebit`
+
+
 ## Installation
 
 Install with pip
@@ -176,6 +187,23 @@ from djadyen.views import AdyenPaymentView
 class PaymentView(AdyenPaymentView):
     template_name = "my_adyen/pay.html"  # Optional
 ```
+
+Adyen requires a language locale i.e. `nl-NL` or `en-US` instead of `nl` or `en`.
+If Django's uses language codes, `adyen_language` should be converted in the view context similarly to this:
+
+```python
+ADYEN_LANGUAGES = {
+    "nl": "nl-NL",
+    "en": "en-US",
+}
+
+class PaymentView(AdyenPaymentView):
+    ...
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs) | {"adyen_language": ADYEN_LANGUAGES[self.request.LANGUAGE_CODE]}
+
+```
+
 
 ### AdyenResponseView
 

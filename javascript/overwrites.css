@@ -14,3 +14,13 @@
 .adyen-checkout__dropdown__button {
     box-sizing: border-box;
 }
+
+.adyen-checkout__label--focused + .adyen-checkout__input-wrapper,
+.adyen-checkout__input-wrapper:focus-within,
+.adyen-checkout__input-wrapper:focus-within:hover {
+    box-shadow: 0px 0px 0px 5px white, 0px 0px 0px 6px black !important;
+}
+.adyen-checkout__input-wrapper:active,
+.adyen-checkout__input-wrapper:active:hover {
+    box-shadow: none !important;
+}

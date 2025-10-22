@@ -28,8 +28,8 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
 
         call_command("sync_payment_methods")
 
-        self.assertEqual(AdyenPaymentOption.objects.count(), 14)
-        self.assertEqual(AdyenIssuer.objects.count(), 47)
+        self.assertEqual(AdyenPaymentOption.objects.count(), 9)
+        self.assertEqual(AdyenIssuer.objects.count(), 57)
 
     @requests_mock.mock()
     def test_on_existing_database_mock(self, mock):
@@ -51,13 +51,37 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
 
         call_command("sync_payment_methods")
 
-        self.assertEqual(AdyenPaymentOption.objects.count(), 14)
-        self.assertEqual(AdyenIssuer.objects.count(), 47)
+        self.assertEqual(AdyenPaymentOption.objects.count(), 9)
+        self.assertEqual(AdyenIssuer.objects.count(), 57)
 
         call_command("sync_payment_methods")
 
-        self.assertEqual(AdyenPaymentOption.objects.count(), 14)
-        self.assertEqual(AdyenIssuer.objects.count(), 47)
+        self.assertEqual(AdyenPaymentOption.objects.count(), 9)
+        self.assertEqual(AdyenIssuer.objects.count(), 57)
+
+    @requests_mock.mock()
+    def test_sync_brands(self, mock):
+        """
+        Test payment brands converted to issuer objects.
+        """
+
+        mock.post(
+            "https://checkout-test.adyen.com/v71/paymentMethods",
+            [
+                {
+                    "content": self._get_test_file("payment_methods.json").read(),
+                    "status_code": 200,
+                },
+            ],
+        )
+
+        call_command("sync_payment_methods")
+
+        bancontact = AdyenPaymentOption.objects.get(adyen_name="bcmc")
+        self.assertEqual(bancontact.adyenissuer_set.all().count(), 3)
+
+        card = AdyenPaymentOption.objects.get(adyen_name="scheme")
+        self.assertEqual(card.adyenissuer_set.all().count(), 7)
 
 
 class ProcessNotifications(TestFileMixin, TestCase):
