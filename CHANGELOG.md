@@ -1,6 +1,15 @@
-# unrelease 4.0.0
--   Upgrade Adyen-web to v6
--
+# 4.0.0
+- **BREAKING CHANGE:** Upgrade `Adyen-web` to v6
+  - payment methods must now be explicitly added
+  - now only supports: Alipay, Bancontact, debit/credit card, Finnish e-banking, iDEAL, SEPA bank transfer, SEPA direct debit
+  - issues are now used for _brands_ in certain payment methods (Bancontact, Credit/Debit Card)
+  - now uses locales instead of language codes, must be changed from a language code to use translated payments
+- Add the ability to use a payment option language locale in `AdyenPaymentView`
+- Update `adyen_payment_component` tag now uses language argument in `Adyen-web` javascript checkout
+- Show issuer/brands in `AdyenPaymentOption` admin
+- Show if `adyen_name` is supported in `AdyenPaymentOption` admin
+- Switch to ruff for code quality
+- Add django 5.2 and python 3.12 in CI tests
 
 # 3.3.1
 - Fix dependencies in `pyproject.toml`
