@@ -188,6 +188,23 @@ class PaymentView(AdyenPaymentView):
     template_name = "my_adyen/pay.html"  # Optional
 ```
 
+Adyen requires a language locale i.e. `nl-NL` or `en-US` instead of `nl` or `en`.
+If Django's uses language codes, `adyen_language` should be converted in the view context similarly to this:
+
+```python
+ADYEN_LANGUAGES = {
+    "nl": "nl-NL",
+    "en": "en-US",
+}
+
+class PaymentView(AdyenPaymentView):
+    ...
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs) | {"adyen_language": ADYEN_LANGUAGES[self.request.LANGUAGE_CODE]}
+
+```
+
+
 ### AdyenResponseView
 
 Adyen also creates a response. This will help you with catching the response. This view will check if
