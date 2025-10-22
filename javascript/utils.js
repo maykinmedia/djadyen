@@ -15,7 +15,7 @@ function getCommonPaymentConfiguration(dataset) {
 
 /**
  * Creates payment configuration for componnent that use issuers
- * @param {*} dataset
+ * @param {DOMStringMap} dataset
  * @returns paymentConfiguration
  */
 export function getIssuerConfiguration(dataset) {
@@ -34,10 +34,10 @@ export function getIssuerConfiguration(dataset) {
  * @returns paymentConfiguration
  */
 export function getBrandConfiguration(dataset) {
-    let paymentConfiguration = getCommonPaymentConfiguration(dataset);
+    const paymentConfiguration = getCommonPaymentConfiguration(dataset);
     if (dataset.issuers) {
         try {
-            let issuers = JSON.parse(dataset.issuers);
+            const issuers = JSON.parse(dataset.issuers);
             paymentConfiguration.brands = issuers.map(
                 ({ adyen_id }) => adyen_id
             );

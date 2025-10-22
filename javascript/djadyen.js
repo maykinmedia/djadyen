@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
         };
 
-        let [Component, GetPaymentConfiguration] =
+        const [Component, getPaymentConfiguration] =
             PaymentComponents[config.dataset.paymentType];
         const paymentConfiguration = GetPaymentConfiguration(config.dataset);
 
