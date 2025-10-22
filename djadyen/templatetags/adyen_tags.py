@@ -2,7 +2,6 @@ import json
 import logging
 
 from django import template
-from django.utils.translation import get_language
 
 from djadyen import settings
 from djadyen.choices import Status
@@ -35,7 +34,7 @@ def adyen_payment_component(
         "reference": str(order.reference),
         "merchantAccount": merchant_account,
         "returnUrl": order.get_return_url(),
-        "shopperLocale": language.lower(),
+        "shopperLocale": language,
         "countryCode": (
             country_code.lower()
             if country_code
@@ -58,7 +57,7 @@ def adyen_payment_component(
             "session_data": result.message.get("sessionData"),
             "environment": settings.DJADYEN_ENVIRONMENT,
             "redirect_url": order.get_return_url,
-            "language": get_language(),
+            "language": language,
             "payment_type": (
                 order.payment_option.adyen_name if order.payment_option else ""
             ),
