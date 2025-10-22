@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 window.location = config.dataset.redirectUrl;
             },
             onError: (error, component) => {
-                console.exception(
+                console.error(
                     error.name,
                     error.message,
                     error.stack,
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const [Component, getPaymentConfiguration] =
             PaymentComponents[config.dataset.paymentType];
-        const paymentConfiguration = GetPaymentConfiguration(config.dataset);
+        const paymentConfiguration = getPaymentConfiguration(config.dataset);
 
         const checkout = await AdyenCheckout(configuration);
         const component = new Component(checkout, paymentConfiguration).mount(
