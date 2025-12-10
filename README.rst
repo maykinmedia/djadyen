@@ -10,7 +10,6 @@ DjAdyen
 
 |python-versions| |django-versions| |pypi-version|
 
-<One liner describing the project>
 
 .. contents::
 

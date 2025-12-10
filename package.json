@@ -28,6 +28,7 @@
     },
     "devDependencies": {
         "esbuild": "^0.25.10",
+        "jshint": "^2.13.6",
         "prettier": "^2.6.2"
     }
 }

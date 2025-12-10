@@ -1,12 +1,12 @@
-import { AdyenCheckout } from "@adyen/adyen-web";
+import { AdyenCheckout } from '@adyen/adyen-web';
 
-import { PaymentComponents } from "./supported_payments";
+import { PaymentComponents } from './supported_payments';
 
-import "@adyen/adyen-web/styles/adyen.css";
-import "./overwrites.css";
+import '@adyen/adyen-web/styles/adyen.css';
+import './overwrites.css';
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const config = document.querySelector("#djadyen-config");
+document.addEventListener('DOMContentLoaded', async () => {
+    const config = document.querySelector('#djadyen-config');
 
     if (config) {
         const configuration = {
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const checkout = await AdyenCheckout(configuration);
         const component = new Component(checkout, paymentConfiguration).mount(
-            "#djadyen-container"
+            '#djadyen-container'
         );
         if (paymentConfiguration.issuer) {
             setTimeout(() => {
@@ -50,12 +50,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const config = document.querySelector("#djadyen-status-config");
+document.addEventListener('DOMContentLoaded', async () => {
+    const config = document.querySelector('#djadyen-status-config');
 
     if (config) {
-        let newStatus = false;
-
         const poll = async ({ fn, validate, interval, maxAttempts }) => {
             let attempts = 0;
 
@@ -66,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (validate(result)) {
                     return resolve(result);
                 } else if (maxAttempts && attempts === maxAttempts) {
-                    return reject(new Error("Exceeded max attempts"));
+                    return reject(new Error('Exceeded max attempts'));
                 } else {
                     setTimeout(executePoll, interval, resolve, reject);
                 }
@@ -77,8 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const fetchNewStatus = async () => {
             const response = await fetch(config.dataset.statusUrl);
-            const data = await response.json();
-            return data;
+            return await response.json();
         };
 
         poll({

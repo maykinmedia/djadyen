@@ -4,9 +4,9 @@ import {
     Card,
     Redirect,
     SepaDirectDebit,
-} from "@adyen/adyen-web";
+} from '@adyen/adyen-web';
 
-import { getBrandConfiguration, getRedirectConfiguration } from "./utils";
+import { getBrandConfiguration, getRedirectConfiguration } from './utils';
 
 export const PaymentComponents = {
     alipay: [Redirect, getRedirectConfiguration],
