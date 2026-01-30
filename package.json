@@ -8,8 +8,8 @@
     ],
     "type": "module",
     "scripts": {
-        "build": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js",
-        "watch": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js --watch",
+        "build": "esbuild ./javascript/djadyen.js ./javascript/djadyen_advanced.js --bundle --minify --outdir=./djadyen/static/djadyen/",
+        "watch": "esbuild ./javascript/djadyen.js ./javascript/djadyen_advanced.js --bundle --minify --outdir=./djadyen/static/djadyen/ --watch",
         "lint": "prettier javascript/ -c",
         "format": "prettier javascript/ -w"
     },
@@ -24,7 +24,7 @@
     },
     "homepage": "https://github.com/maykinmedia/djadyen#readme",
     "dependencies": {
-        "@adyen/adyen-web": "^6.22.0"
+        "@adyen/adyen-web": "^6.30.0"
     },
     "devDependencies": {
         "esbuild": "^0.25.10",

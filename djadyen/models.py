@@ -144,11 +144,6 @@ class AdyenOrder(models.Model):
 
         return super().save(*args, **kwargs)
 
-    def get_return_url(self):
-        raise NotImplementedError(
-            f"Please override 'get_return_url' on the '{self._meta.object_name}'"
-        )
-
     def process_notification(self, notification):
         if notification.is_authorised():
             self.status = Status.Authorised
@@ -176,3 +171,38 @@ class AdyenOrder(models.Model):
         :return int Return the price in cents for this order.
         """
         raise NotImplementedError
+
+    def get_return_url(self):
+        """
+        :return str Return the confirmation url after the payment is completed.
+        """
+        raise NotImplementedError(
+            f"Please override 'get_return_url' on the '{self._meta.object_name}'"
+        )
+
+    def get_redirect_url(self):
+        """
+        :return str Return the redirect url after a redirect payment.
+        """
+        raise NotImplementedError(
+            "Implement the payment redirect used in the advanced checkout on "
+            f"the '{self._meta.object_name}'"
+        )
+
+    def get_payments_api(self):
+        """
+        :return str Return the payments api endpoint.
+        """
+        raise NotImplementedError(
+            "Implement the payments api endpoint to use "
+            f"the advanced checkout on the '{self._meta.object_name}'"
+        )
+
+    def get_payment_details_api(self):
+        """
+        :return str Return the payments api endpoint.
+        """
+        raise NotImplementedError(
+            "Implement the payment details api endpoint to use the advanced "
+            f"checkout on the '{self._meta.object_name}'"
+        )

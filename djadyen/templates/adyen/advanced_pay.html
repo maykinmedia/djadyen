@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% load static i18n adyen_tags %}
+
+
+{% block content %}
+{% adyen_advanced_payment_component language=adyen_language order=object %}
+{% endblock %}

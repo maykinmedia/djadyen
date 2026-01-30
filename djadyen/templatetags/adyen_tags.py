@@ -6,6 +6,7 @@ from django import template
 from djadyen import settings
 from djadyen.choices import Status
 from djadyen.conf import get_adyen_styles
+from djadyen.models import AdyenOrder
 from djadyen.utils import setup_adyen_client
 
 register = template.Library()
@@ -48,7 +49,9 @@ def adyen_payment_component(
 
     logger.info(request)
     # Starting the checkout.
-    result = ady.checkout.payments_api.sessions(request)
+    result = ady.checkout.payments_api.sessions(
+        request, idempotency_key=order.reference
+    )
 
     if result.status_code == 201:
         context = {
@@ -84,6 +87,42 @@ def adyen_payment_component(
 
         return context
     return {}
+
+
+@register.inclusion_tag("adyen/advanced_component.html")
+def adyen_advanced_payment_component(
+    language: str,
+    order: AdyenOrder,
+    country_code: str = settings.DJADYEN_DEFAULT_COUNTRY_CODE,
+):
+    context = {
+        "client_key": settings.DJADYEN_CLIENT_KEY,
+        "environment": settings.DJADYEN_ENVIRONMENT,
+        "redirect_url": order.get_return_url,
+        "amount": order.get_price_in_cents(),
+        "currency": settings.DJADYEN_CURRENCYCODE,
+        "country_code": country_code,
+        "language": language,
+        "payment_type": (
+            order.payment_option.adyen_name if order.payment_option else ""
+        ),
+        "issuers": (
+            json.dumps(
+                list(
+                    order.payment_option.adyenissuer_set.all().values(
+                        "name", "adyen_id"
+                    )
+                )
+            )
+            if order.payment_option
+            else []
+        ),
+        "issuer": order.issuer.adyen_id if order.issuer else "",
+        "payments_api": order.get_payments_api(),
+        "payment_details_api": order.get_payment_details_api(),
+    }
+
+    return context
 
 
 @register.inclusion_tag("adyen/polling.html")
