@@ -131,3 +131,23 @@ def adyen_status_polling(order, status_url):
         "status_url": status_url,
         "pending": order.status in [Status.Created, Status.Pending],
     }
+
+
+@register.inclusion_tag("adyen/donation_component.html")
+def adyen_donation_component(
+    language: str,
+    campaign: dict,
+    country_code: str = settings.DJADYEN_DEFAULT_COUNTRY_CODE,
+) -> dict:
+    return {
+        "campaign": json.dumps(campaign),
+        "campaign_id": campaign["id"],
+        "client_key": settings.DJADYEN_CLIENT_KEY,
+        "environment": settings.DJADYEN_ENVIRONMENT,
+        "language": language,
+        "country_code": (
+            country_code.lower()
+            if country_code
+            else settings.DJADYEN_DEFAULT_COUNTRY_CODE
+        ),
+    }

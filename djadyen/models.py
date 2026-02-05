@@ -94,6 +94,12 @@ class AdyenOrder(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     reference = models.CharField(max_length=200, default="", blank=True)
     psp_reference = models.CharField(max_length=200, default="", blank=True)
+    donation_token = models.CharField(
+        max_length=1024,
+        default="",
+        blank=True,
+        help_text=_("Donation token to use the 'Giving' web component"),
+    )
     email = models.EmailField()
 
     payment_option = models.ForeignKey(
@@ -206,3 +212,45 @@ class AdyenOrder(models.Model):
             "Implement the payment details api endpoint to use the advanced "
             f"checkout on the '{self._meta.object_name}'"
         )
+
+
+class AdyenDonation(models.Model):
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    # order needs to be overridden. Djadyen assumes the
+    # Djadyen assumes AdyenOrder's related named is `donation_order`
+    order = models.OneToOneField(
+        AdyenOrder,
+        on_delete=models.CASCADE,
+        related_name="donation_order",
+    )
+    status = models.CharField(
+        max_length=200, choices=Status.choices, default=Status.Created
+    )
+    status_message = models.TextField(blank=True)
+    campaign = models.CharField(
+        _("Campaign ID"), max_length=512, default="", blank=True
+    )
+    reference = models.CharField(
+        _("Donation Reference"),
+        max_length=512,
+        default="",
+        blank=True,
+        help_text=_(
+            "Donation reference to use the 'Giving' web component. "
+            "Separate from the order"
+        ),
+    )
+    amount = models.IntegerField()
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f"{self.reference}"
+
+    def save(self, can_change=False, *args, **kwargs):
+        if not self.reference:
+            self.reference = uuid4()
+
+        return super().save(*args, **kwargs)

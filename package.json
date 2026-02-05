@@ -8,8 +8,8 @@
     ],
     "type": "module",
     "scripts": {
-        "build": "esbuild ./javascript/djadyen.js ./javascript/djadyen_advanced.js --bundle --minify --outdir=./djadyen/static/djadyen/",
-        "watch": "esbuild ./javascript/djadyen.js ./javascript/djadyen_advanced.js --bundle --minify --outdir=./djadyen/static/djadyen/ --watch",
+        "build": "esbuild ./javascript/djadyen.js ./javascript/djadyen_advanced.js ./javascript/djadyen_donation.js --bundle --minify --outdir=./djadyen/static/djadyen/",
+        "watch": "esbuild ./javascript/djadyen.js ./javascript/djadyen_advanced.js ./javascript/djadyen_donation.js --bundle --minify --outdir=./djadyen/static/djadyen/ --watch",
         "lint": "prettier javascript/ -c",
         "format": "prettier javascript/ -w"
     },

@@ -1,13 +1,15 @@
 import json
+import logging
 
 from django.http import JsonResponse
 from django.views import View
-from django.views.generic import DetailView
 from django.views.generic.detail import SingleObjectMixin
 
 from djadyen import settings
 from djadyen.choices import Status
 from djadyen.utils import setup_adyen_client
+
+logger = logging.getLogger("adyen")
 
 
 class AdyenPaymentsAPI(SingleObjectMixin, View):
@@ -33,7 +35,7 @@ class AdyenPaymentsAPI(SingleObjectMixin, View):
                         "currency": "EUR",
                         "value": self.object.get_price_in_cents(),
                     },
-                    "reference": self.object.reference,
+                    "reference": str(self.object.reference),
                     "paymentMethod": payment_method,
                     "returnUrl": self.object.get_redirect_url(),
                     "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
@@ -52,13 +54,18 @@ class AdyenPaymentsAPI(SingleObjectMixin, View):
                 )
 
                 self.object.status = Status.Pending.value
+                self.object.psp_reference = result.message.get("pspReference", "")
+
+                if result.message.get("donationToken"):
+                    self.object.donation_token = result.message["donationToken"]
                 self.object.save()
+
                 return JsonResponse(result.message, status=200)
 
         return JsonResponse({"error": "bad response"}, status=400)
 
 
-class AdyenPaymentDetailsAPI(DetailView):
+class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
     slug_field = "reference"
     slug_url_kwarg = "reference"
 
@@ -81,7 +88,10 @@ class AdyenPaymentDetailsAPI(DetailView):
                 data, idempotency_key=self.object.reference
             )
 
+            print("details", result.message)
             self.object.status = Status.Pending.value
+            if result.message.get("donationToken"):
+                self.object.donation_token = result.message["donationToken"]
             self.object.save()
 
             # Check if further action is needed.
