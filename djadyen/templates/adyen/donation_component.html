@@ -5,11 +5,12 @@
 {% if campaign %}
 <div
     id="djadyen-donation-config"
+    data-campaign='{{ campaign }}'
     data-client-key="{{ client_key }}"
+    data-country-code='{{ country_code }}'
     data-environment="{{ environment }}"
     data-language="{{ language }}"
-    data-campaign='{{ campaign }}'
-    data-country-code='{{ country_code }}'
+    data-cancel-url="{{ cancel_url }}"
 ></div>
 <form id="djadyen-donation-form" name="djadyenDonationForm" method="POST">
     <div id="djadyen-donation-container"></div>

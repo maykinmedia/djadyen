@@ -13,6 +13,7 @@ from glom import PathAccessError, glom
 from djadyen import settings
 from djadyen.choices import Status
 from djadyen.constants import LIVE_URL_PREFIX_ERROR
+from djadyen.models import AdyenDonation
 from djadyen.utils import setup_adyen_client
 
 logger = logging.getLogger("adyen")
@@ -235,12 +236,20 @@ class AdyenDonationView(DetailView):
         context = super().get_context_data(**kwargs)
         context["campaign"] = self.get_donation()
         context["adyen_language"] = self.get_locale()
+        context["cancel_url"] = self.get_cancel_url()
         return context
 
-    def get_donation_model(self):
+    def get_cancel_url(self) -> str:
+        """
+        Where to redirect after closing the donation component
+        :return: URL
+        """
+        return "/"
+
+    def get_donation_model(self) -> AdyenDonation:
         raise NotImplementedError("Donation model is required to create a donation")
 
-    def get_donation_confirmation_url(self):
+    def get_donation_confirmation_url(self) -> str:
         raise NotImplementedError(
             "Donation confirmation url is required to redirect to after donation"
         )

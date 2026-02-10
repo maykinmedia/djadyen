@@ -20,47 +20,44 @@ class AdyenPaymentsAPI(SingleObjectMixin, View):
         self.object = self.get_object()
 
         try:
-            post_body = json.loads(request.body)
+            data = json.loads(request.body)
         except json.JSONDecodeError:
             return JsonResponse({"error": "bad response"}, status=400)
 
-        data = post_body.get("data")
+        payment_method = data.get("paymentMethod")
 
-        if data:
-            payment_method = data.get("paymentMethod")
+        if payment_method:
+            json_request = {
+                "amount": {
+                    "currency": "EUR",
+                    "value": self.object.get_price_in_cents(),
+                },
+                "reference": str(self.object.reference),
+                "paymentMethod": payment_method,
+                "returnUrl": self.object.get_redirect_url(),
+                "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
+            }
 
-            if payment_method:
-                json_request = {
-                    "amount": {
-                        "currency": "EUR",
-                        "value": self.object.get_price_in_cents(),
-                    },
-                    "reference": str(self.object.reference),
-                    "paymentMethod": payment_method,
-                    "returnUrl": self.object.get_redirect_url(),
-                    "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
-                }
+            if data.get("riskData"):
+                json_request["riskData"] = data["riskData"]
 
-                if data.get("riskData"):
-                    json_request["riskData"] = data["riskData"]
+            if data.get("checkoutAttemptId"):
+                json_request["checkoutAttemptId"] = data["checkoutAttemptId"]
 
-                if data.get("checkoutAttemptId"):
-                    json_request["checkoutAttemptId"] = data["checkoutAttemptId"]
+            # Send the request
+            adyen_client = setup_adyen_client()
+            result = adyen_client.checkout.payments_api.payments(
+                request=json_request, idempotency_key=self.object.reference
+            )
 
-                # Send the request
-                adyen_client = setup_adyen_client()
-                result = adyen_client.checkout.payments_api.payments(
-                    request=json_request, idempotency_key=self.object.reference
-                )
+            self.object.status = Status.Pending.value
+            self.object.psp_reference = result.message.get("pspReference", "")
 
-                self.object.status = Status.Pending.value
-                self.object.psp_reference = result.message.get("pspReference", "")
+            if result.message.get("donationToken"):
+                self.object.donation_token = result.message["donationToken"]
+            self.object.save()
 
-                if result.message.get("donationToken"):
-                    self.object.donation_token = result.message["donationToken"]
-                self.object.save()
-
-                return JsonResponse(result.message, status=200)
+            return JsonResponse(result.message, status=200)
 
         return JsonResponse({"error": "bad response"}, status=400)
 
@@ -73,11 +70,9 @@ class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
         self.object = self.get_object()
 
         try:
-            post_body = json.loads(request.body)
+            data = json.loads(request.body)
         except json.JSONDecodeError:
             return JsonResponse({"error": "bad response"}, status=400)
-
-        data = post_body.get("data")
 
         if data:
             # STATE_DATA is an object passed from your client app,

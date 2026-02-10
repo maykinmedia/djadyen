@@ -137,14 +137,24 @@ def adyen_status_polling(order, status_url):
 def adyen_donation_component(
     language: str,
     campaign: dict,
+    cancel_url: str,
     country_code: str = settings.DJADYEN_DEFAULT_COUNTRY_CODE,
 ) -> dict:
+    """
+    Renders the Adyen Giving donation component.
+    :param language: Locale of the adyen donation component
+    :param campaign: Adyen donation campaign
+    :param cancel_url: Redirect url after canceling the donation.
+    :param country_code: Adyen Country Code
+    :return: Template tag context
+    """
     return {
         "campaign": json.dumps(campaign),
         "campaign_id": campaign["id"],
         "client_key": settings.DJADYEN_CLIENT_KEY,
         "environment": settings.DJADYEN_ENVIRONMENT,
         "language": language,
+        "cancel_url": cancel_url,
         "country_code": (
             country_code.lower()
             if country_code

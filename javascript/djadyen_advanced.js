@@ -14,9 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 'X-CSRFToken': config.dataset.csrfToken,
             },
             credentials: 'same-origin',
-            body: JSON.stringify({
-                data: data,
-            }),
+            body: JSON.stringify(data),
         }).then((response) => response.json());
     }
 
@@ -29,9 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 'X-CSRFToken': config.dataset.csrfToken,
             },
             credentials: 'same-origin',
-            body: JSON.stringify({
-                data: data,
-            }),
+            body: JSON.stringify(data),
         }).then((response) => response.json());
     }
 
@@ -50,11 +46,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (data && data.resultCode === 'Authorised') {
                         console.log('Payment authorized successfully!');
                         // Handle successful payment authorization. For example: show a confirmation message or redirect the shopper to a confirmation page.
-                        window.location = config.dataset.redirectUrl;
+                        window.location.assign(config.dataset.redirectUrl);
                     } else {
                         console.log('Payment failed or denied.');
                         // Handle payment failure. For example: show an error message or redirect the shopper to an error page.
-                        window.location = config.dataset.redirectUrl;
+                        window.location.assign(config.dataset.redirectUrl);
                     }
                 })
                 .catch((error) => {
@@ -138,11 +134,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
             onPaymentCompleted: (result, component) => {
                 console.info('Completed', result, component);
-                window.location = config.dataset.redirectUrl;
+                window.location.assign(config.dataset.redirectUrl);
             },
             onPaymentFailed: (result, component) => {
                 console.info('Failed', result, component);
-                window.location = config.dataset.redirectUrl;
+                window.location.assign(config.dataset.redirectUrl);
             },
             onError: (error, component) => {
                 console.error(

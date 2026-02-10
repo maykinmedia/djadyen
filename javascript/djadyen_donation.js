@@ -21,15 +21,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const form = document.djadyenDonationForm;
             form.amount.value = JSON.stringify(state.data.amount);
-
-            console.log(state.data.amount.value);
             form.submit();
         };
 
         const handleOnCancel = (state, component) => {
             // Show a message, unmount the Component, or redirect to another page.
-
-            window.location.href = 'https://stackoverflow.com';
+            window.location.assign(config.dataset.cancelUrl);
         };
 
         let donationCampaign = { test: 'empty' };
