@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "djadyen"
-version = "4.1.0-dev"
+version = "4.1.0.dev0"
 description = "Django adyen payment integration"
 authors = [
     {name = "Maykin Media", email = "support@maykinmedia.nl"}
@@ -99,7 +99,7 @@ section-order = [
 "django" = ["django"]
 
 [tool.bumpversion]
-current_version = "5.0.0.b0"
+current_version = "4.1.0.dev0"
 files = [
     {filename = "pyproject.toml"},
     {filename = "package.json"},
