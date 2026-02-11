@@ -1,6 +1,6 @@
 {
     "name": "djadyen",
-    "version": "4.0.0",
+    "version": "5.0.0.b0",
     "description": "",
     "main": "./djadyen/static/djadyen/djadyen.js",
     "browserslist": [
