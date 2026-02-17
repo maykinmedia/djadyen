@@ -233,10 +233,10 @@ class AdyenDonationView(DetailView):
         context = super().get_context_data(**kwargs)
         context["campaign"] = self.get_donation()
         context["adyen_language"] = self.get_locale()
-        context["redirect_url"] = self.redirect_url()
+        context["redirect_url"] = self.get_redirect_url()
         return context
 
-    def get_cancel_url(self) -> str:
+    def get_redirect_url(self) -> str:
         """
         Where to redirect after closing the donation component
         :return: URL
