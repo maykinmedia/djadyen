@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }).then((response) => response.json());
     }
 
-    function handleRedirectResult() {
+    async function handleRedirectResult() {
         // 1. Get the redirectResult from your return URL.
         const urlParams = new URLSearchParams(window.location.search);
         const redirectResult = urlParams.get('redirectResult');
@@ -40,27 +40,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (redirectResult) {
             // 2. Pass the redirectResult to your server.
             // 3. Your server makes the /payments/details request. Adyen's server processes the encoded redirectResult value.
-
-            makeDetailsCall({ redirectResult })
-                .then((data) => {
-                    // Verify the resultCode from your server's response.
-                    if (data && data.resultCode === 'Authorised') {
-                        console.log('Payment authorized successfully!');
-                        // Handle successful payment authorization. For example: show a confirmation message or redirect the shopper to a confirmation page.
-                        window.location.assign(config.dataset.redirectUrl);
-                    } else {
-                        console.log('Payment failed or denied.');
-                        // Handle payment failure. For example: show an error message or redirect the shopper to an error page.
-                        window.location.assign(config.dataset.redirectUrl);
-                    }
-                })
-                .catch((error) => {
-                    console.error(
-                        'Error sending redirect result or processing server response:',
-                        error
-                    );
-                    // Handle network errors or issues with server communication.
-                });
+            try {
+                const data = await makeDetailsCall({ redirectResult });
+                // Verify the resultCode from your server's response.
+                if (data && data.resultCode === 'Authorised') {
+                    console.log('Payment authorized successfully!');
+                    // Handle successful payment authorization. For example: show a confirmation message or redirect the shopper to a confirmation page.
+                    window.location.assign(config.dataset.redirectUrl);
+                } else {
+                    console.log('Payment failed or denied.');
+                    // Handle payment failure. For example: show an error message or redirect the shopper to an error page.
+                    window.location.assign(config.dataset.redirectUrl);
+                }
+            } catch (error) {
+                // Handle network errors or issues with server communication.
+                console.error(
+                    'Error sending redirect result or processing server response:',
+                    error
+                );
+            }
         }
     }
 
