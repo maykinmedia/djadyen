@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const config = document.querySelector('#djadyen-config');
 
     async function makePaymentsCall(data) {
-        return await fetch(config.dataset.paymentsEndpoint, {
+        const response = await fetch(config.dataset.paymentsEndpoint, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
             credentials: 'same-origin',
             body: JSON.stringify(data),
-        }).then((response) => response.json());
+        });
+        return await response.json();
     }
 
     async function makeDetailsCall(data) {
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // 2. Pass the redirectResult to your server.
             // 3. Your server makes the /payments/details request. Adyen's server processes the encoded redirectResult value.
 
-            makeDetailsCall({ redirectResult: redirectResult })
+            makeDetailsCall({ redirectResult })
                 .then((data) => {
                     // Verify the resultCode from your server's response.
                     if (data && data.resultCode === 'Authorised') {
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Call this function when your page loads.
-    handleRedirectResult();
+    await handleRedirectResult();
 
     if (config) {
         const configuration = {
@@ -84,10 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const result = await makePaymentsCall(state.data);
 
                     // If the /payments request from your server fails, or if an unexpected error occurs.
-                    if (!result.resultCode) {
-                        actions.reject();
-                        return;
-                    }
+                    if (!result.resultCode) return actions.reject();
 
                     console.log(result);
                     const { resultCode, action, order, donationToken } = result;
@@ -112,10 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const result = await makeDetailsCall(state.data);
 
                     // If the /payments/details request from your server fails, or if an unexpected error occurs.
-                    if (!result.resultCode) {
-                        actions.reject();
-                        return;
-                    }
+                    if (!result.resultCode) return actions.reject();
 
                     const { resultCode, action, order, donationToken } = result;
 
