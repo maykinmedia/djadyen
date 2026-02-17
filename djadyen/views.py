@@ -218,7 +218,6 @@ class AdyenDonationView(DetailView):
 
     def get_donation(self):
         order = self.get_object()
-        logger.info("Start new donation for %s", order.reference)
 
         ady = setup_adyen_client()
         json_request = {
@@ -236,7 +235,7 @@ class AdyenDonationView(DetailView):
         context = super().get_context_data(**kwargs)
         context["campaign"] = self.get_donation()
         context["adyen_language"] = self.get_locale()
-        context["cancel_url"] = self.get_cancel_url()
+        context["redirect_url"] = self.redirect_url()
         return context
 
     def get_cancel_url(self) -> str:
@@ -270,7 +269,7 @@ class AdyenDonationView(DetailView):
         amount = request.POST["amount"]
         campaign_id = request.POST["donation_campaign_id"]
 
-        logger.info("Start new payment for  %s", self.object.reference)
+        logger.info("Start new donation payment for  %s", self.object.reference)
         amount = json.loads(amount)
 
         Donation = self.get_donation_model()
@@ -303,6 +302,7 @@ class AdyenDonationView(DetailView):
                 donation.status = Status.Error.value
                 donation.save()
             else:
+                logger.info("Donation created %s", donation.reference)
                 if result.message["status"] == "refused":
                     donation.status_message = Status.Refused.value
                 else:

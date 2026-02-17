@@ -45,6 +45,7 @@ class AdyenPaymentsAPI(SingleObjectMixin, View):
                 json_request["checkoutAttemptId"] = data["checkoutAttemptId"]
 
             # Send the request
+            logger.info("Start new payment for  %s", self.object.reference)
             adyen_client = setup_adyen_client()
             result = adyen_client.checkout.payments_api.payments(
                 request=json_request, idempotency_key=self.object.reference
@@ -78,12 +79,12 @@ class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
             # STATE_DATA is an object passed from your client app,
             # deserialized from JSON to a data structure.
 
+            logger.info("Sending payment details for  %s", self.object.reference)
             adyen_client = setup_adyen_client()
             result = adyen_client.checkout.payments_api.payments_details(
                 data, idempotency_key=self.object.reference
             )
 
-            print("details", result.message)
             self.object.status = Status.Pending.value
             if result.message.get("donationToken"):
                 self.object.donation_token = result.message["donationToken"]
