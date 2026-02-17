@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const donation = new Donation(checkout, donationConfig).mount(
                 '#djadyen-donation-container'
             );
-
         } catch (e) {
             console.warn('Invalid campaign to parsed:', e);
         }

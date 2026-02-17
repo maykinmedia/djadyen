@@ -217,8 +217,6 @@ class AdyenDonationView(DetailView):
         return self.request.LANGUAGE_CODE
 
     def get_donation(self):
-        order = self.get_object()
-
         ady = setup_adyen_client()
         json_request = {
             "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
