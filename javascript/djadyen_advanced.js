@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // If the /payments request from your server fails, or if an unexpected error occurs.
                     if (!result.resultCode) return actions.reject();
 
-                    console.log(result);
                     const { resultCode, action, order, donationToken } = result;
                     console.log(resultCode, action);
 

@@ -29,25 +29,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.assign(config.dataset.cancelUrl);
         };
 
-        let donationCampaign = { test: 'empty' };
-
         try {
-            donationCampaign = JSON.parse(config.dataset.campaign);
+            let donationCampaign = JSON.parse(config.dataset.campaign);
+
+            const donationConfig = {
+                ...donationCampaign,
+                showCancelButton: true,
+                onDonate: handleOnDonate,
+                onCancel: handleOnCancel,
+            };
+
+            const checkout = await AdyenCheckout(configuration);
+            const donation = new Donation(checkout, donationConfig).mount(
+                '#djadyen-donation-container'
+            );
+
         } catch (e) {
             console.warn('Invalid campaign to parsed:', e);
-            return;
         }
-
-        const donationConfig = {
-            ...donationCampaign,
-            showCancelButton: true,
-            onDonate: handleOnDonate,
-            onCancel: handleOnCancel,
-        };
-
-        const checkout = await AdyenCheckout(configuration);
-        const donation = new Donation(checkout, donationConfig).mount(
-            '#djadyen-donation-container'
-        );
     }
 });
