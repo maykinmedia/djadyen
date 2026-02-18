@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "djadyen"
-version = "4.1.0-dev0"
+version = "4.1.0-dev1"
 description = "Django adyen payment integration"
 authors = [
     {name = "Maykin Media", email = "support@maykinmedia.nl"}
@@ -99,7 +99,7 @@ section-order = [
 "django" = ["django"]
 
 [tool.bumpversion]
-current_version = "4.1.0-dev0"
+current_version = "4.1.0-dev1"
 parse = """(?x)
     (?P<major>0|[1-9]\\d*)\\.
     (?P<minor>0|[1-9]\\d*)\\.
@@ -121,7 +121,7 @@ ignore_missing_version = false
 ignore_missing_files = false
 tag = false
 sign_tags = false
-tag_name = "{new_version}"
+tag_name = "v{new_version}"
 tag_message = ":arrow_up: Bump version to {new_version} and update changelog"
 allow_dirty = false
 commit = false
@@ -135,6 +135,7 @@ post_commit_hooks = []
 files = [
     {filename = "package.json"},
     {filename = "djadyen/__init__.py"},
+    {filename = "README.rst"},
 ]
 
 [tool.bumpversion.parts.pre_l]
