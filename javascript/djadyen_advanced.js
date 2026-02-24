@@ -39,28 +39,30 @@ class AdvancedPaymentCheckout {
         const urlParams = new URLSearchParams(window.location.search);
         const redirectResult = urlParams.get('redirectResult');
 
-        if (redirectResult) {
-            // 2. Pass the redirectResult to your server.
-            // 3. Your server makes the /payments/details request. Adyen's server processes the encoded redirectResult value.
-            try {
-                const data = await this.makeDetailsCall({ redirectResult });
-                // Verify the resultCode from your server's response.
-                if (data && data.resultCode === 'Authorised') {
-                    console.log('Payment authorized successfully!');
-                    // Handle successful payment authorization. For example: show a confirmation message or redirect the shopper to a confirmation page.
-                    window.location.assign(this.config.dataset.redirectUrl);
-                } else {
-                    console.log('Payment failed or denied.');
-                    // Handle payment failure. For example: show an error message or redirect the shopper to an error page.
-                    window.location.assign(this.config.dataset.redirectUrl);
-                }
-            } catch (error) {
-                // Handle network errors or issues with server communication.
-                console.error(
-                    'Error sending redirect result or processing server response:',
-                    error
-                );
+        if (!redirectResult) return;
+        // 2. Pass the redirectResult to your server.
+        // 3. Your server makes the /payments/details request. Adyen's server processes the encoded redirectResult value.
+        try {
+            const data = await this.makeDetailsCall({ redirectResult });
+            // Verify the resultCode from your server's response.
+            if (data) {
+                // Handle successful payment authorization.
+                if (data.resultCode === 'Authorised')
+                    console.info('Payment authorized successfully!');
+                // Handle non-successful payment authorization.
+                else console.info(`Payment denied: ${data.resultCode}.`);
+                window.location.assign(this.config.dataset.redirectUrl);
+            } else {
+                console.error('Payment failed');
+                // Handle payment api returning bad response.
+                window.location.assign(this.config.dataset.redirectUrl);
             }
+        } catch (error) {
+            // Handle network errors or issues with server communication.
+            console.error(
+                'Error sending redirect result or processing server response:',
+                error
+            );
         }
     }
 
@@ -75,6 +77,9 @@ class AdvancedPaymentCheckout {
                 },
                 locale: this.config.dataset.language,
                 countryCode: this.config.dataset.countryCode,
+                analytics: {
+                    enabled: false,
+                },
                 // The full /paymentMethods response object from your server. Contains the payment methods configured in your account.
                 // paymentMethodsResponse: paymentMethodsResponse,
                 onSubmit: async (state, component, actions) => {
@@ -83,11 +88,11 @@ class AdvancedPaymentCheckout {
                         const result = await this.makePaymentsCall(state.data);
 
                         // If the /payments request from your server fails, or if an unexpected error occurs.
-                        if (!result.resultCode) return actions.reject();
+                        if (!result || !result.resultCode)
+                            return actions.reject();
 
                         const { resultCode, action, order, donationToken } =
                             result;
-                        console.log(resultCode, action);
 
                         // If the /payments request request from your server is successful, you must call this to resolve whichever of the listed objects are available.
                         // You must call this, even if the result of the payment is unsuccessful.
@@ -135,12 +140,7 @@ class AdvancedPaymentCheckout {
                     window.location.assign(this.config.dataset.redirectUrl);
                 },
                 onError: (error, component) => {
-                    console.error(
-                        error.name,
-                        error.message,
-                        error.stack,
-                        component
-                    );
+                    console.error(error, component);
                 },
             };
         }
@@ -152,23 +152,21 @@ class AdvancedPaymentCheckout {
         await this.handleRedirectResult();
 
         const configuration = this.createConfiguration();
-        if (configuration) {
-            const checkout = await AdyenCheckout(configuration);
-            const [Component, getPaymentConfiguration] =
-                PaymentComponents[this.config.dataset.paymentType];
-            const paymentConfiguration = getPaymentConfiguration(
-                this.config.dataset
-            );
-            new Component(checkout, paymentConfiguration).mount(
-                '#djadyen-advanced-container'
-            );
-        } else {
-            console.error('Invalid configuration');
-        }
+        if (!configuration) return console.error('Invalid configuration');
+
+        const checkout = await AdyenCheckout(configuration);
+        const [Component, getPaymentConfiguration] =
+            PaymentComponents[this.config.dataset.paymentType];
+        const paymentConfiguration = getPaymentConfiguration(
+            this.config.dataset
+        );
+        new Component(checkout, paymentConfiguration).mount(
+            '#djadyen-advanced-container'
+        );
     }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    let checkout = new AdvancedPaymentCheckout();
+    const checkout = new AdvancedPaymentCheckout();
     await checkout.createCheckout();
 });
