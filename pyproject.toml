@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "djadyen"
-version = "4.1.0-dev1"
+version = "4.1.0"
 description = "Django adyen payment integration"
 authors = [
     {name = "Maykin Media", email = "support@maykinmedia.nl"}
@@ -99,7 +99,7 @@ section-order = [
 "django" = ["django"]
 
 [tool.bumpversion]
-current_version = "4.1.0-dev1"
+current_version = "4.1.0"
 parse = """(?x)
     (?P<major>0|[1-9]\\d*)\\.
     (?P<minor>0|[1-9]\\d*)\\.
