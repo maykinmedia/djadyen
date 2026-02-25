@@ -5,8 +5,7 @@ from django.urls import reverse
 from django_webtest import WebTest
 
 from djadyen.models import AdyenNotification
-
-from .utils import TestFileMixin
+from tests.utils import TestFileMixin
 
 
 class NotificationViewTests(TestFileMixin, WebTest):
