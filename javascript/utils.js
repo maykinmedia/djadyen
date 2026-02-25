@@ -11,7 +11,7 @@ function getCommonPaymentConfiguration(dataset) {
         try {
             commonPaymentConfiguration.styles = JSON.parse(dataset.styles);
         } catch (e) {
-            console.error("Failed to parse DJADYEN_STYLES:", e);
+            console.error('Failed to parse DJADYEN_STYLES:', e);
         }
     }
 
@@ -47,7 +47,7 @@ export function getBrandConfiguration(dataset) {
                 ({ adyen_id }) => adyen_id
             );
         } catch (e) {
-            console.error("Failed to parse issuers:", e);
+            console.error('Failed to parse issuers:', e);
         }
     }
 

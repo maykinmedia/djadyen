@@ -22,3 +22,9 @@ class Order(AdyenOrder):
             host="https://example.com",
             path=reverse("confirm", kwargs={"reference": self.reference}),
         )
+
+    def get_redirect_url(self):
+        return "{host}{path}".format(
+            host="https://example.com",
+            path=reverse("redirect", kwargs={"reference": self.reference}),
+        )

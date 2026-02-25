@@ -1,5 +1,6 @@
+from djadyen.api import AdyenPaymentDetailsAPI, AdyenPaymentsAPI
 from djadyen.choices import Status
-from djadyen.views import AdyenPaymentView, AdyenResponseView
+from djadyen.views import AdyenAdvancedPaymentView, AdyenPaymentView, AdyenResponseView
 
 from .models import Order
 
@@ -38,3 +39,20 @@ class PaymentView(AdyenPaymentView):
 
     def get_return_url(self, **kwargs):
         pass
+
+
+# Web components Advanced view
+class AdvancedPaymentView(AdyenAdvancedPaymentView):
+    template_name = "app/payment.html"
+    model = Order
+
+    def get_return_url(self, **kwargs):
+        pass
+
+
+class PaymentDetailsAPIView(AdyenPaymentDetailsAPI):
+    model = Order
+
+
+class PaymentsAPIView(AdyenPaymentsAPI):
+    model = Order

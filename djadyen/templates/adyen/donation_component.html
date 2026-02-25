@@ -1,0 +1,23 @@
+{% load static i18n %}
+<script defer src="{% static 'djadyen/djadyen_donation.js' %}" type="text/javascript"></script>
+<link rel="stylesheet" rel="preload" as="style" href="{% static 'djadyen/djadyen.css' %}"></link>
+
+{% if campaign %}
+<div
+    id="djadyen-donation-config"
+    data-campaign='{{ campaign }}'
+    data-client-key="{{ client_key }}"
+    data-country-code='{{ country_code }}'
+    data-environment="{{ environment }}"
+    data-language="{{ language }}"
+    data-cancel-url="{{ redirect_url }}"
+></div>
+<form id="djadyen-donation-form" name="djadyenDonationForm" method="POST">
+    <div id="djadyen-donation-container"></div>
+    {% csrf_token %}
+    <input type="hidden" name="amount">
+    <input type="hidden" name="donation_campaign_id" value="{{ campaign_id }}">
+</form>
+{% else %}
+<p>{% trans "No active donation campaigns." %}</p>
+{% endif %}

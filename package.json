@@ -1,6 +1,6 @@
 {
     "name": "djadyen",
-    "version": "4.0.0",
+    "version": "4.1.0-dev1",
     "description": "",
     "main": "./djadyen/static/djadyen/djadyen.js",
     "browserslist": [
@@ -8,8 +8,8 @@
     ],
     "type": "module",
     "scripts": {
-        "build": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js",
-        "watch": "esbuild ./javascript/djadyen.js --bundle --minify --outfile=./djadyen/static/djadyen/djadyen.js --watch",
+        "build": "esbuild ./javascript/djadyen.js ./javascript/djadyen_advanced.js ./javascript/djadyen_donation.js --bundle --minify --outdir=./djadyen/static/djadyen/",
+        "watch": "esbuild ./javascript/djadyen.js ./javascript/djadyen_advanced.js ./javascript/djadyen_donation.js --bundle --minify --outdir=./djadyen/static/djadyen/ --watch",
         "lint": "prettier javascript/ -c",
         "format": "prettier javascript/ -w"
     },
@@ -24,10 +24,11 @@
     },
     "homepage": "https://github.com/maykinmedia/djadyen#readme",
     "dependencies": {
-        "@adyen/adyen-web": "^6.22.0"
+        "@adyen/adyen-web": "^6.31.0"
     },
     "devDependencies": {
         "esbuild": "^0.25.10",
+        "jshint": "^2.13.6",
         "prettier": "^2.6.2"
     }
 }
