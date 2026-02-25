@@ -91,12 +91,4 @@ class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
             self.object.donation_token = result.message["donationToken"]
         self.object.save()
 
-        # Check if further action is needed.
-        if "action" in result.message:
-            # Pass the action object to your client.
-            # result.message['action']
-            return JsonResponse(result.message["action"])
-        else:
-            # No further action needed, pass the resultCode to your client.
-            # result.message['resultCode']
-            return JsonResponse(result.message["resultCode"])
+        return JsonResponse(result.message)
