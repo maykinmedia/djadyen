@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "djadyen"
-version = "4.1.0-dev1"
+version = "4.1.0"
 description = "Django adyen payment integration"
 authors = [
     {name = "Maykin Media", email = "support@maykinmedia.nl"}
@@ -99,7 +99,7 @@ section-order = [
 "django" = ["django"]
 
 [tool.bumpversion]
-current_version = "4.1.0-dev1"
+current_version = "4.1.0"
 parse = """(?x)
     (?P<major>0|[1-9]\\d*)\\.
     (?P<minor>0|[1-9]\\d*)\\.
@@ -122,14 +122,14 @@ ignore_missing_files = false
 tag = false
 sign_tags = false
 tag_name = "v{new_version}"
-tag_message = ":arrow_up: Bump version to {new_version} and update changelog"
+tag_message = ":bookmark: release {new_version}"
 allow_dirty = false
 commit = false
-message = ":arrow_up: Bump version to {new_version} and update changelog"
+message = ":bookmark: release {new_version}"
 commit_args = ""
 setup_hooks = []
 pre_commit_hooks = [
-    "npm i",  # ensure that package-lock.json is updated
+    "npm i && git add package-lock.json",  # ensure that package-lock.json is updated
 ]
 post_commit_hooks = []
 files = [

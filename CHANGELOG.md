@@ -1,3 +1,13 @@
+# 4.1.0
+- add advance Adyen checkout
+- add Adyen Giving donation component
+- add more logging
+- update add `get_locale` to adyen views
+  - Now should overwrite `get_locale` instead of fixing in `get_context_data`
+- update `Adyen-Web` to 6.31.0
+- update `bump-my-version` config
+
+
 # 4.0.0
 - **BREAKING CHANGE:** Upgrade `Adyen-web` to v6
   - payment methods must now be explicitly added
