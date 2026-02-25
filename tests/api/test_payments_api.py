@@ -61,7 +61,32 @@ def test_payments_api_simple(client, payments_api, mock_successful_payments_api)
 
     order.refresh_from_db()
     assert response.status_code == 200
-    assert response.json()["resultCode"] == "Authorised"
+    assert response.json() == {
+        "resultCode": "Authorised",
+        "action": None,
+        "order": None,
+        "donationToken": "EXAMPLE_DONATION_TOKEN",
+    }
     assert order.status == Status.Pending
     assert order.psp_reference == "993617895215577D"
     assert order.donation_token == "EXAMPLE_DONATION_TOKEN"
+
+
+@pytest.mark.django_db()
+def test_payments_api_redirect(client, payments_api, mock_redirect_ideal_payments_api):
+    url, order = payments_api
+    data = json.dumps({"paymentMethod": "data"})
+    response = client.post(url, data=data, content_type="application/json")
+
+    json_response = response.json()
+
+    order.refresh_from_db()
+    assert response.status_code == 200
+    assert json_response["resultCode"] == "RedirectShopper"
+    assert json_response["action"]["type"] == "redirect"
+    assert json_response["action"]["paymentMethodType"] == "ideal"
+    assert order.status == Status.Pending
+
+    # psp reference is only set on payment
+    assert order.psp_reference == ""
+    assert order.donation_token == ""

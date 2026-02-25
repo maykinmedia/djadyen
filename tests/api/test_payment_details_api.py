@@ -51,9 +51,12 @@ def test_payment_details_api_simple(
 
     order.refresh_from_db()
     assert response.status_code == 200
-    assert response.json()["resultCode"] == "Authorised"
+    assert response.json() == {
+        "resultCode": "Authorised",
+        "action": None,
+        "order": None,
+        "donationToken": "EXAMPLE_DONATION_TOKEN",
+    }
     assert order.donation_token == "EXAMPLE_DONATION_TOKEN"
     assert order.status == Status.Pending
-
-    # not updated by
-    assert order.psp_reference == ""
+    assert order.psp_reference == "V4HZ4RBFJGXXGN82"

@@ -52,14 +52,22 @@ class AdyenPaymentsAPI(SingleObjectMixin, View):
             request=json_request, idempotency_key=self.object.reference
         )
 
+        # only return what checkout wants from payments
+        response = {
+            "resultCode": result.message["resultCode"],
+            "action": result.message.get("action"),
+            "order": result.message.get("order"),
+            "donationToken": result.message.get("donationToken"),
+        }
+
         self.object.status = Status.Pending.value
         self.object.psp_reference = result.message.get("pspReference", "")
 
-        if result.message.get("donationToken"):
-            self.object.donation_token = result.message["donationToken"]
+        if response["donationToken"]:
+            self.object.donation_token = response["donationToken"]
         self.object.save()
 
-        return JsonResponse(result.message, status=200)
+        return JsonResponse(response, status=200)
 
 
 class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
@@ -86,9 +94,20 @@ class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
             data, idempotency_key=self.object.reference
         )
 
+        # only return what checkout wants from payment details
+        response = {
+            "resultCode": result.message["resultCode"],
+            "action": result.message.get("action"),
+            "order": result.message.get("order"),
+            "donationToken": result.message.get("donationToken"),
+        }
+
         self.object.status = Status.Pending.value
-        if result.message.get("donationToken"):
-            self.object.donation_token = result.message["donationToken"]
+        if result.message.get("pspReference"):
+            self.object.psp_reference = result.message["pspReference"]
+
+        if response["donationToken"]:
+            self.object.donation_token = response["donationToken"]
         self.object.save()
 
-        return JsonResponse(result.message)
+        return JsonResponse(response)
