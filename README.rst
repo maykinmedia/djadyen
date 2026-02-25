@@ -239,7 +239,7 @@ This view is used to show the payment page.
 
 This page can be customized in 2 ways.
 
-1. overwrite the template (``adyen/pay,html``)
+1. overwrite the template (``adyen/pay.html``)
 2. Overwrite the view and changing the ``template_name``
 
 .. code:: python
@@ -256,25 +256,27 @@ should be converted in the view context similarly to this:
 
 .. code:: python
 
-   ADYEN_LANGUAGES = {
-       "nl": "nl-NL",
-       "en": "en-US",
-   }
+    ADYEN_LANGUAGES = {
+        "nl": "nl-NL",
+        "en": "en-US",
+    }
 
-   class PaymentView(AdyenPaymentView):
-       ...
-       def get_context_data(self, **kwargs):
-           return super().get_context_data(**kwargs) | {"adyen_language": ADYEN_LANGUAGES[self.request.LANGUAGE_CODE]}
+    class PaymentView(AdyenPaymentView):
+        ...
+
+        def get_locale(self):
+            return ADYEN_LANGUAGES[self.request.LANGUAGE_CODE]
+
 
 AdyenResponseView
 ~~~~~~~~~~~~~~~~~
 
 Adyen also creates a response. This will help you with catching the
 response. This view will check if the response from Adyen is valid. It
-will also provide some usefull functions so you don’t have to overwrite
+will also provide some useful functions so you don’t have to overwrite
 anything.
 
-In this example the order is automaticly fetched from the reference that
+In this example the order is automatically fetched from the reference that
 is passed in the merchantReference. It will also set the order in the
 self object for easy access. In the done function the order is saved and
 the template will be rendered.
@@ -285,13 +287,33 @@ the template will be rendered.
    from djadyen.choices import Status
 
 
-   class ConfirmationView(AdyenResponseView, TemplateView):
+   class ConfirmationView(AdyenResponseView):
        template_name = 'my_project/confirmation.html'
        model = Order
 
        def handle_authorised(self):
            self.order.status = Status.Authorised
            return self.done()
+
+AdyenAdvancedPaymentView
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Similar to the ``AdyenPaymentView`` but uses the advanced checkout from ``adyen-web``.
+This allows for more payment methods and allows for the new Giving donation component.
+The advanced view can handle adyen responses and does not need the ``AdyenResponseView``.
+
+The view should implement the ``adyen_advanced_payment_component`` template tag in the template.
+The ``AdyenAdvancedPaymentView`` also needs to override ``get_locale`` to get the correct locale if it is not already.
+
+
+.. code:: python
+
+    from djadyen.views import AdyenAdvancedPaymentView
+
+    class AdvancedPaymentView(AdyenAdvancedPaymentView):
+        template_name = 'my_project/confirmation.html'
+        model = Order
+
 
 Adyen notifications
 ===================
