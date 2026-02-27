@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
-from djadyen.models import AdyenOrder
+from djadyen.models import AdyenDonation, AdyenOrder
 
 
 class Order(AdyenOrder):
@@ -37,3 +37,11 @@ class Order(AdyenOrder):
 
     def get_payment_details_api(self):
         return reverse("payment_details_api", kwargs={"reference": self.reference})
+
+
+class Donation(AdyenDonation):
+    order = models.OneToOneField(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="donation_order",
+    )

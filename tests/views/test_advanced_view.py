@@ -1,6 +1,7 @@
-import pytest
 from django.urls import reverse
 from django.utils.translation import get_language
+
+import pytest
 
 
 @pytest.mark.django_db()
