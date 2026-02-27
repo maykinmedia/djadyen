@@ -73,7 +73,9 @@ def test_payments_api_simple(client, setup_payments_api, mock_successful_payment
 
 
 @pytest.mark.django_db()
-def test_payments_api_redirect(client, setup_payments_api, mock_redirect_ideal_payments_api):
+def test_payments_api_redirect(
+    client, setup_payments_api, mock_redirect_ideal_payments_api
+):
     url, order = setup_payments_api
     data = json.dumps({"paymentMethod": "data"})
     response = client.post(url, data=data, content_type="application/json")

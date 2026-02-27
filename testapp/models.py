@@ -29,5 +29,11 @@ class Order(AdyenOrder):
     def get_redirect_url(self):
         return "{host}{path}".format(
             host="https://example.com",
-            path=reverse("redirect", kwargs={"reference": self.reference}),
+            path=reverse("advance_payment", kwargs={"reference": self.reference}),
         )
+
+    def get_payments_api(self):
+        return reverse("payments_api", kwargs={"reference": self.reference})
+
+    def get_payment_details_api(self):
+        return reverse("payment_details_api", kwargs={"reference": self.reference})

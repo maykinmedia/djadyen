@@ -5,6 +5,11 @@ from djadyen.views import AdyenAdvancedPaymentView, AdyenPaymentView, AdyenRespo
 from .models import Order
 
 
+ADYEN_LANGUAGES = {
+    "nl": "nl-NL",
+    "en": "en-US",
+}
+
 class ConfirmationView(AdyenResponseView):
     template_name = "app/confirmation.html"
     model = Order
@@ -43,8 +48,11 @@ class PaymentView(AdyenPaymentView):
 
 # Web components Advanced view
 class AdvancedPaymentView(AdyenAdvancedPaymentView):
-    template_name = "app/payment.html"
     model = Order
+
+    # Map language code to Adyen locale
+    def get_locale(self, **kwargs):
+        return ADYEN_LANGUAGES.get(self.request.LANGUAGE_CODE, "en-US")
 
     def get_return_url(self, **kwargs):
         pass
