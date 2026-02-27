@@ -31,6 +31,7 @@ class IssuerFactory(factory.django.DjangoModelFactory):
 class OrderFactory(factory.django.DjangoModelFactory):
     status = Status.Created
     email = factory.Faker("email")
+    amount = 5000
 
     class Meta:
         model = Order

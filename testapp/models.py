@@ -7,8 +7,11 @@ from djadyen.models import AdyenOrder
 class Order(AdyenOrder):
     paid = models.BooleanField(default=False)
 
+    # some way to saving the price
+    amount = models.PositiveIntegerField(default=0)
+
     def get_price_in_cents(self):
-        return 5000
+        return self.amount
 
     def process_notification(self, notification):
         super().process_notification(notification)
