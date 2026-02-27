@@ -137,8 +137,14 @@ class AdyenResponseView(DetailView):
                 self.handle_error(self.object)
         return super().get(request, *args, **kwargs)
 
-    def handle_authorised(self, order):
-        raise NotImplementedError()
+    def handle_authorised(self) -> None:
+        """
+        Handle what happens to a order after a payment is authorised
+        e.g change order to status and send confirmation email
+        """
+        raise NotImplementedError(
+            "Handle what happens to a order after a payment is authorised"
+        )
 
     def handle_error(self, order):
         order.status = Status.Error
@@ -206,6 +212,8 @@ class AdyenDonationView(DetailView):
     Should be done
     """
 
+    template_name = "adyen/donation.html"
+
     slug_field = "reference"
     slug_url_kwarg = "reference"
 
@@ -249,6 +257,15 @@ class AdyenDonationView(DetailView):
     def get_donation_confirmation_url(self) -> str:
         raise NotImplementedError(
             "Donation confirmation url is required to redirect to after donation"
+        )
+
+    def handle_authorised(self, order) -> None:
+        """
+        Handle what happens to a order after a payment is authorised
+        e.g change order to status and send confirmation email
+        """
+        raise NotImplementedError(
+            "Handle what happens to a order after a payment is authorised"
         )
 
     def get(self, request, *args, **kwargs):

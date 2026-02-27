@@ -13,7 +13,7 @@
     {% if object.donation_token %}
         {% if not object.donation_order or object.donation_order.status == "created" %}
         <h2>Would you like to Donate?</h2>
-        {% adyen_donation_component language=adyen_language campaign=campaign cancel_url=cancel_url %}
+        {% adyen_donation_component language=adyen_language campaign=campaign redirect_url=redirect_url %}
         {% else %}
             <h2>Donation already ordered</h2>
             <p>Click here to see the result</p>
