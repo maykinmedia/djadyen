@@ -18,8 +18,8 @@ def test_payments_api_no_order(client):
 
 
 @pytest.mark.django_db()
-def test_payments_api_require_post(client, payments_api):
-    url, order = payments_api
+def test_payments_api_require_post(client, setup_payments_api):
+    url, order = setup_payments_api
     response = client.get(url)
 
     order.refresh_from_db()
@@ -30,9 +30,9 @@ def test_payments_api_require_post(client, payments_api):
 @pytest.mark.django_db()
 def test_payments_api_empty_request(
     client,
-    payments_api,
+    setup_payments_api,
 ):
-    url, order = payments_api
+    url, order = setup_payments_api
     response = client.post(url)
 
     order.refresh_from_db()
@@ -42,8 +42,8 @@ def test_payments_api_empty_request(
 
 
 @pytest.mark.django_db()
-def test_payments_api_no_payment_method(client, payments_api):
-    url, order = payments_api
+def test_payments_api_no_payment_method(client, setup_payments_api):
+    url, order = setup_payments_api
     data = json.dumps({"unrelated": "data"})
     response = client.post(url, data, content_type="application/json")
 
@@ -54,8 +54,8 @@ def test_payments_api_no_payment_method(client, payments_api):
 
 
 @pytest.mark.django_db()
-def test_payments_api_simple(client, payments_api, mock_successful_payments_api):
-    url, order = payments_api
+def test_payments_api_simple(client, setup_payments_api, mock_successful_payments_api):
+    url, order = setup_payments_api
     data = json.dumps({"paymentMethod": "data"})
     response = client.post(url, data=data, content_type="application/json")
 
@@ -73,8 +73,8 @@ def test_payments_api_simple(client, payments_api, mock_successful_payments_api)
 
 
 @pytest.mark.django_db()
-def test_payments_api_redirect(client, payments_api, mock_redirect_ideal_payments_api):
-    url, order = payments_api
+def test_payments_api_redirect(client, setup_payments_api, mock_redirect_ideal_payments_api):
+    url, order = setup_payments_api
     data = json.dumps({"paymentMethod": "data"})
     response = client.post(url, data=data, content_type="application/json")
 
