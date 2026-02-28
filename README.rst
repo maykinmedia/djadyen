@@ -23,7 +23,7 @@ Drop-in” <https://docs.adyen.com/online-payments/web-drop-in>`__
 
 This is only tested on a postgres database.
 
-Supported Ayden Payments
+Supported Adyen Payments
 ------------------------
 
 -  **Alipay** - adyen name: ``alipay``
