@@ -85,3 +85,6 @@ class DonationView(AdyenDonationView):
         # save
         order.status = Status.Authorised
         order.save()
+
+    def get_donation_confirmation_url(self):
+        return "reverse self.object.donation"

@@ -281,20 +281,25 @@ class AdyenDonationView(DetailView):
         self.object = self.get_object()
         ady = setup_adyen_client()
 
-        amount = request.POST["amount"]
+        amount = json.loads(request.POST["amount"])
+        amount_value = amount["value"]
         campaign_id = request.POST["donation_campaign_id"]
 
         logger.info("Start new donation payment for  %s", self.object.reference)
-        amount = json.loads(amount)
 
         Donation = self.get_donation_model()
-        donation, created = Donation.objects.update_or_create(
+        donation, created = Donation.objects.get_or_create(
             order=self.object,
-            defaults={"amount": amount["value"], "campaign": campaign_id},
+            defaults={"amount": amount_value, "campaign": campaign_id},
         )
 
         # if the donation API is not sent yet
         if donation.status == Status.Created.value:
+            # if donation is created but not run, donation can be overrided
+            if not created:
+                donation.amount = amount_value
+                donation.campaign = campaign_id
+
             try:
                 donation_request = {
                     "amount": amount,
@@ -319,7 +324,7 @@ class AdyenDonationView(DetailView):
             else:
                 logger.info("Donation created %s", donation.reference)
                 if result.message["status"] == "refused":
-                    donation.status_message = Status.Refused.value
+                    donation.status = Status.Refused.value
                 else:
                     donation.status = Status.Pending.value
                 donation.stutus_message = result.message
