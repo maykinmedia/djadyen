@@ -5,7 +5,7 @@ import pytest
 from djadyen.choices import Status
 from testapp.models import Donation, Order
 
-EXPECTED_Updated_STATUS = [
+EXPECTED_UPDATED_STATUS = [
     (Status.Authorised.value, True),
     (Status.Cancel.value, True),
     (Status.Created.value, False),
@@ -29,7 +29,7 @@ def test_order_status_view_no_order(client):
 
 
 @pytest.mark.django_db()
-@pytest.mark.parametrize("status,updated_status", EXPECTED_Updated_STATUS)
+@pytest.mark.parametrize("status,updated_status", EXPECTED_UPDATED_STATUS)
 def test_order_status_view(client, setup_order_status_view, status, updated_status):
     """
     Test that the order status views response is correct for status
@@ -64,7 +64,7 @@ def test_donation_status_view_no_donation(client):
 
 
 @pytest.mark.django_db()
-@pytest.mark.parametrize("status,updated_status", EXPECTED_Updated_STATUS)
+@pytest.mark.parametrize("status,updated_status", EXPECTED_UPDATED_STATUS)
 def test_donation_status_view(
     client, setup_donation_status_view, status, updated_status
 ):

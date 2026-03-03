@@ -32,6 +32,7 @@ class OrderFactory(factory.django.DjangoModelFactory):
     status = Status.Created
     email = factory.Faker("email")
     amount = 5000
+    reference = factory.Faker("uuid4")
 
     class Meta:
         model = Order
@@ -40,6 +41,8 @@ class OrderFactory(factory.django.DjangoModelFactory):
 class DonationFactory(factory.django.DjangoModelFactory):
     order = factory.SubFactory(OrderFactory)
     amount = 1000
+
+    reference = factory.Faker("uuid4")
 
     class Meta:
         model = Donation

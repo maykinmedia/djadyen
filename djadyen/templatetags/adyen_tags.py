@@ -148,6 +148,10 @@ def adyen_donation_component(
     :param country_code: Adyen Country Code
     :return: Template tag context
     """
+
+    if not campaign:
+        return {}
+
     return {
         "campaign": json.dumps(campaign),
         "campaign_id": campaign["id"],
