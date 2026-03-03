@@ -4,21 +4,22 @@ from django.urls import reverse
 
 import pytest
 
-from tests.factories import OrderFactory, PaymentOptionsFactory
+from testapp.models import Donation, Order
+from tests.factories import DonationFactory, OrderFactory, PaymentOptionsFactory
 
 
 @pytest.fixture
-def setup_advanced_view() -> tuple[str, OrderFactory]:
+def setup_advanced_view() -> tuple[str, Order]:
     order = OrderFactory()
-    payments_api_url = reverse("advance_payment", args=[order.reference])
-    return payments_api_url, order
+    advanced_view_url = reverse("advance_payment", args=[order.reference])
+    return advanced_view_url, order
 
 
 @pytest.fixture
-def setup_donation_view() -> tuple[str, OrderFactory]:
+def setup_donation_view() -> tuple[str, Order]:
     order = OrderFactory(payment_option=PaymentOptionsFactory())
-    payments_api_url = reverse("donation", args=[order.reference])
-    return payments_api_url, order
+    donation_view_url = reverse("donation", args=[order.reference])
+    return donation_view_url, order
 
 
 @pytest.fixture
@@ -157,3 +158,17 @@ def mock_donations_api_refused(requests_mock):
 
     requests_mock.post(matcher, json=success_response)
     return requests_mock
+
+
+@pytest.fixture
+def setup_order_status_view() -> tuple[str, Order]:
+    order = OrderFactory()
+    order_status_url = reverse("order-status", args=[order.reference])
+    return order_status_url, order
+
+
+@pytest.fixture
+def setup_donation_status_view() -> tuple[str, Donation]:
+    donation = DonationFactory()
+    donation_status_url = reverse("donation-status", args=[donation.reference])
+    return donation_status_url, donation

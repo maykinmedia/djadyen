@@ -3,6 +3,7 @@ from djadyen.choices import Status
 from djadyen.views import (
     AdyenAdvancedPaymentView,
     AdyenDonationView,
+    AdyenOrderStatusView,
     AdyenPaymentView,
     AdyenResponseView,
 )
@@ -88,3 +89,12 @@ class DonationView(AdyenDonationView):
 
     def get_donation_confirmation_url(self):
         return "reverse self.object.donation"
+
+
+# Status Order
+class OrderStatusView(AdyenOrderStatusView):
+    model = Order
+
+
+class DonationStatusView(AdyenOrderStatusView):
+    model = Donation

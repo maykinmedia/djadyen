@@ -4,7 +4,9 @@ from django.urls import include, path
 from .views import (
     AdvancedPaymentView,
     ConfirmationView,
+    DonationStatusView,
     DonationView,
+    OrderStatusView,
     PaymentDetailsAPIView,
     PaymentsAPIView,
     PaymentView,
@@ -33,4 +35,11 @@ urlpatterns = [
         name="payment_details_api",
     ),
     path("<uuid:reference>/donation/", DonationView.as_view(), name="donation"),
+    # Status Views
+    path("<uuid:reference>/status/", OrderStatusView.as_view(), name="order-status"),
+    path(
+        "<uuid:reference>/status_donation/",
+        DonationStatusView.as_view(),
+        name="donation-status",
+    ),
 ]
