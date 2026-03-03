@@ -1,3 +1,12 @@
+# 4.1.1
+- add missing functions and template from the donation view
+- fix donation objects being able to update after the donation is pending
+- fix the donation component breaking with the no or empty campaign
+- update testapp Order and Donation object
+- add advanced, donation, and status view tests
+- add template tags tests
+
+
 # 4.1.0
 - add advance Adyen checkout
 - add Adyen Giving donation component
