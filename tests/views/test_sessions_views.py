@@ -3,8 +3,8 @@ from django.urls import reverse
 import requests_mock
 from django_webtest import WebTest
 
-from .factories import IssuerFactory, OrderFactory, PaymentOptionsFactory
-from .utils import TestFileMixin
+from tests.factories import IssuerFactory, OrderFactory, PaymentOptionsFactory
+from tests.utils import TestFileMixin
 
 
 class ConfirmationView(TestFileMixin, WebTest):

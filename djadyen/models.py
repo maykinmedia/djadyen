@@ -140,7 +140,7 @@ class AdyenOrder(models.Model):
                 )
                 self.status = self.__old_status
             else:
-                logger.warning(
+                logger.info(
                     _("Order ref: %s | Changed the status from '%s' to '%s'"),
                     self.reference,
                     self.__old_status,

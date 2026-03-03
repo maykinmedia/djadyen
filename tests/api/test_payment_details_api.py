@@ -18,8 +18,8 @@ def test_payment_details_api_no_order(client):
 
 
 @pytest.mark.django_db()
-def test_payment_details_api_require_post(client, payment_details_api):
-    url, order = payment_details_api
+def test_payment_details_api_require_post(client, setup_payment_details_api):
+    url, order = setup_payment_details_api
     response = client.get(url)
 
     order.refresh_from_db()
@@ -30,9 +30,9 @@ def test_payment_details_api_require_post(client, payment_details_api):
 @pytest.mark.django_db()
 def test_payment_details_api_empty_request(
     client,
-    payment_details_api,
+    setup_payment_details_api,
 ):
-    url, order = payment_details_api
+    url, order = setup_payment_details_api
     response = client.post(url)
 
     order.refresh_from_db()
@@ -43,9 +43,9 @@ def test_payment_details_api_empty_request(
 
 @pytest.mark.django_db()
 def test_payment_details_api_simple(
-    client, payment_details_api, mock_successful_payment_details_api
+    client, setup_payment_details_api, mock_successful_payment_details_api
 ):
-    url, order = payment_details_api
+    url, order = setup_payment_details_api
     data = json.dumps({"paymentMethod": "data"})
     response = client.post(url, data=data, content_type="application/json")
 

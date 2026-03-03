@@ -44,6 +44,7 @@ DATABASES = {
     }
 }
 
+LANGUAGE_CODE = "en"
 LANGUAGES = ["en"]
 
 STATIC_URL = "/static/"

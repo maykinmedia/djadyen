@@ -1,8 +1,19 @@
 from djadyen.api import AdyenPaymentDetailsAPI, AdyenPaymentsAPI
 from djadyen.choices import Status
-from djadyen.views import AdyenAdvancedPaymentView, AdyenPaymentView, AdyenResponseView
+from djadyen.views import (
+    AdyenAdvancedPaymentView,
+    AdyenDonationView,
+    AdyenOrderStatusView,
+    AdyenPaymentView,
+    AdyenResponseView,
+)
 
-from .models import Order
+from .models import Donation, Order
+
+ADYEN_LANGUAGES = {
+    "nl": "nl-NL",
+    "en": "en-US",
+}
 
 
 class ConfirmationView(AdyenResponseView):
@@ -43,8 +54,11 @@ class PaymentView(AdyenPaymentView):
 
 # Web components Advanced view
 class AdvancedPaymentView(AdyenAdvancedPaymentView):
-    template_name = "app/payment.html"
     model = Order
+
+    # Map language code to Adyen locale
+    def get_locale(self, **kwargs):
+        return ADYEN_LANGUAGES.get(self.request.LANGUAGE_CODE, "en-US")
 
     def get_return_url(self, **kwargs):
         pass
@@ -56,3 +70,31 @@ class PaymentDetailsAPIView(AdyenPaymentDetailsAPI):
 
 class PaymentsAPIView(AdyenPaymentsAPI):
     model = Order
+
+
+class DonationView(AdyenDonationView):
+    model = Order
+
+    def get_donation_model(self):
+        return Donation
+
+    def get_locale(self, **kwargs):
+        # Map language code to Adyen locale
+        return ADYEN_LANGUAGES.get(self.request.LANGUAGE_CODE, "en-US")
+
+    def handle_authorised(self, order):
+        # save
+        order.status = Status.Authorised
+        order.save()
+
+    def get_donation_confirmation_url(self):
+        return "reverse self.object.donation"
+
+
+# Status Order
+class OrderStatusView(AdyenOrderStatusView):
+    model = Order
+
+
+class DonationStatusView(AdyenOrderStatusView):
+    model = Donation

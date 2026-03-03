@@ -8,7 +8,7 @@ from tests.factories import OrderFactory
 
 
 @pytest.fixture
-def payments_api() -> tuple[str, OrderFactory]:
+def setup_payments_api() -> tuple[str, OrderFactory]:
     order = OrderFactory()
     payments_api_url = reverse("payments_api", args=[order.reference])
     return payments_api_url, order
@@ -73,7 +73,7 @@ def mock_redirect_ideal_payments_api(requests_mock):
 
 
 @pytest.fixture
-def payment_details_api() -> tuple[str, OrderFactory]:
+def setup_payment_details_api() -> tuple[str, OrderFactory]:
     order = OrderFactory()
     payments_api_url = reverse("payment_details_api", args=[order.reference])
     return payments_api_url, order

@@ -2,7 +2,7 @@ import factory
 
 from djadyen.choices import Status
 from djadyen.models import AdyenIssuer, AdyenNotification, AdyenPaymentOption
-from testapp.models import Order
+from testapp.models import Donation, Order
 
 
 class NotificationFactory(factory.django.DjangoModelFactory):
@@ -31,6 +31,18 @@ class IssuerFactory(factory.django.DjangoModelFactory):
 class OrderFactory(factory.django.DjangoModelFactory):
     status = Status.Created
     email = factory.Faker("email")
+    amount = 5000
+    reference = factory.Faker("uuid4")
 
     class Meta:
         model = Order
+
+
+class DonationFactory(factory.django.DjangoModelFactory):
+    order = factory.SubFactory(OrderFactory)
+    amount = 1000
+
+    reference = factory.Faker("uuid4")
+
+    class Meta:
+        model = Donation
