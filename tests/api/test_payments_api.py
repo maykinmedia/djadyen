@@ -92,3 +92,20 @@ def test_payments_api_redirect(
     # psp reference is only set on payment
     assert order.psp_reference == ""
     assert order.donation_token == ""
+
+
+@pytest.mark.django_db()
+def test_payments_api_exception(
+    client, setup_payments_api, mock_payments_api_exception
+):
+    url, order = setup_payments_api
+    data = json.dumps({"paymentMethod": "data"})
+    response = client.post(url, data=data, content_type="application/json")
+
+    order.refresh_from_db()
+    assert response.status_code == 400
+    assert response.json() == {"error": "bad response"}
+    assert order.donation_token == ""
+    assert order.status == Status.Error
+    assert order.psp_reference == "PSP_EXAMPLE"
+    # assert "Adyen API /payments/" in order.status_message

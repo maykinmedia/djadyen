@@ -60,3 +60,20 @@ def test_payment_details_api_simple(
     assert order.donation_token == "EXAMPLE_DONATION_TOKEN"
     assert order.status == Status.Pending
     assert order.psp_reference == "V4HZ4RBFJGXXGN82"
+
+
+@pytest.mark.django_db()
+def test_payment_details_api_exception(
+    client, setup_payment_details_api, mock_payment_details_api_exception
+):
+    url, order = setup_payment_details_api
+    data = json.dumps({"paymentMethod": "data"})
+    response = client.post(url, data=data, content_type="application/json")
+
+    order.refresh_from_db()
+    assert response.status_code == 400
+    assert response.json() == {"error": "bad response"}
+    assert order.donation_token == ""
+    assert order.status == Status.Error
+    assert order.psp_reference == "PSP_EXAMPLE"
+    # assert "Adyen API /payment/details/" in order.status_message

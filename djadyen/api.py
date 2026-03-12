@@ -9,9 +9,22 @@ from Adyen.exceptions import AdyenAPIResponseError
 
 from djadyen import settings
 from djadyen.choices import Status
+from djadyen.models import AdyenOrder
 from djadyen.utils import setup_adyen_client
 
 logger = logging.getLogger("adyen")
+
+
+def handle_adyen_error_response(
+    api_name: str, obj: AdyenOrder, exception: AdyenAPIResponseError
+) -> None:
+    if exception.psp:
+        obj.psp_reference = exception.psp
+
+    if obj.status != Status.Authorised:
+        obj.status = Status.Error
+    obj.status_message = f"Adyen API {api_name} - {exception}"
+    obj.save()
 
 
 class AdyenPaymentsAPI(SingleObjectMixin, View):
@@ -57,9 +70,7 @@ class AdyenPaymentsAPI(SingleObjectMixin, View):
                 idempotency_key=f"{self.object.reference}-payments",
             )
         except AdyenAPIResponseError as e:
-            self.object.status = Status.Error
-            self.object.status_message = f"Adyen API /payments/ - {e}"
-            self.object.save()
+            handle_adyen_error_response("/payments/", self.object, e)
             return JsonResponse({"error": "bad response"}, status=400)
 
         # only return what checkout wants from payments
@@ -110,10 +121,7 @@ class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
                 request, idempotency_key=f"{self.object.reference}-detail"
             )
         except AdyenAPIResponseError as e:
-            if self.object.status != Status.Authorised:
-                self.object.status = Status.Error
-            self.object.status_message = f"Adyen API /payment/details/ - {e}"
-            self.object.save()
+            handle_adyen_error_response("/payment/details/", self.object, e)
             return JsonResponse({"error": "bad response"}, status=400)
 
         # only return what checkout wants from payment details
