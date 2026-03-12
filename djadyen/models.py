@@ -91,6 +91,7 @@ class AdyenOrder(models.Model):
     status = models.CharField(
         max_length=200, choices=Status.choices, default=Status.Created
     )
+    status_message = models.TextField(blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     reference = models.CharField(max_length=200, default="", blank=True)
     psp_reference = models.CharField(max_length=200, default="", blank=True)

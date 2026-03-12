@@ -108,4 +108,4 @@ def test_payments_api_exception(
     assert order.donation_token == ""
     assert order.status == Status.Error
     assert order.psp_reference == "PSP_EXAMPLE"
-    # assert "Adyen API /payments/" in order.status_message
+    assert "Adyen API /payments/" in order.status_message
