@@ -1,4 +1,4 @@
-from djadyen.choices import AdyenComponentSupport
+from djadyen.choices import AdyenComponentSupport, Status
 
 LIVE_URL_PREFIX_ERROR = "Please provide the live_url_prefix. "
 "https://docs.adyen.com/development-resources/live-endpoints#live-url-prefix"
@@ -16,3 +16,14 @@ ADYEN_WEB_COMPONENTS_SUPPORT = {
     "scheme": AdyenComponentSupport.Supported,  # Credit/Debit cards
     "sepadirectdebit": AdyenComponentSupport.Supported,  # SEPA Direct Debit
 }
+
+"""
+'These result codes indicate that the payment has reached a final state.'
+https://docs.adyen.com/online-payments/build-your-integration/payment-result-codes#final-payment-status
+"""
+ADYEN_FINAL_STATE_CODES = (
+    Status.Authorised.value,
+    Status.Cancel.value,
+    Status.Error.value,
+    Status.Refused.value,
+)

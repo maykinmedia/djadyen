@@ -67,6 +67,10 @@ class AdvancedPaymentView(AdyenAdvancedPaymentView):
 class PaymentDetailsAPIView(AdyenPaymentDetailsAPI):
     model = Order
 
+    def handle_authorised(self):
+        self.object.status = Status.Authorised
+        self.object.save()
+
 
 class PaymentsAPIView(AdyenPaymentsAPI):
     model = Order
