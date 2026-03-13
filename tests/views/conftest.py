@@ -120,9 +120,9 @@ def mock_donations_api_exception(requests_mock):
     matcher = re.compile(r"https://checkout-test\.adyen\.com/v[0-9]{2}/donations")
 
     bad_response = {
-        "status": 400,
-        "errorCode": "100",
-        "message": "Required object 'amount' is not provided",
+        "status": 422,
+        "errorCode": "14_0429",
+        "message": "Donations are not supported for this payment method.",
         "errorType": "validation",
         "pspReference": "F7WCWRG6JPHR8HG2",
     }
@@ -142,6 +142,7 @@ def mock_donations_api_refused(requests_mock):
 
     matcher = re.compile(r"https://checkout-test\.adyen\.com/v[0-9]{2}/donations")
 
+    # TODO: update with real /donations/ refused example
     success_response = {
         "id": "UNIQUE_RESOURCE_ID",
         "status": "refused",

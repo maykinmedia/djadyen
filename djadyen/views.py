@@ -19,13 +19,7 @@ from djadyen.utils import setup_adyen_client
 logger = logging.getLogger("adyen")
 
 
-class AdyenPaymentView(DetailView):
-    """
-    A view which initiates the Adyen payment by rendering a widget.
-    It will automatically draw the wanted widget.
-    """
-
-    template_name = "adyen/pay.html"
+class CommonPaymentAdyenView(DetailView):
     slug_field = "reference"
     slug_url_kwarg = "reference"
 
@@ -48,7 +42,7 @@ class AdyenPaymentView(DetailView):
             "paymentMethod": {"type": "ideal"},
             "reference": str(self.object.reference),
             "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
-            "returnUrl": self.object.get_return_url(),
+            "returnUrl": self.object.get_redirect_url(),
             "shopperLocale": self.get_locale(),
             "countryCode": (settings.DJADYEN_DEFAULT_COUNTRY_CODE.lower()),
         }
@@ -70,6 +64,15 @@ class AdyenPaymentView(DetailView):
                 return redirect(redirect_url)
 
         return redirect(self.object.get_return_url())
+
+
+class AdyenPaymentView(CommonPaymentAdyenView):
+    """
+    A view which initiates the Adyen payment by rendering a widget.
+    It will automatically draw the wanted widget.
+    """
+
+    template_name = "adyen/pay.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -179,10 +182,8 @@ class AdyenOrderStatusView(DetailView):
         )
 
 
-class AdyenAdvancedPaymentView(DetailView):
+class AdyenAdvancedPaymentView(CommonPaymentAdyenView):
     template_name = "adyen/advanced_pay.html"
-    slug_field = "reference"
-    slug_url_kwarg = "reference"
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -190,14 +191,18 @@ class AdyenAdvancedPaymentView(DetailView):
         if self.object.get_price_in_cents() == 0:
             return HttpResponseRedirect(self.object.get_return_url())
 
-        return super().get(request, *args, **kwargs)
+        # Ideal 2.0 flow, ideal sorts out the bank itself.
+        # Skip if redirectResult is present, as it means the payment is already done
+        # and can cause loops.
+        if (
+            not request.GET.get("redirectResult")
+            and self.object.payment_option
+            and self.object.payment_option.adyen_name == "ideal"
+            and not self.object.issuer
+        ):
+            return self.redirect_ideal_2(request)
 
-    def get_locale(self):
-        """
-        Get the Adyen locale. By default, takes the request language code.
-        Adyen expects a full locale e.e en-US
-        """
-        return self.request.LANGUAGE_CODE
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -318,7 +323,7 @@ class AdyenDonationView(DetailView):
                 logger.error(
                     "Error when creating donaiton %s: %s", donation.reference, e
                 )
-                donation.stutus_message = str(e)
+                donation.status_message = str(e)
                 donation.status = Status.Error.value
                 donation.save()
             else:
@@ -327,7 +332,9 @@ class AdyenDonationView(DetailView):
                     donation.status = Status.Refused.value
                 else:
                     donation.status = Status.Pending.value
-                donation.stutus_message = result.message
+
+                # TODO: better status message?
+                donation.status_message = result.message
                 donation.save()
 
         return redirect(self.get_donation_confirmation_url())

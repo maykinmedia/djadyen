@@ -3,12 +3,12 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Status(TextChoices):
-    Authorised = "authorised", _("Authorised")
-    Cancel = "cancel", _("Cancel")
-    Created = "created", _("Created")
-    Error = "error", _("Error")
-    Pending = "pending", _("Pending")
-    Refused = "refused", _("Refused")
+    Authorised = "Authorised", _("Authorised")
+    Cancel = "Cancel", _("Cancel")
+    Created = "Created", _("Created")
+    Error = "Error", _("Error")
+    Pending = "Pending", _("Pending")
+    Refused = "Refused", _("Refused")
 
 
 class AdyenComponentSupport(TextChoices):

@@ -5,6 +5,10 @@ import pytest
 from djadyen.choices import Status
 from testapp.models import Donation, Order
 
+pytestmark = [
+    pytest.mark.django_db,
+]
+
 EXPECTED_UPDATED_STATUS = [
     (Status.Authorised.value, True),
     (Status.Cancel.value, True),
@@ -15,7 +19,6 @@ EXPECTED_UPDATED_STATUS = [
 ]
 
 
-@pytest.mark.django_db()
 def test_order_status_view_no_order(client):
     """
     Test that the order status view requires an order or 404s
@@ -28,7 +31,6 @@ def test_order_status_view_no_order(client):
     assert response.status_code == 404
 
 
-@pytest.mark.django_db()
 @pytest.mark.parametrize("status,updated_status", EXPECTED_UPDATED_STATUS)
 def test_order_status_view(client, setup_order_status_view, status, updated_status):
     """
@@ -50,7 +52,6 @@ def test_order_status_view(client, setup_order_status_view, status, updated_stat
     }
 
 
-@pytest.mark.django_db()
 def test_donation_status_view_no_donation(client):
     """
     Test that the donation status view requires an order or 404s
@@ -63,7 +64,6 @@ def test_donation_status_view_no_donation(client):
     assert response.status_code == 404
 
 
-@pytest.mark.django_db()
 @pytest.mark.parametrize("status,updated_status", EXPECTED_UPDATED_STATUS)
 def test_donation_status_view(
     client, setup_donation_status_view, status, updated_status

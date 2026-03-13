@@ -9,6 +9,7 @@ from Adyen.exceptions import AdyenAPIResponseError
 
 from djadyen import settings
 from djadyen.choices import Status
+from djadyen.constants import ADYEN_FINAL_STATE_CODES
 from djadyen.models import AdyenOrder
 from djadyen.utils import setup_adyen_client
 
@@ -112,7 +113,7 @@ class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
         logger.info("Sending payment details for  %s", self.object.reference)
         adyen_client = setup_adyen_client()
 
-        # Setting request data. For now assumes
+        # Setting request data. For now assumes that /details/ API is always a redirect.
         request = {
             "details": data,
         }
@@ -124,9 +125,11 @@ class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
             handle_adyen_error_response("/payment/details/", self.object, e)
             return JsonResponse({"error": "bad response"}, status=400)
 
+        result_code = result.message["resultCode"]
+
         # only return what checkout wants from payment details
         response = {
-            "resultCode": result.message["resultCode"],
+            "resultCode": result_code,
             "action": result.message.get("action"),
             "order": result.message.get("order"),
             "donationToken": result.message.get("donationToken"),
@@ -140,4 +143,25 @@ class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
             self.object.donation_token = response["donationToken"]
         self.object.save()
 
+        # iDeal can be Authorised within the api response
+        if result_code in ADYEN_FINAL_STATE_CODES:
+            if result_code == "Authorised":
+                self.handle_authorised()
+            else:
+                self.handle_error(result_code)
+
         return JsonResponse(response)
+
+    def handle_authorised(self) -> None:
+        """
+        Handle what happens to an order after a payment is authorized
+        e.g. change order to status and send a confirmation email
+        """
+
+        raise NotImplementedError(
+            "Handle what happens to a order after a payment is authorised"
+        )
+
+    def handle_error(self, result_code: str):
+        self.object.status = result_code
+        self.object.save()

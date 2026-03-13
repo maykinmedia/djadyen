@@ -45,3 +45,7 @@ class Donation(AdyenDonation):
         on_delete=models.CASCADE,
         related_name="donation_order",
     )
+
+
+class BadOrderModel(AdyenOrder):
+    pass
