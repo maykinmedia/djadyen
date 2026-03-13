@@ -35,11 +35,11 @@ class AdyenOrderTests(TestCase):
     def test_can_not_overwrite_authorised_status(self):
         with self.assertNumQueries(2):
             order = OrderFactory(status=Status.Authorised)
-            self.assertEqual(order.status, "authorised")
+            self.assertEqual(order.status, "Authorised")
 
             order.status = Status.Cancel
             order.save()
-            self.assertEqual(order.status, "authorised")
+            self.assertEqual(order.status, "Authorised")
 
 
 class AdyenIssuerTests(TestCase):
