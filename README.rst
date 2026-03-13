@@ -344,7 +344,7 @@ License
     :target: https://github.com/astral-sh/ruff
     :alt: Ruff
 
-.. |coverage| image:: https://codecov.io/gh/maykinmedia/djadyen/branch/main/graph/badge.svg
+.. |coverage| image:: https://codecov.io/gh/maykinmedia/djadyen/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/maykinmedia/djadyen
     :alt: Coverage status
 
