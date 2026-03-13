@@ -1,3 +1,7 @@
+# 4.1.2
+- fix using the same idempotency key in APIs breaking the payment details endpoint
+- handle adyen exceptions in the API views
+
 # 4.1.1
 - add missing functions and template from the donation view
 - fix donation objects being able to update after the donation is pending
