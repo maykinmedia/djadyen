@@ -1,5 +1,6 @@
 import json
 import logging
+import warnings
 from uuid import uuid4
 
 from django.db import models
@@ -191,10 +192,14 @@ class AdyenOrder(models.Model):
         """
         :return str Return the redirect url after a redirect payment.
         """
-        raise NotImplementedError(
+
+        warnings.warn(
             "Implement the payment redirect used in the advanced checkout on "
-            f"the '{self._meta.object_name}'"
+            f"the '{self._meta.object_name}'. "
+            "By default, it will redirect to get_redirect_url",
+            stacklevel=2,
         )
+        return self.get_return_url()
 
     def get_payments_api(self):
         """

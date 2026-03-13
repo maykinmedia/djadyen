@@ -1,5 +1,7 @@
 from django.test import TestCase, override_settings
 
+import pytest
+
 from djadyen.choices import Status
 
 from .factories import (
@@ -8,6 +10,28 @@ from .factories import (
     OrderFactory,
     PaymentOptionsFactory,
 )
+
+
+def test_order_model_required_implements():
+    from testapp.models import BadOrderModel
+
+    order = BadOrderModel()
+
+    with pytest.raises(NotImplementedError):
+        order.get_return_url()
+
+    order.get_return_url = lambda: "https://example.com/get_return_url"
+
+    with pytest.warns(UserWarning) as record:
+        url = order.get_redirect_url()
+        assert url == "https://example.com/get_return_url"
+
+    assert len(record) == 1
+    assert (
+        record[0].message.args[0]
+        == "Implement the payment redirect used in the advanced checkout on the "
+        "'BadOrderModel'. By default, it will redirect to get_redirect_url"
+    )
 
 
 class AdyenNofiticationTests(TestCase):
