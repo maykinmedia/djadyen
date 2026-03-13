@@ -1,3 +1,20 @@
+# Changelog
+
+# 4.2.0
+- handle "final state" payments, e.g. Authorised or Error, in the `/payment/details/` API
+  - `AdyenPaymentDetailsAPI` now has `handle_error()` and must implement `handle_authorised()`
+- add iDeal redirect for the advanced view to bypass the web component
+- refactor `AdyenPaymentView` and `AdyenAdvancedPaymentView` to use common `CommonPaymentAdyenView`
+  - `AdyenOrder.get_redirect_url()` will now warn if it's not implemented and
+  return `get_return_url()` instead of raising an exception
+- add `status_message` field to the Order model
+- add `ADYEN_FINAL_STATE_CODES` constant for done payment statuses
+- change the Djadyen statuses choices to match the Adyen format e.g. `authorised` -> `Authorised`
+- fix donation `status_message` not being saved in the donation view
+- remove `jshint` npm package
+- replace individual `django_db` marks with pytestmark
+- add the reports directory to .gitignore
+
 # 4.1.2
 - fix using the same idempotency key in APIs breaking the payment details endpoint
 - handle adyen exceptions in the API views
