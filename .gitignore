@@ -23,6 +23,7 @@ django_adyen.egg-info/
 node_modules/
 htmlcov/
 .coverage
+reports
 
 \.cache/v/cache/lastfailed
 build
