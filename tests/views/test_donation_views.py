@@ -110,6 +110,7 @@ def test_donation_view_creation_donation_exception(
     assert order.donation_order.campaign == "DONATION_CAMPAIGN_ID"
     assert order.donation_order.amount == 1000
     assert order.donation_order.status == Status.Error
+    assert "AdyenAPIValidationError" in order.donation_order.status_message
 
 
 def test_donation_view_creation_donation_refused(
@@ -133,6 +134,7 @@ def test_donation_view_creation_donation_refused(
     assert order.donation_order.campaign == "DONATION_CAMPAIGN_ID"
     assert order.donation_order.amount == 1000
     assert order.donation_order.status == Status.Refused
+    assert "UNIQUE_RESOURCE_ID" in order.donation_order.status_message
 
 
 def test_donation_view_existing_pending_donation(client, setup_donation_view):

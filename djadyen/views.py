@@ -323,7 +323,7 @@ class AdyenDonationView(DetailView):
                 logger.error(
                     "Error when creating donaiton %s: %s", donation.reference, e
                 )
-                donation.stutus_message = str(e)
+                donation.status_message = str(e)
                 donation.status = Status.Error.value
                 donation.save()
             else:
@@ -332,7 +332,9 @@ class AdyenDonationView(DetailView):
                     donation.status = Status.Refused.value
                 else:
                     donation.status = Status.Pending.value
-                donation.stutus_message = result.message
+
+                # TODO: better status message?
+                donation.status_message = result.message
                 donation.save()
 
         return redirect(self.get_donation_confirmation_url())
