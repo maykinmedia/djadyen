@@ -8,8 +8,11 @@ import pytest
 from djadyen.choices import Status
 from tests.factories import DonationFactory
 
+pytestmark = [
+    pytest.mark.django_db,
+]
 
-@pytest.mark.django_db()
+
 def test_donation_view_no_order(client):
     """
     Test that the donation view requires an order or 404s
@@ -20,7 +23,6 @@ def test_donation_view_no_order(client):
     assert response.status_code == 404
 
 
-@pytest.mark.django_db()
 def test_donation_view_simple(client, setup_donation_view, mock_donation_campaign_api):
     """
     Test that the donation view renders correctly with a simple order
@@ -32,7 +34,6 @@ def test_donation_view_simple(client, setup_donation_view, mock_donation_campaig
     assert type(response.context["campaign"]) is dict
 
 
-@pytest.mark.django_db()
 def test_donation_view_free_price(
     client, setup_donation_view, mock_donation_campaign_api
 ):
@@ -51,7 +52,6 @@ def test_donation_view_free_price(
     assert order.status == Status.Authorised
 
 
-@pytest.mark.django_db()
 def test_donation_view_language_code(
     client, setup_donation_view, mock_donation_campaign_api
 ):
@@ -66,7 +66,6 @@ def test_donation_view_language_code(
     assert response.context["adyen_language"] == "en-US"
 
 
-@pytest.mark.django_db()
 def test_donation_view_creation_donation(
     client, setup_donation_view, mock_donations_api
 ):
@@ -90,7 +89,6 @@ def test_donation_view_creation_donation(
     assert order.donation_order.status == Status.Pending
 
 
-@pytest.mark.django_db()
 def test_donation_view_creation_donation_exception(
     client, setup_donation_view, mock_donations_api_exception
 ):
@@ -114,7 +112,6 @@ def test_donation_view_creation_donation_exception(
     assert order.donation_order.status == Status.Error
 
 
-@pytest.mark.django_db()
 def test_donation_view_creation_donation_refused(
     client, setup_donation_view, mock_donations_api_refused
 ):
@@ -138,7 +135,6 @@ def test_donation_view_creation_donation_refused(
     assert order.donation_order.status == Status.Refused
 
 
-@pytest.mark.django_db()
 def test_donation_view_existing_pending_donation(client, setup_donation_view):
     """
     Test Adyen api returning with existing pending or started donation.
@@ -169,7 +165,6 @@ def test_donation_view_existing_pending_donation(client, setup_donation_view):
     assert donation.campaign == "DIFFERENT_CAMPAIGN_ID"
 
 
-@pytest.mark.django_db()
 def test_donation_view_existing_created_donation(
     client, setup_donation_view, mock_donations_api
 ):

@@ -6,8 +6,11 @@ import pytest
 
 from djadyen.choices import Status
 
+pytestmark = [
+    pytest.mark.django_db,
+]
 
-@pytest.mark.django_db()
+
 def test_payments_api_no_order(client):
     payments_api_url = reverse(
         "payments_api", args=["00000000-0000-0000-0000-000000000000"]
@@ -17,7 +20,6 @@ def test_payments_api_no_order(client):
     assert response.status_code == 404
 
 
-@pytest.mark.django_db()
 def test_payments_api_require_post(client, setup_payments_api):
     url, order = setup_payments_api
     response = client.get(url)
@@ -27,7 +29,6 @@ def test_payments_api_require_post(client, setup_payments_api):
     assert order.status == Status.Created
 
 
-@pytest.mark.django_db()
 def test_payments_api_empty_request(
     client,
     setup_payments_api,
@@ -41,7 +42,6 @@ def test_payments_api_empty_request(
     assert order.status == Status.Created
 
 
-@pytest.mark.django_db()
 def test_payments_api_no_payment_method(client, setup_payments_api):
     url, order = setup_payments_api
     data = json.dumps({"unrelated": "data"})
@@ -53,7 +53,6 @@ def test_payments_api_no_payment_method(client, setup_payments_api):
     assert order.status == Status.Created
 
 
-@pytest.mark.django_db()
 def test_payments_api_simple(client, setup_payments_api, mock_successful_payments_api):
     url, order = setup_payments_api
     data = json.dumps({"paymentMethod": "data"})
@@ -72,7 +71,6 @@ def test_payments_api_simple(client, setup_payments_api, mock_successful_payment
     assert order.donation_token == "EXAMPLE_DONATION_TOKEN"
 
 
-@pytest.mark.django_db()
 def test_payments_api_redirect(
     client, setup_payments_api, mock_redirect_ideal_payments_api
 ):
@@ -94,7 +92,6 @@ def test_payments_api_redirect(
     assert order.donation_token == ""
 
 
-@pytest.mark.django_db()
 def test_payments_api_exception(
     client, setup_payments_api, mock_payments_api_exception
 ):
