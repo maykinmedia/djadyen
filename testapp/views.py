@@ -24,17 +24,10 @@ class ConfirmationView(AdyenResponseView):
         self.object.status = Status.Authorised
         self.object.save()
 
-    def handle_error(self):
-        self.object.status = Status.Error
-        self.object.save()
-
 
 class PaymentView(AdyenPaymentView):
     template_name = "app/payment.html"
     model = Order
-
-    def get_return_url(self, **kwargs):
-        pass
 
 
 # Web components Advanced view
@@ -44,9 +37,6 @@ class AdvancedPaymentView(AdyenAdvancedPaymentView):
     # Map language code to Adyen locale
     def get_locale(self, **kwargs):
         return ADYEN_LANGUAGES.get(self.request.LANGUAGE_CODE, "en-US")
-
-    def get_return_url(self, **kwargs):
-        pass
 
 
 class PaymentDetailsAPIView(AdyenPaymentDetailsAPI):

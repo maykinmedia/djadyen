@@ -3,6 +3,7 @@ from django.urls import reverse
 import pytest
 import requests_mock as rm
 
+from djadyen.choices import Status
 from tests.factories import IssuerFactory, OrderFactory, PaymentOptionsFactory
 
 pytestmark = [
@@ -10,7 +11,9 @@ pytestmark = [
 ]
 
 
-def test_session_view_ideal2_redirect_user_to_external_page(django_app, requests_mock: rm.Mocker):
+def test_session_view_ideal2_redirect_user_to_external_page(
+    django_app, requests_mock: rm.Mocker
+):
     requests_mock.register_uri(
         rm.ANY,
         rm.ANY,
@@ -79,3 +82,15 @@ def test_session_view_ideal1_work_flow(django_app, requests_mock: rm.Mocker):
 
     response = django_app.get(url)
     assert response.status_code == 200
+
+
+def test_session_view_free_order(django_app):
+    order = OrderFactory(amount=0, status=Status.Pending)
+    url = reverse("payment", kwargs={"reference": order.reference})
+    response = django_app.get(url, status=302)
+
+    assert response.url == order.get_return_url()
+
+    order.refresh_from_db()
+    # Order is finished in the redirect view
+    assert order.status == Status.Pending

@@ -173,3 +173,10 @@ def setup_donation_status_view() -> tuple[str, Donation]:
     donation = DonationFactory()
     donation_status_url = reverse("donation-status", args=[donation.reference])
     return donation_status_url, donation
+
+
+@pytest.fixture
+def setup_confirm_view() -> tuple[str, Order]:
+    order = OrderFactory()
+    confirm_url = reverse("confirm", kwargs={"reference": order.reference})
+    return order, confirm_url
