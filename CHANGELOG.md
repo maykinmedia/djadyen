@@ -1,5 +1,11 @@
 # Changelog
 
+# 4.2.1
+- fix order in `handle_authorised` and `handle_error` payment views
+- fix wrong coverage badge
+- refactor session views to use pytest
+- improve response & session view coverage
+
 # 4.2.0
 - handle "final state" payments, e.g. Authorised or Error, in the `/payment/details/` API
   - `AdyenPaymentDetailsAPI` now has `handle_error()` and must implement `handle_authorised()`
