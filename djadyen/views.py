@@ -104,7 +104,7 @@ class AdyenResponseView(DetailView):
         self.object = self.get_object()
 
         if self.object.get_price_in_cents() == 0:
-            self.handle_authorised(self.object)
+            self.handle_authorised()
 
         resultRedirect = request.GET.get("redirectResult")
         if resultRedirect:
@@ -135,9 +135,9 @@ class AdyenResponseView(DetailView):
             result = ady.checkout.payments_api.payments_details(request)
             result_code = result.message.get("resultCode")
             if result_code == "Authorised":
-                self.handle_authorised(self.object)
+                self.handle_authorised()
             elif result_code != "Pending":
-                self.handle_error(self.object)
+                self.handle_error()
         return super().get(request, *args, **kwargs)
 
     def handle_authorised(self) -> None:
@@ -146,12 +146,13 @@ class AdyenResponseView(DetailView):
         e.g change order to status and send confirmation email
         """
         raise NotImplementedError(
-            "Handle what happens to a order after a payment is authorised"
+            "Handle what happens to a order after a payment is authorised. "
+            "Use self.object"
         )
 
-    def handle_error(self, order):
-        order.status = Status.Error
-        order.save()
+    def handle_error(self):
+        self.object.status = Status.Error
+        self.object.save()
 
 
 class AdyenDetailView(DetailView):
@@ -264,13 +265,14 @@ class AdyenDonationView(DetailView):
             "Donation confirmation url is required to redirect to after donation"
         )
 
-    def handle_authorised(self, order) -> None:
+    def handle_authorised(self) -> None:
         """
         Handle what happens to a order after a payment is authorised
         e.g change order to status and send confirmation email
         """
         raise NotImplementedError(
-            "Handle what happens to a order after a payment is authorised"
+            "Handle what happens to a order after a payment is authorised. "
+            "Use self.object"
         )
 
     def get(self, request, *args, **kwargs):
@@ -278,7 +280,7 @@ class AdyenDonationView(DetailView):
 
         # handle free payment
         if self.object.get_price_in_cents() == 0:
-            self.handle_authorised(self.object)
+            self.handle_authorised()
 
         return super().get(request, *args, **kwargs)
 

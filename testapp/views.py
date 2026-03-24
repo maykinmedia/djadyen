@@ -21,35 +21,13 @@ class ConfirmationView(AdyenResponseView):
     model = Order
 
     def handle_authorised(self):
-        self.order.status = Status.Authorised
-        return self.done()
-
-    def handle_pending(self):
-        self.order.status = Status.Pending
-        return self.done()
-
-    def handle_refused(self):
-        self.order.status = Status.Refused
-        return self.done()
-
-    def handle_error(self):
-        self.order.status = Status.Error
-        return self.done()
-
-    def handle_canceled(self):
-        self.order.status = Status.Cancel
-        return self.done()
-
-    def handle_default(self):
-        pass
+        self.object.status = Status.Authorised
+        self.object.save()
 
 
 class PaymentView(AdyenPaymentView):
     template_name = "app/payment.html"
     model = Order
-
-    def get_return_url(self, **kwargs):
-        pass
 
 
 # Web components Advanced view
@@ -59,9 +37,6 @@ class AdvancedPaymentView(AdyenAdvancedPaymentView):
     # Map language code to Adyen locale
     def get_locale(self, **kwargs):
         return ADYEN_LANGUAGES.get(self.request.LANGUAGE_CODE, "en-US")
-
-    def get_return_url(self, **kwargs):
-        pass
 
 
 class PaymentDetailsAPIView(AdyenPaymentDetailsAPI):
@@ -86,10 +61,10 @@ class DonationView(AdyenDonationView):
         # Map language code to Adyen locale
         return ADYEN_LANGUAGES.get(self.request.LANGUAGE_CODE, "en-US")
 
-    def handle_authorised(self, order):
+    def handle_authorised(self):
         # save
-        order.status = Status.Authorised
-        order.save()
+        self.object.status = Status.Authorised
+        self.object.save()
 
     def get_donation_confirmation_url(self):
         return "reverse self.object.donation"

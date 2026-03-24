@@ -10,6 +10,15 @@ pytestmark = [
 ]
 
 
+def test_advanced_view_required_implements():
+    from djadyen.views import AdyenDonationView
+
+    view = AdyenDonationView()
+
+    with pytest.raises(NotImplementedError):
+        view.handle_authorised()
+
+
 def test_advanced_view_no_order(client):
     """
     Test that the advanced view requires an order or 404s
