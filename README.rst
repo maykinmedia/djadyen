@@ -4,7 +4,7 @@ DjAdyen
 :Version: 4.2.2
 :Source: https://github.com/maykinmedia/djadyen
 :Keywords: django, adyen, payment
-:PythonVersion: 3.9
+:PythonVersion: 3.10
 
 |build-status| |code-quality| |ruff| |coverage|
 
