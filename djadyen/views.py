@@ -308,10 +308,18 @@ class AdyenDonationView(DetailView):
                 donation.campaign = campaign_id
 
             try:
+                # iDeal is sepadirectdebit
+                # other current supported payment methods are scheme
+                payemnt_type: str = (
+                    "sepadirectdebit"
+                    if self.object.payment_option.adyen_name == "ideal"
+                    else "scheme"
+                )
+
                 donation_request = {
                     "amount": amount,
                     "donationCampaignId": campaign_id,
-                    "paymentMethod": {"type": self.object.payment_option.adyen_name},
+                    "paymentMethod": {"type": payemnt_type},
                     "donationOriginalPspReference": self.object.psp_reference,
                     "donationToken": self.object.donation_token,
                     "reference": str(donation.reference),
