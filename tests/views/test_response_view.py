@@ -1,3 +1,5 @@
+from django.core.exceptions import ImproperlyConfigured
+
 import pytest
 
 from djadyen.choices import Status
@@ -44,12 +46,11 @@ def test_response_view_redirect_failure(
     assert order.status == Status.Error
 
 
-@pytest.mark.skip("Broken settings")
 def test_response_view_redirect_require_settings(
     django_app, setup_confirm_view, settings
 ):
     settings.DJADYEN_ENVIRONMENT = None
 
     order, url = setup_confirm_view
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(ImproperlyConfigured):
         django_app.get(url, {"redirectResult": "SOME_DATA"}, status=200)

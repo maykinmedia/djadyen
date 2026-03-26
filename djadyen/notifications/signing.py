@@ -4,7 +4,7 @@ import hashlib
 import hmac
 import logging
 
-from djadyen import settings
+from djadyen.settings import get_setting
 
 logger = logging.getLogger("adyen")
 
@@ -15,7 +15,7 @@ def get_signature(params):
 
     https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures
     """
-    hmac_key = binascii.a2b_hex(settings.DJADYEN_NOTIFICATION_KEY)
+    hmac_key = binascii.a2b_hex(get_setting("DJADYEN_NOTIFICATION_KEY"))
 
     logger.debug("Params: %s", params)
 

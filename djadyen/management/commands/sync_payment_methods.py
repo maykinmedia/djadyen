@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from djadyen import settings
+from djadyen.settings import get_setting
 
 from ...models import AdyenIssuer, AdyenPaymentOption
 from ...utils import setup_adyen_client
@@ -42,7 +42,7 @@ class Command(BaseCommand):
 
         # Setting request data.
         request = {
-            "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
+            "merchantAccount": get_setting("DJADYEN_MERCHANT_ACCOUNT"),
         }
         # Starting the checkout.
         result = ady.checkout.payments_api.payment_methods(request)

@@ -7,8 +7,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from djadyen import settings
 from djadyen.constants import ADYEN_WEB_COMPONENTS_SUPPORT
+from djadyen.settings import get_setting
 
 from .choices import AdyenComponentSupport, Status
 
@@ -31,9 +31,8 @@ class AdyenNotification(models.Model):
         data = self.get_notification_data()
         event_code = data.get("eventCode")
         merchant_account_code = data.get("merchantAccountCode")
-        return (
-            event_code == status
-            and merchant_account_code == settings.DJADYEN_MERCHANT_ACCOUNT
+        return event_code == status and merchant_account_code == get_setting(
+            "DJADYEN_MERCHANT_ACCOUNT"
         )
 
     def is_authorised(self, require_success=True):
@@ -127,7 +126,7 @@ class AdyenOrder(models.Model):
         if not self.reference:
             self.reference = uuid4()
 
-        if settings.DJADYEN_REFETCH_OLD_STATUS and self.id:
+        if get_setting("DJADYEN_REFETCH_OLD_STATUS") and self.id:
             self.__old_status = self._meta.model.objects.get(pk=self.id).status
 
         if self.status != self.__old_status:

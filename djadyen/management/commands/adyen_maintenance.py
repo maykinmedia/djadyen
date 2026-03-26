@@ -5,9 +5,9 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 from django.utils import timezone
 
-from djadyen import settings
 from djadyen.choices import Status
 from djadyen.models import AdyenNotification
+from djadyen.settings import get_setting
 
 
 class Command(BaseCommand):
@@ -17,11 +17,11 @@ class Command(BaseCommand):
         # Add a timeout to not process all the notifications
         # after the view is already processed.
         time_ago = timezone.now() - timedelta(
-            minutes=settings.DJADYEN_HANDLE_NOTIFICATION_MINUTES_AGO
+            minutes=get_setting("DJADYEN_HANDLE_NOTIFICATION_MINUTES_AGO")
         )
 
         order_models = [
-            apps.get_model(model) for model in settings.DJADYEN_ORDER_MODELS
+            apps.get_model(model) for model in get_setting("DJADYEN_ORDER_MODELS")
         ]
 
         # Process notifications which have been sent by Adyen.

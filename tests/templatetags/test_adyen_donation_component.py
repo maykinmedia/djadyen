@@ -4,7 +4,7 @@ from django.template import Context, Template
 from django.utils.html import escape
 from django.utils.translation import gettext as _
 
-from djadyen import settings
+from djadyen.settings import get_setting
 
 
 def test_adyen_donation_component_no_campaign() -> None:
@@ -48,4 +48,4 @@ def test_adyen_donation_component(donation_campaign_example) -> None:
     )
 
     assert escape(dumps(donation_campaign_example)) in out
-    assert settings.DJADYEN_DEFAULT_COUNTRY_CODE in out
+    assert get_setting("DJADYEN_DEFAULT_COUNTRY_CODE") in out

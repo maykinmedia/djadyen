@@ -47,7 +47,8 @@ DATABASES = {
 LANGUAGE_CODE = "en"
 LANGUAGES = ["en"]
 
-STATIC_URL = "/static/"
+# changes to default settings in 5.2
+USE_TZ = False
 
 TEMPLATES = [
     {
