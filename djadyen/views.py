@@ -10,10 +10,10 @@ import Adyen
 from Adyen.exceptions import AdyenAPIResponseError
 from glom import PathAccessError, glom
 
-from djadyen import settings
 from djadyen.choices import Status
 from djadyen.constants import LIVE_URL_PREFIX_ERROR
 from djadyen.models import AdyenDonation
+from djadyen.settings import get_setting
 from djadyen.utils import setup_adyen_client
 
 logger = logging.getLogger("adyen")
@@ -37,14 +37,14 @@ class CommonPaymentAdyenView(DetailView):
         body = {
             "amount": {
                 "value": self.object.get_price_in_cents(),
-                "currency": settings.DJADYEN_CURRENCYCODE,
+                "currency": get_setting("DJADYEN_CURRENCYCODE"),
             },
             "paymentMethod": {"type": "ideal"},
             "reference": str(self.object.reference),
-            "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
+            "merchantAccount": get_setting("DJADYEN_MERCHANT_ACCOUNT"),
             "returnUrl": self.object.get_redirect_url(),
             "shopperLocale": self.get_locale(),
-            "countryCode": (settings.DJADYEN_DEFAULT_COUNTRY_CODE.lower()),
+            "countryCode": (get_setting("DJADYEN_DEFAULT_COUNTRY_CODE").lower()),
         }
 
         try:
@@ -110,20 +110,21 @@ class AdyenResponseView(DetailView):
         if resultRedirect:
             ady = Adyen.Adyen()
 
-            if not settings.DJADYEN_ENVIRONMENT:
+            if not get_setting("DJADYEN_ENVIRONMENT"):
                 raise ImproperlyConfigured("Please provide an environment.")
 
-            if (
-                settings.DJADYEN_ENVIRONMENT == "live"
-                and not settings.DJADYEN_LIVE_URL_PREFIX
+            if get_setting("DJADYEN_ENVIRONMENT") == "live" and not get_setting(
+                "DJADYEN_LIVE_URL_PREFIX"
             ):
                 raise ImproperlyConfigured(LIVE_URL_PREFIX_ERROR)
 
             # Setting global values
-            ady.payment.client.platform = settings.DJADYEN_ENVIRONMENT
-            ady.payment.client.xapikey = settings.DJADYEN_SERVER_KEY
-            ady.payment.client.app_name = settings.DJADYEN_APPNAME
-            ady.payment.client.live_endpoint_prefix = settings.DJADYEN_LIVE_URL_PREFIX
+            ady.payment.client.platform = get_setting("DJADYEN_ENVIRONMENT")
+            ady.payment.client.xapikey = get_setting("DJADYEN_SERVER_KEY")
+            ady.payment.client.app_name = get_setting("DJADYEN_APPNAME")
+            ady.payment.client.live_endpoint_prefix = get_setting(
+                "DJADYEN_LIVE_URL_PREFIX"
+            )
 
             # Setting request data.
             request = {
@@ -233,8 +234,8 @@ class AdyenDonationView(DetailView):
     def get_donation(self):
         ady = setup_adyen_client()
         json_request = {
-            "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
-            "currency": settings.DJADYEN_CURRENCYCODE,
+            "merchantAccount": get_setting("DJADYEN_MERCHANT_ACCOUNT"),
+            "currency": get_setting("DJADYEN_CURRENCYCODE"),
             "locale": self.get_locale(),
         }
 
@@ -323,7 +324,7 @@ class AdyenDonationView(DetailView):
                     "donationOriginalPspReference": self.object.psp_reference,
                     "donationToken": self.object.donation_token,
                     "reference": str(donation.reference),
-                    "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
+                    "merchantAccount": get_setting("DJADYEN_MERCHANT_ACCOUNT"),
                 }
                 result = ady.checkout.donations_api.donations(
                     donation_request, idempotency_key=str(donation.reference)

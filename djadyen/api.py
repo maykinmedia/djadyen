@@ -7,10 +7,10 @@ from django.views.generic.detail import SingleObjectMixin
 
 from Adyen.exceptions import AdyenAPIResponseError
 
-from djadyen import settings
 from djadyen.choices import Status
 from djadyen.constants import ADYEN_FINAL_STATE_CODES
 from djadyen.models import AdyenOrder
+from djadyen.settings import get_setting
 from djadyen.utils import setup_adyen_client
 
 logger = logging.getLogger("adyen")
@@ -52,7 +52,7 @@ class AdyenPaymentsAPI(SingleObjectMixin, View):
             "reference": str(self.object.reference),
             "paymentMethod": payment_method,
             "returnUrl": self.object.get_redirect_url(),
-            "merchantAccount": settings.DJADYEN_MERCHANT_ACCOUNT,
+            "merchantAccount": get_setting("DJADYEN_MERCHANT_ACCOUNT"),
         }
 
         if data.get("riskData"):

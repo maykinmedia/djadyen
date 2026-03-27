@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             environment: config.dataset.environment,
             clientKey: config.dataset.clientKey,
             locale: config.dataset.language,
+            countryCode: config.dataset.countryCode,
             showPayButton: true,
             analytics: {
                 enabled: false,

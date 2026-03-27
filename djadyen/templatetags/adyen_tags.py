@@ -3,10 +3,9 @@ import logging
 
 from django import template
 
-from djadyen import settings
 from djadyen.choices import Status
-from djadyen.conf import get_adyen_styles
 from djadyen.models import AdyenOrder
+from djadyen.settings import get_setting
 from djadyen.utils import setup_adyen_client
 
 register = template.Library()
@@ -17,8 +16,8 @@ logger = logging.getLogger("adyen")
 def adyen_payment_component(
     language,
     order,
-    merchant_account=settings.DJADYEN_MERCHANT_ACCOUNT,
-    country_code=settings.DJADYEN_DEFAULT_COUNTRY_CODE,
+    merchant_account: str = None,
+    country_code: str = None,
 ):
     """
     Will display a singular payment method.
@@ -30,16 +29,16 @@ def adyen_payment_component(
     request = {
         "amount": {
             "value": order.get_price_in_cents(),
-            "currency": settings.DJADYEN_CURRENCYCODE,
+            "currency": get_setting("DJADYEN_CURRENCYCODE"),
         },
         "reference": str(order.reference),
-        "merchantAccount": merchant_account,
+        "merchantAccount": merchant_account or get_setting("DJADYEN_MERCHANT_ACCOUNT"),
         "returnUrl": order.get_return_url(),
         "shopperLocale": language,
         "countryCode": (
             country_code.lower()
             if country_code
-            else settings.DJADYEN_DEFAULT_COUNTRY_CODE
+            else get_setting("DJADYEN_DEFAULT_COUNTRY_CODE")
         ),
     }
     try:
@@ -55,10 +54,11 @@ def adyen_payment_component(
 
     if result.status_code == 201:
         context = {
-            "client_key": settings.DJADYEN_CLIENT_KEY,
+            "client_key": get_setting("DJADYEN_CLIENT_KEY"),
             "session_id": result.message.get("id"),
             "session_data": result.message.get("sessionData"),
-            "environment": settings.DJADYEN_ENVIRONMENT,
+            "country_code": request["countryCode"],
+            "environment": get_setting("DJADYEN_ENVIRONMENT"),
             "redirect_url": order.get_return_url,
             "language": language,
             "payment_type": (
@@ -79,8 +79,7 @@ def adyen_payment_component(
         }
 
         # Add custom styles to context as JSON
-        adyen_styles = get_adyen_styles()
-        if adyen_styles:
+        if adyen_styles := get_setting("DJADYEN_STYLES"):
             context["adyen_styles_json"] = json.dumps(adyen_styles)
         else:
             context["adyen_styles_json"] = None
@@ -93,15 +92,15 @@ def adyen_payment_component(
 def adyen_advanced_payment_component(
     language: str,
     order: AdyenOrder,
-    country_code: str = settings.DJADYEN_DEFAULT_COUNTRY_CODE,
+    country_code: str = None,
 ):
     context = {
-        "client_key": settings.DJADYEN_CLIENT_KEY,
-        "environment": settings.DJADYEN_ENVIRONMENT,
+        "client_key": get_setting("DJADYEN_CLIENT_KEY"),
+        "environment": get_setting("DJADYEN_ENVIRONMENT"),
         "redirect_url": order.get_return_url,
         "amount": order.get_price_in_cents(),
-        "currency": settings.DJADYEN_CURRENCYCODE,
-        "country_code": country_code,
+        "currency": get_setting("DJADYEN_CURRENCYCODE"),
+        "country_code": country_code or get_setting("DJADYEN_DEFAULT_COUNTRY_CODE"),
         "language": language,
         "payment_type": (
             order.payment_option.adyen_name if order.payment_option else ""
@@ -122,6 +121,11 @@ def adyen_advanced_payment_component(
         "payment_details_api": order.get_payment_details_api(),
     }
 
+    # Add custom styles to context as JSON
+    if adyen_styles := get_setting("DJADYEN_STYLES"):
+        context["adyen_styles_json"] = json.dumps(adyen_styles)
+    else:
+        context["adyen_styles_json"] = None
     return context
 
 
@@ -138,7 +142,7 @@ def adyen_donation_component(
     language: str,
     campaign: dict,
     redirect_url: str,
-    country_code: str = settings.DJADYEN_DEFAULT_COUNTRY_CODE,
+    country_code: str = None,
 ) -> dict:
     """
     Renders the Adyen Giving donation component.
@@ -155,13 +159,13 @@ def adyen_donation_component(
     return {
         "campaign": json.dumps(campaign),
         "campaign_id": campaign["id"],
-        "client_key": settings.DJADYEN_CLIENT_KEY,
-        "environment": settings.DJADYEN_ENVIRONMENT,
+        "client_key": get_setting("DJADYEN_CLIENT_KEY"),
+        "environment": get_setting("DJADYEN_ENVIRONMENT"),
         "language": language,
         "redirect_url": redirect_url,
         "country_code": (
             country_code.lower()
             if country_code
-            else settings.DJADYEN_DEFAULT_COUNTRY_CODE
+            else get_setting("DJADYEN_DEFAULT_COUNTRY_CODE")
         ),
     }
