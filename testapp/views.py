@@ -3,9 +3,9 @@ from djadyen.choices import Status
 from djadyen.views import (
     AdyenAdvancedPaymentView,
     AdyenDonationView,
-    AdyenOrderStatusView,
-    AdyenPaymentView,
     AdyenResponseView,
+    AdyenSessionPaymentView,
+    AdyenStatusView,
 )
 
 from .models import Donation, Order
@@ -25,7 +25,7 @@ class ConfirmationView(AdyenResponseView):
         self.object.save()
 
 
-class PaymentView(AdyenPaymentView):
+class PaymentView(AdyenSessionPaymentView):
     template_name = "app/payment.html"
     model = Order
 
@@ -71,9 +71,9 @@ class DonationView(AdyenDonationView):
 
 
 # Status Order
-class OrderStatusView(AdyenOrderStatusView):
+class OrderStatusView(AdyenStatusView):
     model = Order
 
 
-class DonationStatusView(AdyenOrderStatusView):
+class DonationStatusView(AdyenStatusView):
     model = Donation

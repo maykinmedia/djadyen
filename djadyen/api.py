@@ -28,10 +28,12 @@ def handle_adyen_error_response(
     obj.save()
 
 
-class AdyenPaymentsAPI(SingleObjectMixin, View):
+class AdyenAPIView(SingleObjectMixin, View):
     slug_field = "reference"
     slug_url_kwarg = "reference"
 
+
+class AdyenPaymentsAPI(AdyenAPIView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
 
@@ -92,10 +94,7 @@ class AdyenPaymentsAPI(SingleObjectMixin, View):
         return JsonResponse(response, status=200)
 
 
-class AdyenPaymentDetailsAPI(SingleObjectMixin, View):
-    slug_field = "reference"
-    slug_url_kwarg = "reference"
-
+class AdyenPaymentDetailsAPI(AdyenAPIView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
 
