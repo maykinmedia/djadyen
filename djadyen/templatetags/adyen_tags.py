@@ -12,6 +12,41 @@ register = template.Library()
 logger = logging.getLogger("adyen")
 
 
+def get_common_checkout_context(
+    language: str,
+    order: AdyenOrder,
+    country_code: str,
+) -> dict:
+
+    return {
+        # Adyen Settings
+        "client_key": get_setting("DJADYEN_CLIENT_KEY"),
+        "environment": get_setting("DJADYEN_ENVIRONMENT"),
+        "language": language,
+        "country_code": country_code,
+        # Djadyen Adyen Settings
+        "redirect_url": order.get_return_url,
+        "payment_type": (
+            order.payment_option.adyen_name if order.payment_option else ""
+        ),
+        "issuers": (
+            json.dumps(
+                list(
+                    order.payment_option.adyenissuer_set.all().values(
+                        "name", "adyen_id"
+                    )
+                )
+            )
+            if order.payment_option
+            else []
+        ),
+        "issuer": order.issuer.adyen_id if order.issuer else "",
+        "adyen_styles_json": json.dumps(adyen_styles)
+        if (adyen_styles := get_setting("DJADYEN_STYLES"))
+        else None,
+    }
+
+
 @register.inclusion_tag("adyen/component.html")
 def adyen_payment_component(
     language,
@@ -53,38 +88,15 @@ def adyen_payment_component(
     )
 
     if result.status_code == 201:
-        context = {
-            "client_key": get_setting("DJADYEN_CLIENT_KEY"),
+        return {
             "session_id": result.message.get("id"),
             "session_data": result.message.get("sessionData"),
-            "country_code": request["countryCode"],
-            "environment": get_setting("DJADYEN_ENVIRONMENT"),
-            "redirect_url": order.get_return_url,
-            "language": language,
-            "payment_type": (
-                order.payment_option.adyen_name if order.payment_option else ""
-            ),
-            "issuers": (
-                json.dumps(
-                    list(
-                        order.payment_option.adyenissuer_set.all().values(
-                            "name", "adyen_id"
-                        )
-                    )
-                )
-                if order.payment_option
-                else []
-            ),
-            "issuer": order.issuer.adyen_id if order.issuer else "",
-        }
+        } | get_common_checkout_context(
+            language,
+            order,
+            request["countryCode"],
+        )
 
-        # Add custom styles to context as JSON
-        if adyen_styles := get_setting("DJADYEN_STYLES"):
-            context["adyen_styles_json"] = json.dumps(adyen_styles)
-        else:
-            context["adyen_styles_json"] = None
-
-        return context
     return {}
 
 
@@ -94,39 +106,16 @@ def adyen_advanced_payment_component(
     order: AdyenOrder,
     country_code: str = None,
 ):
-    context = {
-        "client_key": get_setting("DJADYEN_CLIENT_KEY"),
-        "environment": get_setting("DJADYEN_ENVIRONMENT"),
-        "redirect_url": order.get_return_url,
+    return {
         "amount": order.get_price_in_cents(),
         "currency": get_setting("DJADYEN_CURRENCYCODE"),
-        "country_code": country_code or get_setting("DJADYEN_DEFAULT_COUNTRY_CODE"),
-        "language": language,
-        "payment_type": (
-            order.payment_option.adyen_name if order.payment_option else ""
-        ),
-        "issuers": (
-            json.dumps(
-                list(
-                    order.payment_option.adyenissuer_set.all().values(
-                        "name", "adyen_id"
-                    )
-                )
-            )
-            if order.payment_option
-            else []
-        ),
-        "issuer": order.issuer.adyen_id if order.issuer else "",
         "payments_api": order.get_payments_api(),
         "payment_details_api": order.get_payment_details_api(),
-    }
-
-    # Add custom styles to context as JSON
-    if adyen_styles := get_setting("DJADYEN_STYLES"):
-        context["adyen_styles_json"] = json.dumps(adyen_styles)
-    else:
-        context["adyen_styles_json"] = None
-    return context
+    } | get_common_checkout_context(
+        language,
+        order,
+        country_code or get_setting("DJADYEN_DEFAULT_COUNTRY_CODE"),
+    )
 
 
 @register.inclusion_tag("adyen/polling.html")
