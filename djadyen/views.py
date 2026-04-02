@@ -1,6 +1,12 @@
 import json
 import logging
 
+try:
+    # python 3.13+
+    from warnings import deprecated
+except ImportError:
+    from typing_extensions import deprecated
+
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -19,11 +25,21 @@ from djadyen.utils import setup_adyen_client
 logger = logging.getLogger("adyen")
 
 
-class CommonPaymentAdyenView(DetailView):
+class AdyenDetailView(DetailView):
+    """
+    Generic Adyen Order Detail view
+    """
+
     slug_field = "reference"
     slug_url_kwarg = "reference"
 
-    def get_locale(self):
+
+class CommonAdyenPaymentView(AdyenDetailView):
+    """
+    Common functionality for Adyen checkout and payments
+    """
+
+    def get_locale(self) -> str:
         """
         Get the Adyen locale. By default, takes the request language code.
         Adyen expects a full locale e.e en-US
@@ -65,20 +81,20 @@ class CommonPaymentAdyenView(DetailView):
 
         return redirect(self.object.get_return_url())
 
+    def get_context_data(self, **kwargs) -> dict[str, any]:
+        # needs to use adyen web supported language codes e.g. en-US, nl-NL
+        return super().get_context_data(**kwargs) | {
+            "adyen_language": self.get_locale(),
+        }
 
-class AdyenPaymentView(CommonPaymentAdyenView):
+
+class AdyenSessionPaymentView(CommonAdyenPaymentView):
     """
     A view which initiates the Adyen payment by rendering a widget.
     It will automatically draw the wanted widget.
     """
 
     template_name = "adyen/pay.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # needs to use adyen web supported language codes e.g. en-US, nl-NL
-        context["adyen_language"] = self.get_locale()
-        return context
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -96,10 +112,14 @@ class AdyenPaymentView(CommonPaymentAdyenView):
         return super().get(request, *args, **kwargs)
 
 
-class AdyenResponseView(DetailView):
-    slug_field = "reference"
-    slug_url_kwarg = "reference"
+@deprecated(
+    "Renamed to `AdyenSessionPaymentView` to differentiate "
+    "from the Advanced payment view."
+)
+class AdyenPaymentView(AdyenSessionPaymentView): ...
 
+
+class AdyenResponseView(AdyenDetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
@@ -156,16 +176,7 @@ class AdyenResponseView(DetailView):
         self.object.save()
 
 
-class AdyenDetailView(DetailView):
-    """
-    Generic Adyen Order Detail view
-    """
-
-    slug_field = "reference"
-    slug_url_kwarg = "reference"
-
-
-class AdyenOrderStatusView(DetailView):
+class AdyenStatusView(DetailView):
     slug_field = "reference"
     slug_url_kwarg = "reference"
 
@@ -184,7 +195,11 @@ class AdyenOrderStatusView(DetailView):
         )
 
 
-class AdyenAdvancedPaymentView(CommonPaymentAdyenView):
+@deprecated("Renamed to `AdyenStatusView` as it supports both orders and donations.")
+class AdyenOrderStatusView(AdyenStatusView): ...
+
+
+class AdyenAdvancedPaymentView(CommonAdyenPaymentView):
     template_name = "adyen/advanced_pay.html"
 
     def get(self, request, *args, **kwargs):
@@ -206,30 +221,14 @@ class AdyenAdvancedPaymentView(CommonPaymentAdyenView):
 
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # needs to use adyen web supported language codes e.g. en-US, nl-NL
-        context["adyen_language"] = self.get_locale()
-        return context
 
-
-class AdyenDonationView(DetailView):
+class AdyenDonationView(CommonAdyenPaymentView):
     """
     Allows dontaiton option after finishing the original payment.
     Should be done
     """
 
     template_name = "adyen/donation.html"
-
-    slug_field = "reference"
-    slug_url_kwarg = "reference"
-
-    def get_locale(self):
-        """
-        Get the Adyen locale. By default, takes the request language code.
-        Adyen expects a full locale e.e en-US
-        """
-        return self.request.LANGUAGE_CODE
 
     def get_donation(self):
         ady = setup_adyen_client()
@@ -247,7 +246,6 @@ class AdyenDonationView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["campaign"] = self.get_donation()
-        context["adyen_language"] = self.get_locale()
         context["redirect_url"] = self.get_redirect_url()
         return context
 
