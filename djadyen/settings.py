@@ -31,9 +31,9 @@ Django's app name for Adyen. Defaults to `Djadyen Payment`
 """
 
 
-DJADYEN_CURRENCYCODE: str = "eur"
+DJADYEN_CURRENCYCODE: str = "EUR"
 """
-Adyen current code used in payments. Defaults to `eur`
+Adyen current code used in payments. Defaults to `EUR`
 https://docs.adyen.com/development-resources/currency-codes#currency-codes
 """
 
