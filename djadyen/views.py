@@ -53,7 +53,7 @@ class CommonPaymentAdyenView(DetailView):
             pass
 
         result = ady.checkout.payments_api.payments(
-            body, idempotency_key=self.object.reference
+            body, idempotency_key=f"{self.object.reference}-payments"
         )
         logger.info(request)
 
