@@ -1,5 +1,15 @@
 # Changelog
 
+# 4.3.0
+* reduce duplicate adyen view and template code
+  * rename `AdyenPaymentView` to `AdyenSessionPaymentView`, deprecate `AdyenPaymentView`
+  * rename `AdyenOrderStatusView` to `AdyenStatusView`, deprecate `AdyenOrderStatusView`
+* make the payments_api idempotency key the same between the payment views and API
+* refactor djadyen internal settings
+* remove python 3.9 and django 3.2 support
+* add python 3.13 support
+* add djadyen styles settings tests
+
 # 4.2.2
 - fix iDEAL using the wrong payment type for donation
 
