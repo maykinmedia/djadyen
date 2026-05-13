@@ -16,4 +16,5 @@ export const PaymentComponents = {
     ideal: [Redirect, getRedirectConfiguration],
     sepadirectdebit: [SepaDirectDebit, () => ({})],
     scheme: [Card, getBrandConfiguration],
+    directEbanking: [Redirect, getRedirectConfiguration],
 };
