@@ -31,6 +31,7 @@ Supported Adyen Payments
 -  **(Debit/Credit) Card** - adyen name: ``schema``, uses brands
 -  **Finnish E-Banking** - adyen name: ``ebanking_FI``
 -  **iDEAL** - adyen name: ``ideal``
+-  **Klarna Debit Risk** - adyen name ``directEbanking``
 -  **SEPA Bank Transfer** - adyen name: ``bankTransfer_IBAN``
 -  **SEPA Direct Debit** - adyen name: ``sepadirectdebit``
 
