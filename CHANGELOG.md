@@ -1,5 +1,8 @@
 # Changelog
 
+# 4.3.1
+* add back support for _Klarna Debit Risk_
+
 # 4.3.0
 * reduce duplicate adyen view and template code
   * rename `AdyenPaymentView` to `AdyenSessionPaymentView`, deprecate `AdyenPaymentView`
