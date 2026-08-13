@@ -84,7 +84,7 @@ def adyen_payment_component(
     logger.info(request)
     # Starting the checkout.
     result = ady.checkout.payments_api.sessions(
-        request, idempotency_key=order.reference
+        request, idempotency_key=f"{order.reference}-session"
     )
 
     if result.status_code == 201:
