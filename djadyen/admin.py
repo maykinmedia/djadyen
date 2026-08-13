@@ -26,7 +26,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
         "component_support",
     )
     list_filter = ("is_active",)
-    inlines = [AdyenIssuerInline]
+    inlines = (AdyenIssuerInline,)
     search_fields = ("name", "adyen_name")
 
     @admin.display(description=_("Issuers/Brands"), empty_value="---")

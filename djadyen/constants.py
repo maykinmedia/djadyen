@@ -10,7 +10,7 @@ ADYEN_WEB_COMPONENTS_SUPPORT = {
     "alipay": AdyenComponentSupport.Supported,
     "bankTransfer_IBAN": AdyenComponentSupport.Supported,  # SEPA Bank Transfer
     "bcmc": AdyenComponentSupport.Supported,  # Bancontact card
-    "directEbanking": AdyenComponentSupport.Supported,  # Klarna Debit # noqa: E501
+    "directEbanking": AdyenComponentSupport.Supported,  # Klarna Debit
     "ebanking_FI": AdyenComponentSupport.Supported,  # Finnish E-Banking
     "ideal": AdyenComponentSupport.Supported,
     "scheme": AdyenComponentSupport.Supported,  # Credit/Debit cards

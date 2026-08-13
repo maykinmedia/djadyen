@@ -19,7 +19,6 @@ class NotificationView(View):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        """ """
         logger.debug(_("New notification(s)"))
         json_params = json.loads(request.body)
         notification_items = json_params.get("notificationItems", [])

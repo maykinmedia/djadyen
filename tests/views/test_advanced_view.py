@@ -61,7 +61,7 @@ def test_advanced_view_language_code(client, setup_advanced_view):
     """
     Test that the adyen locale is used if get_locale is overridden
     """
-    url, order = setup_advanced_view
+    url, _order = setup_advanced_view
 
     response = client.get(url)
 

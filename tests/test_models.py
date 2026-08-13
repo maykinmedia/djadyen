@@ -24,7 +24,7 @@ def test_order_model_required_implements():
 
     with pytest.warns(UserWarning) as record:
         url = order.get_redirect_url()
-        assert url == "https://example.com/get_return_url"
+    assert url == "https://example.com/get_return_url"
 
     assert len(record) == 1
     assert (

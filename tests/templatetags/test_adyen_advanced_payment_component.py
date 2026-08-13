@@ -18,7 +18,7 @@ def test_adyen_advanced_payment_component_no_styles(settings) -> None:
 
     out = Template(
         "{% load adyen_tags %}"
-        "{% adyen_advanced_payment_component language=adyen_language order=order  %}"  # noqa
+        "{% adyen_advanced_payment_component language=adyen_language order=order  %}"
     ).render(
         Context(
             {
@@ -56,7 +56,7 @@ def test_adyen_advanced_payment_component_with_styles(settings) -> None:
 
     out = Template(
         "{% load adyen_tags %}"
-        "{% adyen_advanced_payment_component language=adyen_language order=order  %}"  # noqa
+        "{% adyen_advanced_payment_component language=adyen_language order=order  %}"
     ).render(
         Context(
             {

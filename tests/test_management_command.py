@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.core.management import call_command
 from django.test.testcases import TestCase
@@ -20,7 +20,7 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
             "https://checkout-test.adyen.com/v71/paymentMethods",
             [
                 {
-                    "content": self._get_test_file("payment_methods.json").read(),
+                    "content": self._get_test_file("payment_methods.json"),
                     "status_code": 200,
                 },
             ],
@@ -37,11 +37,11 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
             "https://checkout-test.adyen.com/v71/paymentMethods",
             [
                 {
-                    "content": self._get_test_file("payment_methods.json").read(),
+                    "content": self._get_test_file("payment_methods.json"),
                     "status_code": 200,
                 },
                 {
-                    "content": self._get_test_file("payment_methods.json").read(),
+                    "content": self._get_test_file("payment_methods.json"),
                     "status_code": 200,
                 },
             ],
@@ -69,7 +69,7 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
             "https://checkout-test.adyen.com/v71/paymentMethods",
             [
                 {
-                    "content": self._get_test_file("payment_methods.json").read(),
+                    "content": self._get_test_file("payment_methods.json"),
                     "status_code": 200,
                 },
             ],
@@ -124,7 +124,17 @@ class ProcessNotifications(TestFileMixin, TestCase):
 
         self.notification1.refresh_from_db()
         self.assertTrue(self.notification1.is_processed)
-        self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
+        self.assertTrue(
+            self.notification1.processed_at,
+            datetime(
+                2019,
+                1,
+                1,
+                12,
+                0,
+                tzinfo=timezone.utc,
+            ),
+        )
 
     @freeze_time("2019-01-01 12:00")
     def test_process_notifications_unsuccessful(self):
@@ -142,7 +152,17 @@ class ProcessNotifications(TestFileMixin, TestCase):
 
         self.notification1.refresh_from_db()
         self.assertTrue(self.notification1.is_processed)
-        self.assertTrue(self.notification1.processed_at, datetime(2019, 1, 1, 12, 0))
+        self.assertTrue(
+            self.notification1.processed_at,
+            datetime(
+                2019,
+                1,
+                1,
+                12,
+                0,
+                tzinfo=timezone.utc,
+            ),
+        )
 
 
 class CleanupPending(TestFileMixin, TestCase):
