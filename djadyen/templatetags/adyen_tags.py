@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import logging
 
@@ -51,8 +53,8 @@ def get_common_checkout_context(
 def adyen_payment_component(
     language,
     order,
-    merchant_account: str = None,
-    country_code: str = None,
+    merchant_account: str | None = None,
+    country_code: str | None = None,
 ):
     """
     Will display a singular payment method.
@@ -76,10 +78,9 @@ def adyen_payment_component(
             else get_setting("DJADYEN_DEFAULT_COUNTRY_CODE")
         ),
     }
-    try:
+
+    if hasattr(order, "email"):
         request["shopperEmail"] = order.email
-    except Exception:
-        pass
 
     logger.info(request)
     # Starting the checkout.
@@ -104,7 +105,7 @@ def adyen_payment_component(
 def adyen_advanced_payment_component(
     language: str,
     order: AdyenOrder,
-    country_code: str = None,
+    country_code: str | None = None,
 ):
     return {
         "amount": order.get_price_in_cents(),
@@ -131,7 +132,7 @@ def adyen_donation_component(
     language: str,
     campaign: dict,
     redirect_url: str,
-    country_code: str = None,
+    country_code: str | None = None,
 ) -> dict:
     """
     Renders the Adyen Giving donation component.

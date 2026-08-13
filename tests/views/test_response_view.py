@@ -10,7 +10,7 @@ pytestmark = [
 
 
 def test_response_view_empty_get(django_app, setup_confirm_view):
-    order, url = setup_confirm_view
+    _order, url = setup_confirm_view
     django_app.get(url, status=200)
 
 
@@ -51,6 +51,6 @@ def test_response_view_redirect_require_settings(
 ):
     settings.DJADYEN_ENVIRONMENT = None
 
-    order, url = setup_confirm_view
+    _order, url = setup_confirm_view
     with pytest.raises(ImproperlyConfigured):
         django_app.get(url, {"redirectResult": "SOME_DATA"}, status=200)

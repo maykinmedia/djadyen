@@ -14,11 +14,8 @@ class TestFileMixin:
         if not os.path.exists(path):
             raise OSError(f"{path} does not exist")
 
-        file = open(path, "rb")
-
-        self.addCleanup(lambda file: file.close(), file)
-
-        return file
+        with open(path, "rb") as file:
+            return file.read()
 
     def _get_json_data(self, name):
-        return self._get_test_file(name).read().decode("utf-8")
+        return self._get_test_file(name).decode("utf-8")

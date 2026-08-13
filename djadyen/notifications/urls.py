@@ -1,6 +1,6 @@
 try:
     from django.urls import path
-except Exception:
+except ImportError:
     from django.conf.urls import url as path
 
 from .views import NotificationView

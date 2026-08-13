@@ -27,7 +27,7 @@ def test_donation_view_simple(client, setup_donation_view, mock_donation_campaig
     """
     Test that the donation view renders correctly with a simple order
     """
-    url, order = setup_donation_view
+    url, _order = setup_donation_view
     response = client.get(url)
 
     assert response.status_code == 200
@@ -58,7 +58,7 @@ def test_donation_view_language_code(
     """
     Test that the adyen locale is used if get_locale is overridden
     """
-    url, order = setup_donation_view
+    url, _order = setup_donation_view
 
     response = client.get(url)
 

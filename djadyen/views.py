@@ -63,21 +63,18 @@ class CommonAdyenPaymentView(AdyenDetailView):
             "countryCode": (get_setting("DJADYEN_DEFAULT_COUNTRY_CODE").lower()),
         }
 
-        try:
-            request["shopperEmail"] = self.object.email
-        except Exception:
-            pass
+        if hasattr(self.object, "email"):
+            body["shopperEmail"] = self.object.email
 
         result = ady.checkout.payments_api.payments(
             body, idempotency_key=f"{self.object.reference}-payments"
         )
         logger.info(request)
 
-        if result.status_code == 200:
-            if redirect_url := glom(
-                result.message, "action.url", skip_exc=PathAccessError
-            ):
-                return redirect(redirect_url)
+        if result.status_code == 200 and (
+            redirect_url := glom(result.message, "action.url", skip_exc=PathAccessError)
+        ):
+            return redirect(redirect_url)
 
         return redirect(self.object.get_return_url())
 
