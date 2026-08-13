@@ -27,7 +27,7 @@
         "@adyen/adyen-web": "^6.31.0"
     },
     "devDependencies": {
-        "esbuild": "^0.25.10",
+        "esbuild": "^0.28.1",
         "prettier": "^2.6.2"
     }
 }
