@@ -1,5 +1,11 @@
 # Changelog
 
+# 4.3.2
+* fix Adyen session api idempotency with UUID
+* bump esbuild from 0.25.12 to 0.28.1
+* fix CI unpinned actions
+* fix new ruff format errors
+
 # 4.3.1
 * add back support for _Klarna Debit Risk_
 
