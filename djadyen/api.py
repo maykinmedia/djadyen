@@ -144,6 +144,9 @@ class AdyenPaymentDetailsAPI(AdyenAPIView):
 
         if response["donationToken"]:
             self.object.donation_token = response["donationToken"]
+
+        if refusal_reason := result.message.get("refusalReason"):
+            self.object.status_message = refusal_reason
         self.object.save()
 
         # iDeal can be Authorised within the api response
