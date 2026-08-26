@@ -7,10 +7,9 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from djadyen.choices import AdyenComponentSupport, Status
 from djadyen.constants import ADYEN_WEB_COMPONENTS_SUPPORT
 from djadyen.settings import get_setting
-
-from .choices import AdyenComponentSupport, Status
 
 logger = logging.getLogger("adyen")
 
@@ -65,7 +64,13 @@ class AdyenNotification(models.Model):
 class AdyenPaymentOption(models.Model):
     name = models.CharField(max_length=200, default="")
     adyen_name = models.CharField(max_length=200, default="")
-    guid = models.CharField(max_length=36, verbose_name=_("GUID"), default="")
+    guid = models.CharField(
+        max_length=36,
+        verbose_name=_("GUID"),
+        default="",
+        blank=True,
+        help_text=_("Internal reference for this payment option"),
+    )
     image = models.ImageField(null=True)
     is_active = models.BooleanField(default=False)
 

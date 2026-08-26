@@ -57,11 +57,15 @@ class AdyenPaymentsAPI(AdyenAPIView):
             "merchantAccount": get_setting("DJADYEN_MERCHANT_ACCOUNT"),
         }
 
-        if data.get("riskData"):
-            json_request["riskData"] = data["riskData"]
+        if risk_data := data.get("riskData"):
+            json_request["riskData"] = risk_data
 
-        if data.get("checkoutAttemptId"):
-            json_request["checkoutAttemptId"] = data["checkoutAttemptId"]
+        if checkout_attempt_id := data.get("checkoutAttemptId"):
+            json_request["checkoutAttemptId"] = checkout_attempt_id
+
+        # used for 3D Secure 2 authentication action
+        if browser_info := data.get("browserInfo"):
+            json_request["browserInfo"] = browser_info
 
         # Send the request
         logger.info("Start new payment for  %s", self.object.reference)
@@ -87,8 +91,8 @@ class AdyenPaymentsAPI(AdyenAPIView):
         self.object.status = Status.Pending.value
         self.object.psp_reference = result.message.get("pspReference", "")
 
-        if response["donationToken"]:
-            self.object.donation_token = response["donationToken"]
+        if donation_token := response["donationToken"]:
+            self.object.donation_token = donation_token
         self.object.save()
 
         return JsonResponse(response, status=200)
@@ -140,6 +144,9 @@ class AdyenPaymentDetailsAPI(AdyenAPIView):
 
         if response["donationToken"]:
             self.object.donation_token = response["donationToken"]
+
+        if refusal_reason := result.message.get("refusalReason"):
+            self.object.status_message = refusal_reason
         self.object.save()
 
         # iDeal can be Authorised within the api response

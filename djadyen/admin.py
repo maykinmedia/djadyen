@@ -21,6 +21,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "adyen_name",
+        "guid",
         "is_active",
         "show_issuers",
         "component_support",
