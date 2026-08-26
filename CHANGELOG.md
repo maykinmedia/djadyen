@@ -1,5 +1,10 @@
 # Changelog
 
+# 4.4.0
+* add browserInfo to the payments API to allow 3D Secure
+* save order refusal reason in the payment details API
+* allow payment option guid to be blank
+
 # 4.3.2
 * fix Adyen session api idempotency with UUID
 * bump esbuild from 0.25.12 to 0.28.1
