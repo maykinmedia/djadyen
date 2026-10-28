@@ -128,7 +128,8 @@ message = ":bookmark: release {new_version}"
 commit_args = ""
 setup_hooks = []
 pre_commit_hooks = [
-    "npm i && git add package-lock.json",  # ensure that package-lock.json is updated
+    "npm i",
+    "git add package-lock.json",  # ensure that package-lock.json is updated
 ]
 post_commit_hooks = []
 files = [
