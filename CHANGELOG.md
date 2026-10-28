@@ -1,5 +1,9 @@
 # Changelog
 
+# 4.4.1
+* fix adyen_maintenance not catching bad references exceptions
+* fix management command test url mock
+
 # 4.4.0
 * add browserInfo to the payments API to allow 3D Secure
 * save order refusal reason in the payment details API
