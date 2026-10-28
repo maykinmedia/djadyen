@@ -1,6 +1,8 @@
+import logging
 from datetime import timedelta
 
 from django.apps import apps
+from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 from django.utils import timezone
@@ -8,6 +10,8 @@ from django.utils import timezone
 from djadyen.choices import Status
 from djadyen.models import AdyenNotification
 from djadyen.settings import get_setting
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -39,12 +43,22 @@ class Command(BaseCommand):
                 # The reason this is done to avoid that an order, which is already
                 # processed in the return URL, to be processed again by a notification
                 #
-                orders = order_model.objects.filter(reference=reference).filter(
-                    Q(status=Status.Pending) | Q(status=Status.Created)
-                )
+                # ruff: noqa: PERF203
+                try:
+                    orders = order_model.objects.filter(reference=reference).filter(
+                        Q(status=Status.Pending) | Q(status=Status.Created)
+                    )
 
-                for order in orders:
-                    order.process_notification(notification)
+                    for order in orders:
+                        order.process_notification(notification)
+                except ValidationError as e:
+                    logger.error(
+                        "Error processing notification for reference %s: %s",
+                        reference,
+                        e,
+                    )
+
+                    notification.mark_processed()
 
         # After five days of an Order having status 'Pending', move them to 'Error'
         five_days_ago = timezone.now() - timedelta(days=5)

@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timezone
 
 from django.core.management import call_command
@@ -12,12 +13,14 @@ from djadyen.models import AdyenIssuer, AdyenPaymentOption
 from .factories import NotificationFactory, OrderFactory
 from .utils import TestFileMixin
 
+matcher = re.compile(r"https://checkout-test\.adyen\.com/v[0-9]{2}/paymentMethods")
+
 
 class SyncPaymentMethods(TestFileMixin, TestCase):
     @requests_mock.mock()
     def test_on_empty_database_mock(self, mock):
         mock.post(
-            "https://checkout-test.adyen.com/v71/paymentMethods",
+            matcher,
             [
                 {
                     "content": self._get_test_file("payment_methods.json"),
@@ -34,7 +37,7 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
     @requests_mock.mock()
     def test_on_existing_database_mock(self, mock):
         mock.post(
-            "https://checkout-test.adyen.com/v71/paymentMethods",
+            matcher,
             [
                 {
                     "content": self._get_test_file("payment_methods.json"),
@@ -66,7 +69,7 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
         """
 
         mock.post(
-            "https://checkout-test.adyen.com/v71/paymentMethods",
+            matcher,
             [
                 {
                     "content": self._get_test_file("payment_methods.json"),
