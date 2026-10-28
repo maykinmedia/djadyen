@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "djadyen"
-version = "4.4.0"
+version = "4.4.1"
 description = "Django adyen payment integration"
 authors = [
     {name = "Maykin Media", email = "support@maykinmedia.nl"}
@@ -98,7 +98,7 @@ section-order = [
 "django" = ["django"]
 
 [tool.bumpversion]
-current_version = "4.4.0"
+current_version = "4.4.1"
 parse = """(?x)
     (?P<major>0|[1-9]\\d*)\\.
     (?P<minor>0|[1-9]\\d*)\\.
@@ -128,7 +128,8 @@ message = ":bookmark: release {new_version}"
 commit_args = ""
 setup_hooks = []
 pre_commit_hooks = [
-    "npm i && git add package-lock.json",  # ensure that package-lock.json is updated
+    "npm i",
+    "git add package-lock.json",  # ensure that package-lock.json is updated
 ]
 post_commit_hooks = []
 files = [
