@@ -62,3 +62,31 @@ export function getBrandConfiguration(dataset) {
 export function getRedirectConfiguration(dataset) {
     return { type: dataset.paymentType };
 }
+
+export function getSessionConfiguration(dataset) {
+    return {
+        environment: dataset.environment,
+        clientKey: dataset.clientKey,
+        locale: dataset.language,
+        countryCode: dataset.countryCode,
+        showPayButton: true,
+        analytics: {
+            enabled: false,
+        },
+        session: {
+            id: dataset.sessionId,
+            sessionData: dataset.sessionData,
+        },
+        onPaymentCompleted: (result, component) => {
+            console.info(result, component);
+            window.location = dataset.redirectUrl;
+        },
+        onPaymentFailed: (result, component) => {
+            console.info(result, component);
+            window.location = dataset.redirectUrl;
+        },
+        onError: (error, component) => {
+            console.error(error.name, error.message, error.stack, component);
+        },
+    };
+}

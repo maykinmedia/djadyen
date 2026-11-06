@@ -6,7 +6,7 @@ import logging
 from django import template
 
 from djadyen.choices import Status
-from djadyen.models import AdyenOrder
+from djadyen.models import AdyenOrder, AdyenPaymentOption
 from djadyen.settings import get_setting
 from djadyen.utils import setup_adyen_client
 
@@ -28,37 +28,49 @@ def get_common_checkout_context(
         "country_code": country_code,
         # Djadyen Adyen Settings
         "redirect_url": order.get_return_url,
-        "payment_type": (
-            order.payment_option.adyen_name if order.payment_option else ""
-        ),
-        "issuers": (
-            json.dumps(
-                list(
-                    order.payment_option.adyenissuer_set.all().values(
-                        "name", "adyen_id"
-                    )
-                )
-            )
-            if order.payment_option
-            else []
-        ),
-        "issuer": order.issuer.adyen_id if order.issuer else "",
         "adyen_styles_json": json.dumps(adyen_styles)
         if (adyen_styles := get_setting("DJADYEN_STYLES"))
         else None,
     }
 
 
-@register.inclusion_tag("adyen/component.html")
-def adyen_payment_component(
-    language,
-    order,
-    merchant_account: str | None = None,
-    country_code: str | None = None,
-):
+def get_single_option_contex(order: AdyenOrder) -> dict:
     """
-    Will display a singular payment method.
+    Gets the context needed for a single payment option.
+    :param order:
+    :return:
     """
+
+    return {
+        "payment_type": (
+            order.payment_option.adyen_name if order.payment_option else ""
+        ),
+        "issuers": (
+            json.dumps(
+                list(order.payment_option.issuers.all().values("name", "adyen_id"))
+            )
+            if order.payment_option
+            else []
+        ),
+        "issuer": order.issuer.adyen_id if order.issuer else "",
+    }
+
+
+def get_adyen_session(
+    language: str,
+    order: AdyenOrder,
+    merchant_account: str,
+    country_code: str,
+) -> dict[str, str]:
+    """
+    Creates an Adyen session
+    :param language:
+    :param order:
+    :param merchant_account:
+    :param country_code:
+    :return: dict with the session_id and session_data or empty
+    """
+
     logger.info("Start new payment for %s", order.reference)
     ady = setup_adyen_client()
 
@@ -69,14 +81,10 @@ def adyen_payment_component(
             "currency": get_setting("DJADYEN_CURRENCYCODE"),
         },
         "reference": str(order.reference),
-        "merchantAccount": merchant_account or get_setting("DJADYEN_MERCHANT_ACCOUNT"),
+        "merchantAccount": merchant_account,
         "returnUrl": order.get_return_url(),
         "shopperLocale": language,
-        "countryCode": (
-            country_code.lower()
-            if country_code
-            else get_setting("DJADYEN_DEFAULT_COUNTRY_CODE")
-        ),
+        "countryCode": country_code,
     }
 
     if hasattr(order, "email"):
@@ -92,11 +100,78 @@ def adyen_payment_component(
         return {
             "session_id": result.message.get("id"),
             "session_data": result.message.get("sessionData"),
-        } | get_common_checkout_context(
-            language,
-            order,
-            request["countryCode"],
+        }
+    return {}
+
+
+@register.inclusion_tag("adyen/component.html")
+def adyen_payment_component(
+    language,
+    order,
+    merchant_account: str | None = None,
+    country_code: str | None = None,
+):
+    """
+    Will display a singular session payment method.
+    """
+
+    country_code = (
+        country_code.lower()
+        if country_code
+        else get_setting("DJADYEN_DEFAULT_COUNTRY_CODE")
+    )
+
+    if not merchant_account:
+        merchant_account = get_setting("DJADYEN_MERCHANT_ACCOUNT")
+
+    if session_context := get_adyen_session(
+        language, order, merchant_account, country_code
+    ):
+        return (
+            session_context
+            | get_common_checkout_context(language, order, country_code)
+            | get_single_option_contex(order)
         )
+
+    return {}
+
+
+@register.inclusion_tag("adyen/session_dropin_component.html")
+def adyen_session_dropin_component(
+    language,
+    order,
+    merchant_account: str | None = None,
+    country_code: str | None = None,
+):
+    country_code = (
+        country_code.lower()
+        if country_code
+        else get_setting("DJADYEN_DEFAULT_COUNTRY_CODE")
+    )
+
+    if not merchant_account:
+        merchant_account = get_setting("DJADYEN_MERCHANT_ACCOUNT")
+
+    if (payment_options := AdyenPaymentOption.objects.filter(is_active=True)) and (
+        session_context := get_adyen_session(
+            language, order, merchant_account, country_code
+        )
+    ):
+        context = get_common_checkout_context(language, order, country_code)
+
+        context["payment_options"] = json.dumps(
+            [
+                {
+                    "payment_type": option.adyen_name,
+                    "issuers": json.dumps(
+                        list(option.issuers.all().values("name", "adyen_id"))
+                    ),
+                }
+                for option in payment_options
+            ]
+        )
+
+        return context | session_context
 
     return {}
 
@@ -107,15 +182,25 @@ def adyen_advanced_payment_component(
     order: AdyenOrder,
     country_code: str | None = None,
 ):
-    return {
-        "amount": order.get_price_in_cents(),
-        "currency": get_setting("DJADYEN_CURRENCYCODE"),
-        "payments_api": order.get_payments_api(),
-        "payment_details_api": order.get_payment_details_api(),
-    } | get_common_checkout_context(
-        language,
-        order,
-        country_code or get_setting("DJADYEN_DEFAULT_COUNTRY_CODE"),
+    country_code = (
+        country_code.lower()
+        if country_code
+        else get_setting("DJADYEN_DEFAULT_COUNTRY_CODE")
+    )
+
+    return (
+        {
+            "amount": order.get_price_in_cents(),
+            "currency": get_setting("DJADYEN_CURRENCYCODE"),
+            "payments_api": order.get_payments_api(),
+            "payment_details_api": order.get_payment_details_api(),
+        }
+        | get_common_checkout_context(
+            language,
+            order,
+            country_code,
+        )
+        | get_single_option_contex(order)
     )
 
 

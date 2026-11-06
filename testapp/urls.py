@@ -10,11 +10,15 @@ from .views import (
     PaymentDetailsAPIView,
     PaymentsAPIView,
     PaymentView,
+    SessionDropinView,
 )
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("<uuid:reference>/payment/", PaymentView.as_view(), name="payment"),
+    path(
+        "<uuid:reference>/dropin/", SessionDropinView.as_view(), name="session-dropin"
+    ),
     path("<uuid:reference>/confirm/", ConfirmationView.as_view(), name="confirm"),
     path(
         "adyen/notifications/",

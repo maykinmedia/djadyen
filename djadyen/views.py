@@ -87,7 +87,7 @@ class CommonAdyenPaymentView(AdyenDetailView):
 
 class AdyenSessionPaymentView(CommonAdyenPaymentView):
     """
-    A view which initiates the Adyen payment by rendering a widget.
+    A view which initiates the Adyen payment by rendering a componenet widget.
     It will automatically draw the wanted widget.
     """
 
@@ -106,6 +106,22 @@ class AdyenSessionPaymentView(CommonAdyenPaymentView):
             and not self.object.issuer
         ):
             return self.redirect_ideal_2(request)
+        return super().get(request, *args, **kwargs)
+
+
+class AdyenSessionDropinPaymentView(CommonAdyenPaymentView):
+    """
+    A view which initiates the Adyen payment by rendering the dropin widget.
+    It will automatically draw the wanted widget.
+    """
+
+    template_name = "adyen/session_dropin_pay.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.get_price_in_cents() == 0:
+            return HttpResponseRedirect(self.object.get_return_url())
         return super().get(request, *args, **kwargs)
 
 

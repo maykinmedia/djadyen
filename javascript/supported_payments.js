@@ -9,12 +9,12 @@ import {
 import { getBrandConfiguration, getRedirectConfiguration } from './utils';
 
 export const PaymentComponents = {
-    alipay: [Redirect, getRedirectConfiguration],
-    bankTransfer_IBAN: [BankTransfer, getRedirectConfiguration],
-    bcmc: [Bancontact, getBrandConfiguration],
-    ebanking_FI: [Redirect, getRedirectConfiguration],
-    ideal: [Redirect, getRedirectConfiguration],
-    sepadirectdebit: [SepaDirectDebit, () => ({})],
-    scheme: [Card, getBrandConfiguration],
-    directEbanking: [Redirect, getRedirectConfiguration],
+    alipay: [Redirect, getRedirectConfiguration, 'redirect'],
+    bankTransfer_IBAN: [BankTransfer, getRedirectConfiguration, 'banktransfer'],
+    bcmc: [Bancontact, getBrandConfiguration, 'bancontact'],
+    ebanking_FI: [Redirect, getRedirectConfiguration, 'redirect'],
+    ideal: [Redirect, getRedirectConfiguration, 'redirect'],
+    sepadirectdebit: [SepaDirectDebit, () => ({}), 'sepadirectdebit'],
+    scheme: [Card, getBrandConfiguration, 'card'],
+    directEbanking: [Redirect, getRedirectConfiguration, 'redirect'],
 };

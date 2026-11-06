@@ -84,7 +84,9 @@ class AdyenPaymentOption(models.Model):
 
 
 class AdyenIssuer(models.Model):
-    payment_option = models.ForeignKey(AdyenPaymentOption, on_delete=models.CASCADE)
+    payment_option = models.ForeignKey(
+        AdyenPaymentOption, on_delete=models.CASCADE, related_name="issuers"
+    )
     name = models.CharField(max_length=200, default="")
     adyen_id = models.CharField(max_length=200, default="")
 

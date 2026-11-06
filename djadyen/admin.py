@@ -32,7 +32,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
 
     @admin.display(description=_("Issuers/Brands"), empty_value="---")
     def show_issuers(self, obj):
-        issuers = obj.adyenissuer_set.all()
+        issuers = obj.issuers.all()
         if issuers:
             return ", ".join([issuer.adyen_id for issuer in issuers])
         return None
