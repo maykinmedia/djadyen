@@ -81,10 +81,10 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
         call_command("sync_payment_methods")
 
         bancontact = AdyenPaymentOption.objects.get(adyen_name="bcmc")
-        self.assertEqual(bancontact.adyenissuer_set.all().count(), 3)
+        self.assertEqual(bancontact.issuers.all().count(), 3)
 
         card = AdyenPaymentOption.objects.get(adyen_name="scheme")
-        self.assertEqual(card.adyenissuer_set.all().count(), 7)
+        self.assertEqual(card.issuers.all().count(), 7)
 
 
 class ProcessNotifications(TestFileMixin, TestCase):
