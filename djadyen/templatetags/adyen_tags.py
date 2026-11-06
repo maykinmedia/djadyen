@@ -48,7 +48,7 @@ def get_single_option_contex(order: AdyenOrder) -> dict:
         "issuers": (
             json.dumps(
                 list(
-                    order.payment_option.adyenissuer_set.all().values(
+                    order.payment_option.issuers.all().values(
                         "name", "adyen_id"
                     )
                 )
