@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (config) {
         const configuration = getSessionConfiguration(config.dataset);
 
-        const [Component, getPaymentConfiguration] =
+        const [Component, getPaymentConfiguration, dropin_name] =
             PaymentComponents[config.dataset.paymentType];
         const paymentConfiguration = getPaymentConfiguration(config.dataset);
 

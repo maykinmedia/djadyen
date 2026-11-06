@@ -6,7 +6,7 @@ import logging
 from django import template
 
 from djadyen.choices import Status
-from djadyen.models import AdyenOrder
+from djadyen.models import AdyenOrder, AdyenPaymentOption
 from djadyen.settings import get_setting
 from djadyen.utils import setup_adyen_client
 
@@ -47,11 +47,7 @@ def get_single_option_contex(order: AdyenOrder) -> dict:
         ),
         "issuers": (
             json.dumps(
-                list(
-                    order.payment_option.issuers.all().values(
-                        "name", "adyen_id"
-                    )
-                )
+                list(order.payment_option.issuers.all().values("name", "adyen_id"))
             )
             if order.payment_option
             else []
@@ -136,6 +132,46 @@ def adyen_payment_component(
             | get_common_checkout_context(language, order, country_code)
             | get_single_option_contex(order)
         )
+
+    return {}
+
+
+@register.inclusion_tag("adyen/session_dropin_component.html")
+def adyen_session_dropin_component(
+    language,
+    order,
+    merchant_account: str | None = None,
+    country_code: str | None = None,
+):
+    country_code = (
+        country_code.lower()
+        if country_code
+        else get_setting("DJADYEN_DEFAULT_COUNTRY_CODE")
+    )
+
+    if not merchant_account:
+        merchant_account = get_setting("DJADYEN_MERCHANT_ACCOUNT")
+
+    if (payment_options := AdyenPaymentOption.objects.filter(is_active=True)) and (
+        session_context := get_adyen_session(
+            language, order, merchant_account, country_code
+        )
+    ):
+        context = get_common_checkout_context(language, order, country_code)
+
+        context["payment_options"] = json.dumps(
+            [
+                {
+                    "payment_type": option.adyen_name,
+                    "issuers": json.dumps(
+                        list(option.issuers.all().values("name", "adyen_id"))
+                    ),
+                }
+                for option in payment_options
+            ]
+        )
+
+        return context | session_context
 
     return {}
 
