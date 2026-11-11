@@ -43,7 +43,6 @@ class Command(BaseCommand):
                 # The reason this is done to avoid that an order, which is already
                 # processed in the return URL, to be processed again by a notification
                 #
-                # ruff: noqa: PERF203
                 try:
                     orders = order_model.objects.filter(reference=reference).filter(
                         Q(status=Status.Pending) | Q(status=Status.Created)
