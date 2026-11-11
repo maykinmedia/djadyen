@@ -138,9 +138,7 @@ class AdyenResponseView(AdyenDetailView):
 
         if self.object.get_price_in_cents() == 0:
             self.handle_authorised()
-
-        resultRedirect = request.GET.get("redirectResult")
-        if resultRedirect:
+        elif resultRedirect :=request.GET.get("redirectResult"):
             ady = Adyen.Adyen()
 
             if not get_setting("DJADYEN_ENVIRONMENT"):

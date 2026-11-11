@@ -158,27 +158,39 @@ class AdyenOrder(models.Model):
 
         return super().save(*args, **kwargs)
 
+
+    def handle_authorised(self) -> None:
+        self.status = Status.Authorised
+        self.save()
+
+    def handle_cancel(self) -> None:
+        self.status = Status.Cancel
+        self.save()
+
+    def handle_refused(self) -> None:
+        self.status = Status.Refused
+        self.save()
+
+    def handle_error(self) -> None:
+        self.status = Status.Error
+        self.save()
+
+
     def process_notification(self, notification):
         if notification.is_authorised():
-            self.status = Status.Authorised
-            self.save()
+            self.handle_authorised()
             notification.mark_processed()
         elif notification.is_cancelled():
-            self.status = Status.Cancel
-            self.save()
+            self.handle_cancel()
             notification.mark_processed()
         elif notification.is_refused():
-            self.status = Status.Refused
-            self.save()
+            self.handle_error()
             notification.mark_processed()
         elif notification.is_error():
-            self.status = Status.Error
-            self.save()
+            self.handle_error()
             notification.mark_processed()
-
-        logger.error("Can't process notification with pk %d", notification.pk)
-
-        # Ignore anything else for now.
+        else:
+            logger.error("Can't process notification with pk %d", notification.pk)
 
     def get_price_in_cents(self):
         """
