@@ -88,6 +88,21 @@ class SyncPaymentMethods(TestFileMixin, TestCase):
 
 
 class ProcessNotifications(TestFileMixin, TestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+
+        cls.payment_option = AdyenPaymentOption.objects.create(
+            adyen_name="scheme",
+            name="Credit Cards",
+            is_active=True,
+        )
+
+        cls.issuer = AdyenIssuer.objects.create(
+            adyen_id="mc",
+            name="Mastercard",
+            payment_option=cls.payment_option,
+        )
+
     def setUp(self):
         super().setUp()
 
@@ -138,6 +153,9 @@ class ProcessNotifications(TestFileMixin, TestCase):
                 tzinfo=UTC,
             ),
         )
+
+        self.assertEqual(self.order1.payment_option, self.payment_option)
+        self.assertEqual(self.order1.issuer, self.issuer)
 
     @freeze_time("2019-01-01 12:00")
     def test_process_notifications_unsuccessful(self):

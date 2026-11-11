@@ -158,7 +158,6 @@ class AdyenOrder(models.Model):
 
         return super().save(*args, **kwargs)
 
-
     def handle_authorised(self) -> None:
         self.status = Status.Authorised
         self.save()
@@ -175,7 +174,6 @@ class AdyenOrder(models.Model):
         self.status = Status.Error
         self.save()
 
-
     def process_notification(self, notification):
         if notification.is_authorised():
             self.handle_authorised()
@@ -183,10 +181,7 @@ class AdyenOrder(models.Model):
         elif notification.is_cancelled():
             self.handle_cancel()
             notification.mark_processed()
-        elif notification.is_refused():
-            self.handle_error()
-            notification.mark_processed()
-        elif notification.is_error():
+        elif notification.is_refused() or notification.is_error():
             self.handle_error()
             notification.mark_processed()
         else:

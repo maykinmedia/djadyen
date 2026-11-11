@@ -10,6 +10,7 @@ from django.utils import timezone
 from djadyen.choices import Status
 from djadyen.models import AdyenNotification
 from djadyen.settings import get_setting
+from djadyen.utils import get_payment_option_from_name
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,10 @@ class Command(BaseCommand):
         ):
             notification_data = notification.get_notification_data()
             reference = notification_data.get("merchantReference")
+
+            payment_method_name = notification_data.get("paymentMethod", "")
+            payment_option, issuer = get_payment_option_from_name(payment_method_name)
+
             for order_model in order_models:
                 #
                 # TOOD: Ugh, okay so we process only 'Pending' orders, this might
@@ -50,6 +55,14 @@ class Command(BaseCommand):
 
                     for order in orders:
                         order.process_notification(notification)
+
+                        # Drop-ins do not have a payment option, so they must be from
+                        # notification or payments details API
+                        if payment_option:
+                            order.payment_option = payment_option
+                            order.issuer = issuer
+                            order.save()
+
                 except ValidationError as e:
                     logger.error(
                         "Error processing notification for reference %s: %s",
@@ -57,7 +70,7 @@ class Command(BaseCommand):
                         e,
                     )
 
-                    notification.mark_processed()
+            notification.mark_processed()
 
         # After five days of an Order having status 'Pending', move them to 'Error'
         five_days_ago = timezone.now() - timedelta(days=5)
