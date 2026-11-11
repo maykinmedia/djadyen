@@ -1,5 +1,5 @@
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from django.core.management import call_command
 from django.test.testcases import TestCase
@@ -135,7 +135,7 @@ class ProcessNotifications(TestFileMixin, TestCase):
                 1,
                 12,
                 0,
-                tzinfo=timezone.utc,
+                tzinfo=UTC,
             ),
         )
 
@@ -163,7 +163,7 @@ class ProcessNotifications(TestFileMixin, TestCase):
                 1,
                 12,
                 0,
-                tzinfo=timezone.utc,
+                tzinfo=UTC,
             ),
         )
 
