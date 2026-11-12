@@ -155,7 +155,7 @@ class AdvancedPaymentCheckout {
         if (!configuration) return console.error('Invalid configuration');
 
         const checkout = await AdyenCheckout(configuration);
-        const [Component, getPaymentConfiguration, dropin_name] =
+        const [Component, getPaymentConfiguration] =
             PaymentComponents[this.config.dataset.paymentType];
         const paymentConfiguration = getPaymentConfiguration(
             this.config.dataset

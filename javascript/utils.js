@@ -78,11 +78,9 @@ export function getSessionConfiguration(dataset) {
             sessionData: dataset.sessionData,
         },
         onPaymentCompleted: (result, component) => {
-            console.info(result, component);
             window.location = dataset.redirectUrl;
         },
         onPaymentFailed: (result, component) => {
-            console.info(result, component);
             window.location = dataset.redirectUrl;
         },
         onError: (error, component) => {

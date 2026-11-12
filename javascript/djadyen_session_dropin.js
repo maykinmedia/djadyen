@@ -18,24 +18,24 @@ class SessionDropinPaymentCheckout {
         try {
             const payment_types = JSON.parse(this.config.dataset.paymentTypes);
 
-            let dropin_configuration = {
+            const dropinConfiguration = {
                 paymentMethodComponents: [],
                 paymentMethodsConfiguration: {},
             };
 
             payment_types.forEach((payment) => {
-                const [Component, getPaymentConfiguration, dropin_name] =
+                const [Component, getPaymentConfiguration, dropinName] =
                     PaymentComponents[payment.payment_type];
 
                 // Redirect components are handled by the session
-                if (dropin_name === 'redirect') return;
+                if (dropinName === 'redirect') return;
 
-                dropin_configuration.paymentMethodComponents.push(Component);
-                dropin_configuration.paymentMethodsConfiguration[dropin_name] =
+                dropinConfiguration.paymentMethodComponents.push(Component);
+                dropinConfiguration.paymentMethodsConfiguration[dropinName] =
                     getPaymentConfiguration(payment);
             });
 
-            return dropin_configuration;
+            return dropinConfiguration;
         } catch (e) {
             console.error('Failed to parse payment types:', e);
         }
@@ -47,14 +47,12 @@ class SessionDropinPaymentCheckout {
         const configuration = this.createConfiguration();
         if (!configuration) return console.error('Invalid configuration');
 
-        console.log(configuration);
-
         const dropinConfiguration = this.createDropinConfiguration();
 
         console.log(dropinConfiguration);
 
         const checkout = await AdyenCheckout(configuration);
-        const dropin = new Dropin(checkout, dropinConfiguration).mount(
+        new Dropin(checkout, dropinConfiguration).mount(
             '#djadyen-dropin-container'
         );
     }
