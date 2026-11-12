@@ -1,5 +1,16 @@
 # Changelog
 
+# 4.5.0
+* add session drop-in checkout
+* save payment option from notifications and payments details
+* refactor process_notification and status handling to separate methods
+* remove support for python<3.11 and Django<4.2
+* add adyen issuer related name
+* refactor adyen web session configuration to utils
+* refactor common template tag context
+* Add dependabot for Github actions
+* Bump the github-actions group with 5 updates
+
 # 4.4.1
 * fix adyen_maintenance not catching bad references exceptions
 * fix management command test url mock
