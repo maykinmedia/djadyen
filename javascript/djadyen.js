@@ -4,36 +4,13 @@ import { PaymentComponents } from './supported_payments';
 
 import '@adyen/adyen-web/styles/adyen.css';
 import './overwrites.css';
+import { getSessionConfiguration } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const config = document.querySelector('#djadyen-config');
 
     if (config) {
-        const configuration = {
-            environment: config.dataset.environment,
-            clientKey: config.dataset.clientKey,
-            locale: config.dataset.language,
-            countryCode: config.dataset.countryCode,
-            showPayButton: true,
-            analytics: {
-                enabled: false,
-            },
-            session: {
-                id: config.dataset.sessionId,
-                sessionData: config.dataset.sessionData,
-            },
-            onPaymentCompleted: (result) => {
-                window.location = config.dataset.redirectUrl;
-            },
-            onError: (error, component) => {
-                console.error(
-                    error.name,
-                    error.message,
-                    error.stack,
-                    component
-                );
-            },
-        };
+        const configuration = getSessionConfiguration(config.dataset);
 
         const [Component, getPaymentConfiguration] =
             PaymentComponents[config.dataset.paymentType];

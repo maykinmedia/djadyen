@@ -20,7 +20,7 @@ from djadyen.choices import Status
 from djadyen.constants import LIVE_URL_PREFIX_ERROR
 from djadyen.models import AdyenDonation
 from djadyen.settings import get_setting
-from djadyen.utils import setup_adyen_client
+from djadyen.utils import get_payment_option_from_name, setup_adyen_client
 
 logger = logging.getLogger("adyen")
 
@@ -87,7 +87,7 @@ class CommonAdyenPaymentView(AdyenDetailView):
 
 class AdyenSessionPaymentView(CommonAdyenPaymentView):
     """
-    A view which initiates the Adyen payment by rendering a widget.
+    A view which initiates the Adyen payment by rendering a componenet widget.
     It will automatically draw the wanted widget.
     """
 
@@ -109,6 +109,22 @@ class AdyenSessionPaymentView(CommonAdyenPaymentView):
         return super().get(request, *args, **kwargs)
 
 
+class AdyenSessionDropinPaymentView(CommonAdyenPaymentView):
+    """
+    A view which initiates the Adyen payment by rendering the dropin widget.
+    It will automatically draw the wanted widget.
+    """
+
+    template_name = "adyen/session_dropin_pay.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.get_price_in_cents() == 0:
+            return HttpResponseRedirect(self.object.get_return_url())
+        return super().get(request, *args, **kwargs)
+
+
 @deprecated(
     "Renamed to `AdyenSessionPaymentView` to differentiate "
     "from the Advanced payment view."
@@ -122,9 +138,7 @@ class AdyenResponseView(AdyenDetailView):
 
         if self.object.get_price_in_cents() == 0:
             self.handle_authorised()
-
-        resultRedirect = request.GET.get("redirectResult")
-        if resultRedirect:
+        elif resultRedirect := request.GET.get("redirectResult"):
             ady = Adyen.Adyen()
 
             if not get_setting("DJADYEN_ENVIRONMENT"):
@@ -152,6 +166,17 @@ class AdyenResponseView(AdyenDetailView):
             # Requesting the status.
             result = ady.checkout.payments_api.payments_details(request)
             result_code = result.message.get("resultCode")
+
+            payment_method = result.message.get("paymentMethod", {})
+
+            # find the payment option for drop-in payment
+            if payment_type := payment_method.get("type"):
+                payment_option, issuer = get_payment_option_from_name(payment_type)
+                if payment_option:
+                    self.object.payment_option = payment_option
+                    self.object.issuer = issuer
+                    self.object.save()
+
             if result_code == "Authorised":
                 self.handle_authorised()
             elif result_code != "Pending":
@@ -162,6 +187,7 @@ class AdyenResponseView(AdyenDetailView):
         """
         Handle what happens to a order after a payment is authorised
         e.g change order to status and send confirmation email
+        Beware, handle_authorised can be called multiple times
         """
         raise NotImplementedError(
             "Handle what happens to a order after a payment is authorised. "

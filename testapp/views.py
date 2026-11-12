@@ -4,6 +4,7 @@ from djadyen.views import (
     AdyenAdvancedPaymentView,
     AdyenDonationView,
     AdyenResponseView,
+    AdyenSessionDropinPaymentView,
     AdyenSessionPaymentView,
     AdyenStatusView,
 )
@@ -27,6 +28,10 @@ class ConfirmationView(AdyenResponseView):
 
 class PaymentView(AdyenSessionPaymentView):
     template_name = "app/payment.html"
+    model = Order
+
+
+class SessionDropinView(AdyenSessionDropinPaymentView):
     model = Order
 
 
