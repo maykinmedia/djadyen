@@ -24,15 +24,22 @@ class SessionDropinPaymentCheckout {
             };
 
             payment_types.forEach((payment) => {
-                const [Component, getPaymentConfiguration, dropinName] =
-                    PaymentComponents[payment.payment_type];
+                if (payment.payment_type in PaymentComponents) {
+                    const [Component, getPaymentConfiguration, dropinName] =
+                        PaymentComponents[payment.payment_type];
 
-                // Redirect components are handled by the session
-                if (dropinName === 'redirect') return;
+                    // Redirect components are handled by the session
+                    if (dropinName === 'redirect') return;
 
-                dropinConfiguration.paymentMethodComponents.push(Component);
-                dropinConfiguration.paymentMethodsConfiguration[dropinName] =
-                    getPaymentConfiguration(payment);
+                    dropinConfiguration.paymentMethodComponents.push(Component);
+                    dropinConfiguration.paymentMethodsConfiguration[
+                        dropinName
+                    ] = getPaymentConfiguration(payment);
+                } else {
+                    console.error(
+                        `Unknown payment type: ${payment.payment_type}`
+                    );
+                }
             });
 
             return dropinConfiguration;
@@ -48,8 +55,6 @@ class SessionDropinPaymentCheckout {
         if (!configuration) return console.error('Invalid configuration');
 
         const dropinConfiguration = this.createDropinConfiguration();
-
-        console.log(dropinConfiguration);
 
         const checkout = await AdyenCheckout(configuration);
         new Dropin(checkout, dropinConfiguration).mount(
