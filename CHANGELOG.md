@@ -1,5 +1,9 @@
 # Changelog
 
+# 4.5.1
+* fix drop-in breaks with unsupported component
+* add `dropin_placeholder` dummy component to prevent console errors
+
 # 4.5.0
 * add session drop-in checkout
 * save payment option from notifications and payments details
@@ -8,7 +12,7 @@
 * add adyen issuer related name
 * refactor adyen web session configuration to utils
 * refactor common template tag context
-* Add dependabot for Github actions
+* Add dependabot for GitHub actions
 * Bump the github-actions group with 5 updates
 
 # 4.4.1
