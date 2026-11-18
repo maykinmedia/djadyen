@@ -34,6 +34,9 @@ Supported Adyen Payments
 -  **Klarna Debit Risk** - adyen name ``directEbanking``
 -  **SEPA Bank Transfer** - adyen name: ``bankTransfer_IBAN``
 -  **SEPA Direct Debit** - adyen name: ``sepadirectdebit``
+-  **Dummy Drop-in Placeholder** - adyen name: ``dropin_placeholder``.
+   Used if you need a dummy payment option before fetching from the drop-in component.
+   Will break if used with the component checkouts.
 
 Issuers & Brands
 ~~~~~~~~~~~~~~~~

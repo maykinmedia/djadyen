@@ -17,4 +17,5 @@ export const PaymentComponents = {
     sepadirectdebit: [SepaDirectDebit, () => ({}), 'sepadirectdebit'],
     scheme: [Card, getBrandConfiguration, 'card'],
     directEbanking: [Redirect, getRedirectConfiguration, 'redirect'],
+    dropin_placeholder: [undefined, undefined, 'redirect'], // placeholder if dropin placeholder is needed
 };
